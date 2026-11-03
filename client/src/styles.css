@@ -4,3 +4,52 @@
 @media(max-width:850px){.sidebar{transform:translateX(-100%);transition:transform .25s ease}.sidebar.sidebar-open{transform:translateX(0)}.close-sidebar,.menu-btn{display:grid}.sidebar-scrim{display:block;position:fixed;inset:0;background:#0009;border:0;z-index:15}.main-area{margin-left:0}.topbar{height:59px;padding:0 19px}.page-content{padding:28px 19px}.footer{padding:15px 19px}.hero-visual{width:230px;transform:scale(.9)}.welcome-row h1{font-size:34px}.lesson-layout{grid-template-columns:1fr}.lesson-aside{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.lesson-aside .aside-card{margin:0}.lesson-aside .aside-card:first-child{grid-row:span 2}.lesson-title-row h1{font-size:28px}}
 @media(max-width:620px){.welcome-row{padding:24px 20px;min-height:0}.welcome-row>div:first-child{position:relative;z-index:2}.welcome-row h1{font-size:31px}.welcome-row p{max-width:360px;font-size:11px}.hero-visual{position:absolute;right:-75px;opacity:.24;transform:scale(.85)}.stats-grid{gap:7px;margin:12px 0 32px}.stat-card{padding:11px 8px;gap:7px;align-items:flex-start;flex-wrap:wrap}.stat-icon{width:29px;height:29px}.stat-icon svg{width:15px}.stat-card strong{font-size:17px}.stat-card span{font-size:8px}.stat-card>small{display:none}.section-heading{align-items:start}.section-heading h2{font-size:20px}.section-heading p{font-size:10px;max-width:240px;line-height:1.6}.section-heading>.text-btn{font-size:9px;white-space:nowrap;padding:5px 0}.filter-row{align-items:stretch;flex-direction:column}.search-box{width:100%}.filter-pills{overflow:auto}.filter-pills button{white-space:nowrap}.lesson-grid{grid-template-columns:1fr}.lesson-card p{min-height:0}.bottom-banner{align-items:flex-start;flex-wrap:wrap}.bottom-banner>div:nth-child(2){flex:1}.bottom-banner button{margin-left:52px}.footer{gap:10px;flex-wrap:wrap}.footer>span:nth-child(2){display:none}.lesson-title-row{align-items:flex-start;gap:10px}.lesson-title-row h1{font-size:25px}.lesson-title-row p{line-height:1.6}.lesson-time{white-space:nowrap;font-size:9px}.lesson-progress .progress-track{flex:1}.lesson-progress>span{white-space:nowrap}.content-panel{padding:18px}.content-panel h2{font-size:19px}.step-body{font-size:11px}.diagram-flow{justify-content:flex-start;overflow:auto;flex-wrap:nowrap}.diagram-node{min-width:100px}.step-actions{align-items:flex-start;flex-direction:column}.step-next{width:100%;justify-content:flex-end}.complete-btn{width:100%}.lesson-aside{grid-template-columns:1fr}.lesson-aside .aside-card:first-child{grid-row:auto}.quick-command-grid{grid-template-columns:repeat(2,1fr)}.practice-page,.guide-page{padding-top:30px}.practice-page h1,.guide-page h1{font-size:31px}.terminal-screen{padding:14px;min-height:300px}.guide-grid{grid-template-columns:1fr 1fr}.top-actions{gap:5px}.api-indicator{font-size:9px}.breadcrumb{font-size:10px}.step-tabs button small{max-width:90px;overflow:hidden;text-overflow:ellipsis}.quiz-footer{align-items:flex-start}.quiz-feedback{flex-basis:100%}}
 @media(max-width:390px){.guide-grid{grid-template-columns:1fr}.welcome-row h1{font-size:28px}.topbar{padding:0 12px}.page-content{padding-left:13px;padding-right:13px}.lesson-time{display:none}.stats-grid{grid-template-columns:1fr 1fr}.stat-card:last-child{display:none}}
+/* Friendly, interactive Git learning visuals */
+.git-visual-lab{margin:20px 0 22px;padding:19px;border:1px solid #39344f;border-radius:13px;background:linear-gradient(145deg,#191d2c,#121923);overflow:hidden}
+.git-lab-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.git-kicker{font:700 8px var(--mono);letter-spacing:1.4px;color:#a994f4}
+.git-lab-heading h3{font:700 17px Manrope;color:#f0eff8;margin:6px 0}
+.git-lab-heading p{font-size:10px;line-height:1.6;color:#9ca8ba;margin:0;max-width:550px}
+.git-kid-badge{white-space:nowrap;border:1px solid #55457d;background:#29223d;color:#d1c2ff;border-radius:20px;padding:6px 9px;font:700 8px var(--mono)}
+.git-road{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:23px 0 16px}
+.git-stop{position:relative;min-width:0;padding:13px 8px 12px;text-align:center;border:1px solid #303a4b;border-radius:10px;background:#171f2b;transition:.2s}
+.git-stop.selected{border-color:#a28af0;background:#29223c;box-shadow:0 0 0 2px #a28af01c}
+.git-stop.passed{border-color:#34785d;background:#172b27}
+.git-stop-icon{font-size:27px;line-height:1.3;margin-bottom:7px}
+.git-stop strong{display:block;font-size:10px;color:#e9eaf3}
+.git-stop small{display:block;font-size:8px;line-height:1.45;color:#8f9cb0;margin-top:5px}
+.git-road-arrow{position:absolute;right:-12px;top:29px;z-index:2;color:#59647a;font-size:17px}
+.git-road-arrow.lit{color:#75dfad}
+.git-stage-card{padding:14px;border:1px solid #303b4d;border-radius:10px;background:#101721}
+.git-stage-number{font:700 8px var(--mono);letter-spacing:1px;color:#a993f2}
+.git-stage-copy{display:flex;align-items:center;gap:11px;margin:10px 0}
+.git-stage-emoji{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;border-radius:11px;background:#a18af01a;font-size:25px}
+.git-stage-copy h4{font:700 13px Manrope;color:#f0f2f8;margin:0 0 4px}
+.git-stage-copy p{font-size:10px;line-height:1.6;color:#a4afbf;margin:0}
+.git-stage-command{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;border:1px dashed #4a4562;border-radius:7px;background:#211e30}
+.git-stage-command code{font:11px var(--mono);color:#c9baff}
+.git-stage-command span{font-size:8px;color:#8995a8;text-align:right}
+.git-stage-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
+.git-stage-controls>div{display:flex;gap:7px}
+.git-stage-controls button{padding:8px 11px;border:1px solid #3b4557;border-radius:7px;background:#1a2330;color:#b9c3d1;font-size:9px;font-weight:700}
+.git-stage-controls button:disabled{opacity:.35;cursor:not-allowed}
+.git-stage-controls .git-reset{border:0;background:transparent;color:#a99ae0;padding-left:0}
+.git-stage-controls .git-next{border-color:#6a579e;background:#57458a;color:#fff}
+.git-simple-tip{display:flex;align-items:flex-start;gap:9px;margin-top:13px;padding:10px 12px;border-radius:8px;background:#1b2b28;border:1px solid #315344}
+.git-simple-tip>span{font-size:16px}
+.git-simple-tip p{margin:0;color:#b4d8c7;font-size:9px;line-height:1.65}
+.git-simple-tip strong{color:#83e0b2}
+.git-branch-map{position:relative;display:grid;grid-template-columns:1fr 1.6fr 1fr;align-items:center;gap:10px;min-height:140px;margin:18px 0;padding:14px;border:1px solid #303b4d;border-radius:10px;background:#111923}
+.git-branch-origin,.git-merge-cloud{display:grid;justify-items:center;gap:4px;text-align:center;padding:10px 5px;border:1px solid #3d465a;border-radius:9px;background:#1c2532;color:#e5e9f2;font-size:10px}
+.git-branch-origin>span{font-size:25px}
+.git-branch-origin small,.git-merge-cloud small{font-size:8px;color:#95a2b6}
+.git-branch-lines{display:grid;gap:25px}
+.git-main-line,.git-feature-line{height:3px;border-radius:5px;background:#5c9c83;position:relative;color:#b7d9c8}
+.git-main-line span,.git-feature-line span{position:absolute;left:0;top:-17px;white-space:nowrap;font:8px var(--mono);color:#9eacbd}
+.git-main-line i,.git-feature-line i{position:absolute;right:4px;top:-4px;width:11px;height:11px;border-radius:50%;background:#78dfb1;box-shadow:0 0 10px #78dfb188}
+.git-feature-line{background:#8269c7;opacity:.2;transform:translateY(4px);transition:.25s}
+.git-feature-line.visible{opacity:1;transform:translateY(0)}
+.git-feature-line i{background:#b59aff;box-shadow:0 0 10px #b59aff88}
+.git-merge-cloud{opacity:.35;transition:.25s}
+.git-merge-cloud.visible{opacity:1;border-color:#7863b5;background:#2b2440}
+@media(max-width:620px){.git-visual-lab{padding:13px}.git-lab-heading h3{font-size:14px}.git-kid-badge{font-size:7px;padding:5px 6px}.git-road{gap:5px;margin:17px 0 13px}.git-stop{padding:10px 4px}.git-stop-icon{font-size:22px}.git-stop strong{font-size:8px}.git-stop small{font-size:7px}.git-road-arrow{right:-10px;font-size:13px}.git-stage-command{align-items:flex-start;flex-direction:column}.git-stage-command span{text-align:left}.git-branch-map{grid-template-columns:.9fr 1.4fr .9fr;gap:5px;padding:8px}.git-branch-origin,.git-merge-cloud{font-size:8px;padding:8px 3px}.git-branch-lines{gap:24px}.git-branch-lines span{font-size:7px}.git-stage-controls button{padding:8px 8px;font-size:8px}}
