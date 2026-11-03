@@ -128,7 +128,7 @@ function GitInteractiveLab({lessonId}){
     "Your branch is up to date with its remote.";
    message=(lower.endsWith("-sb")?"## "+branch+(fileState==="committed"?" [ahead 1]":fileState==="pushed"?"":""):"On branch "+branch)+"\n"+detail;
   }else if(lower==="git diff"){
-   message=fileState==="modified"||fileState==="staged"
+   message=fileState==="modified"
     ? "diff --git a/app.js b/app.js\n--- a/app.js\n+++ b/app.js\n@@ Working tree changes @@\n"+code.split("\n").map(line=>"+"+line).join("\n")+"\n\nThis is a simplified visual diff of your edited file."
     : "No unstaged changes.\nTip: use git diff --staged to inspect changes you've added.";
   }else if(lower==="git diff --staged"){
@@ -141,8 +141,9 @@ function GitInteractiveLab({lessonId}){
    if(fileState==="staged"){setFileState("modified");message="✓ Removed app.js from the staging area.\nYour edits remain in the working directory. They are not discarded."}
    else message="app.js is not staged. Nothing to unstage.";
   }else if(lower==="git restore app.js"){
-   if(fileState==="modified"||fileState==="staged"){setCode(starterCode);setFileState("clean");message="✓ Working-tree changes discarded.\napp.js has been restored to the starter version. This action cannot be undone in this simulation."}
-   else message="No uncommitted changes to restore.";
+   if(fileState==="modified"){setCode(starterCode);setFileState("clean");message="✓ Unstaged working-tree changes discarded.\napp.js has been restored to the last committed version in this simplified exercise."}
+   else if(fileState==="staged")message="app.js has staged changes. Use git restore --staged app.js to unstage them before discarding your edits.";
+   else message="No unstaged changes to restore.";
   }else if(lower==="git branch"){
    message=(currentBranch==="main"?"* main":"  main")+"\n"+(branchCreated?(currentBranch==="feature/login"?"* feature/login":"  feature/login"):"");
   }else if(lower==="git switch main"&&isWorkflow){
