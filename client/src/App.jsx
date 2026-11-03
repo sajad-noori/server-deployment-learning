@@ -84,6 +84,43 @@ const commands={
 help:"Available commands: help, pwd, ls, whoami, node -v, npm -v, git status, git branch, pm2 status, systemctl status nginx, curl localhost:3000, clear",
 pwd:"/home/deploy/my-app",ls:"README.md  package.json  package-lock.json  server.js  src/  .env.example",whoami:"deploy","node -v":"v22.11.0","npm -v":"10.9.0","git status":"On branch main\nYour branch is up to date with 'origin/main'.\nnothing to commit, working tree clean","git branch":"* main\n  feature/health-check","pm2 status":"┌────┬──────────┬─────────┬────────┐\n│ id │ name     │ status  │ cpu    │\n├────┼──────────┼─────────┼────────┤\n│ 0  │ my-app   │ online  │ 0.3%   │\n└────┴──────────┴─────────┴────────┘","systemctl status nginx":"nginx.service - Active: active (running)","curl localhost:3000":"HTTP/1.1 200 OK\n{\"status\":\"ok\",\"message\":\"Hello from production\"}"
 };
+function GitVisualLab({lessonId}) {
+ const [stage,setStage]=useState(0);
+ const basic=lessonId==="git-basics";
+ const basics=[
+  {name:"Your computer",command:"Edit a file",caption:"You draw or change a project file. It stays on your computer.",emoji:"💻"},
+  {name:"Staging box",command:"git add",caption:"Put the changes you want to save into a special box. You choose what goes in.",emoji:"📥"},
+  {name:"Save point",command:"git commit",caption:"Take a snapshot. Git remembers exactly what your project looked like.",emoji:"📸"},
+  {name:"GitHub cloud",command:"git push",caption:"Send your saved snapshot to GitHub so it is safely stored online.",emoji:"☁️"}
+ ];
+ const branchSteps=[
+  {name:"Main road",command:"Start on main",caption:"Your main branch is the safe, shared version of the project.",emoji:"🛣️"},
+  {name:"Make a side road",command:"git switch -c feature/login",caption:"Create a separate branch. You can build a new feature without disturbing main.",emoji:"🌱"},
+  {name:"Show your work",command:"Push + Pull Request",caption:"Put your branch on GitHub and ask teammates to review your changes.",emoji:"👀"},
+  {name:"Join the roads",command:"Merge pull request",caption:"After approval, combine the feature into main. Your new feature is now part of the project.",emoji:"🤝"}
+ ];
+ const items=basic?basics:branchSteps;
+ const next=()=>setStage(s=>Math.min(s+1,items.length-1));
+ const previous=()=>setStage(s=>Math.max(s-1,0));
+ const item=items[stage];
+ return <section className="git-visual-lab">
+  <div className="git-lab-heading"><div><span className="git-kicker">LEARN BY SEEING + TRYING</span><h3>{basic?"The journey of one file":"Build a feature without breaking the main project"}</h3><p>{basic?"Follow the file as it travels from your computer to GitHub.":"Watch how a new idea gets its own path, then safely joins the main project."}</p></div><span className="git-kid-badge">🎮 INTERACTIVE</span></div>
+  {basic?<div className="git-road">
+   {items.map((x,i)=><div className={"git-stop "+(i===stage?"selected":i<stage?"passed":"")} key={x.name}>
+    <div className="git-stop-icon">{x.emoji}</div><strong>{x.name}</strong><small>{i===0?"Where you work":i===1?"Choose what to save":i===2?"A saved snapshot":"Online copy"}</small>
+    {i<items.length-1&&<div className={"git-road-arrow "+(i<stage?"lit":"")}>➜</div>}
+   </div>)}
+  </div>:<div className="git-branch-map">
+   <div className="git-branch-origin"><span>📦</span><strong>Project starts here</strong><small>main branch</small></div>
+   <div className="git-branch-lines"><div className="git-main-line"><i/> <span>main — safe road</span></div><div className={"git-feature-line "+(stage>=1?"visible":"")}><i/><span>feature/login — your side road</span></div></div>
+   <div className={"git-merge-cloud "+(stage>=2?"visible":"")}> {stage>=3?"🤝 Merged!":"👀 Pull request"}<small>{stage>=3?"Feature joins main":"Review the changes"}</small></div>
+  </div>}
+  <div className="git-stage-card"><div className="git-stage-number">STEP {stage+1} OF 4</div><div className="git-stage-copy"><span className="git-stage-emoji">{item.emoji}</span><div><h4>{item.name}</h4><p>{item.caption}</p></div></div><div className="git-stage-command"><code>{item.command}</code><span>{basic?"Think of it like this:":"The real Git idea:"}</span></div>
+   <div className="git-stage-controls"><button className="git-reset" onClick={()=>setStage(0)}>↺ Start again</button><div><button onClick={previous} disabled={stage===0}>← Back</button><button className="git-next" onClick={next} disabled={stage===3}>{stage===3?"You got it! ✓":"Show me next →"}</button></div></div>
+  </div>
+  <div className="git-simple-tip"><span>💡</span><p><strong>Remember:</strong> {basic?"add = choose it · commit = save a snapshot · push = send it online.":"A branch is like a separate copy-road for your idea. Main stays safe until you merge."}</p></div>
+ </section>;
+}
 export default function App(){
  const [active,setActive]=useState("git-basics"),[stepIndex,setStepIndex]=useState(0),[completed,setCompleted]=useState(()=>JSON.parse(localStorage.getItem("deploylab-progress")||"[]")),[search,setSearch]=useState(""),[filter,setFilter]=useState("All"),[view,setView]=useState("dashboard"),[choice,setChoice]=useState(null),[submitted,setSubmitted]=useState(false),[terminal,setTerminal]=useState([{type:"system",text:"DeployLab practice shell · simulated environment"},{type:"system",text:"Type help to see supported commands. This is not a real server."}]),[input,setInput]=useState(""),[api,setApi]=useState("checking"),[menu,setMenu]=useState(false);
  useEffect(()=>localStorage.setItem("deploylab-progress",JSON.stringify(completed)),[completed]);
@@ -113,7 +150,7 @@ export default function App(){
  <section className="bottom-banner"><div className="banner-icon"><Terminal size={22}/></div><div><strong>Ready to get your hands dirty?</strong><span>Open the practice terminal and experiment with common server commands.</span></div><button onClick={()=>setView("practice")}>Open terminal <ArrowRight size={15}/></button></section></div>}
  {view==="lesson"&&<div className="page-content lesson-page"><div className="lesson-heading"><button className="back-link" onClick={()=>setView("dashboard")}><ArrowLeft size={15}/> All lessons</button><div className="lesson-title-row"><div><div className="eyebrow">{course.name.toUpperCase()} <span className="dot-sep">·</span> {lesson.level.toUpperCase()}</div><h1>{lesson.title}</h1><p>{lesson.summary}</p></div><div className="lesson-time"><Clock3 size={15}/> {lesson.duration}</div></div><div className="lesson-progress"><div className="progress-track"><i style={{width:lesson.steps.filter((_,i)=>done(lesson.id,i)).length/lesson.steps.length*100+"%"}}/></div><span>{lesson.steps.filter((_,i)=>done(lesson.id,i)).length} / {lesson.steps.length} steps complete</span></div></div>
  <div className="lesson-layout"><div className="lesson-main"><div className="step-tabs">{lesson.steps.map((s,i)=><button key={s.title} onClick={()=>{setStepIndex(i);setChoice(null);setSubmitted(false)}} className={stepIndex===i?"current":done(lesson.id,i)?"step-done":""}><span>{done(lesson.id,i)?<Check size={13}/>:String(i+1).padStart(2,"0")}</span><small>{s.title}</small></button>)}</div>
- <article className="content-panel"><div className="content-kicker">STEP {String(stepIndex+1).padStart(2,"0")} <span>/ {String(lesson.steps.length).padStart(2,"0")}</span></div><h2>{step.title}</h2><p className="step-body">{step.body}</p>
+ <article className="content-panel"><div className="content-kicker">STEP {String(stepIndex+1).padStart(2,"0")} <span>/ {String(lesson.steps.length).padStart(2,"0")}</span></div><h2>{step.title}</h2><p className="step-body">{step.body}</p>{lesson.group==="git"&&<GitVisualLab key={lesson.id} lessonId={lesson.id}/>}
  {step.diagram&&<div className="diagram-card"><div className="diagram-label"><span><Activity size={14}/> HOW IT WORKS</span><span>VISUAL MAP</span></div><div className="diagram-flow">{step.diagram.map((d,i)=><div className="diagram-node-wrap" key={d}><div className="diagram-node"><div className="node-number">{String(i+1).padStart(2,"0")}</div><strong>{d}</strong><small>{step.detail?.[i]||""}</small></div>{i<step.diagram.length-1&&<div className="diagram-arrow"><ArrowRight size={16}/></div>}</div>)}</div></div>}
  {step.command&&<div className="command-card"><div className="command-head"><span><Terminal size={14}/> COMMAND TO KNOW</span><button onClick={()=>copy(step.command)}><Copy size={13}/> Copy</button></div><pre><span className="prompt">$ </span>{step.command}</pre><p>{step.explain}</p></div>}
  <div className="concept-note"><div className="note-icon"><BookOpen size={16}/></div><div><strong>Key takeaway</strong><span>{step.explain||"Understand the flow before moving to the next step. Try the command in the practice terminal."}</span></div></div>
