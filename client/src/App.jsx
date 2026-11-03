@@ -114,6 +114,7 @@ function GitInteractiveLab({lessonId}){
  const [history,setHistory]=useState([]);
  const [commits,setCommits]=useState([]);
  const [lastCommit,setLastCommit]=useState("");
+ const [showAnswer,setShowAnswer]=useState(false);
  const runCommand=(raw)=>{
   const cmd=raw.trim();
   if(!cmd)return;
@@ -220,6 +221,37 @@ function GitInteractiveLab({lessonId}){
   ["Create a local commit",["committed","pushed"].includes(fileState)],
   ["Push the commit to GitHub",fileState==="pushed"]
  ];
+ const answer=isWorkflow
+  ? (!branchCreated
+    ? {title:"Create your feature branch",explanation:"A branch gives you a separate workspace. This command creates feature/login and switches to it.",command:"git switch -c feature/login"}
+    : fileState==="clean"
+      ? {title:"Make a small code change",explanation:"Edit app.js in the editor above. For example, change the return line to: return { email, authenticated: Boolean(email && password) }; Then continue with staging.",code:'function login(email, password) {\n  return { email, authenticated: Boolean(email && password) };\n}\n'}
+      : fileState==="modified"
+        ? {title:"Stage your change",explanation:"This selects app.js for the next commit. It does not upload anything to GitHub.",command:"git add app.js"}
+        : fileState==="staged"
+          ? {title:"Create a commit",explanation:"A commit saves a snapshot in your local Git history. Add a short message describing the change.",command:'git commit -m "Add login validation"'}
+          : fileState==="committed"
+            ? {title:"Publish your branch",explanation:"Push sends your local commit to GitHub so others can review it.",command:"git push -u origin feature/login"}
+            : !prOpen
+              ? {title:"Open a pull request",explanation:"A pull request asks for your feature branch to be reviewed and merged into main.",command:"open pr"}
+              : !approved
+                ? {title:"Approve the pull request",explanation:"In this practice simulation, this represents a reviewer approving the proposed changes.",command:"approve pr"}
+                : !merged
+                  ? {title:"Merge the pull request",explanation:"Merge integrates the approved feature branch into main.",command:"merge pr"}
+                  : {title:"Mission complete",explanation:"You created a branch, committed and pushed a change, and merged the pull request."})
+  : (fileState==="clean"
+    ? {title:"Edit the sample code",explanation:"Change the greeting text or the name in the editor above. Any edit will mark app.js as modified.",code:'function greet(name) {\n  return "Welcome, " + name + "!";\n}\n\nconsole.log(greet("Developer"));\n'}
+    : fileState==="modified"
+      ? {title:"Stage your change",explanation:"Add the edited file to Git's staging area. Staging prepares it for the next commit.",command:"git add app.js"}
+      : fileState==="staged"
+        ? {title:"Create a local commit",explanation:"Save the staged change as a snapshot in your local Git repository.",command:'git commit -m "Update greeting"'}
+        : fileState==="committed"
+          ? {title:"Push to GitHub",explanation:"Send your local commit to the remote repository. This is the step that publishes it on GitHub.",command:"git push origin main"}
+          : {title:"Mission complete",explanation:"Your commit has been pushed to GitHub. You completed the basic Git workflow."});
+ const applyAnswer=()=>{
+  if(answer.command){setCommand(answer.command);return;}
+  if(answer.code){setCode(answer.code);setFileState("modified");setOutput("✓ Example solution inserted. app.js is now modified. Continue with the next Git command.");}
+ };
  return <section className="git-lab">
   <div className="git-lab-heading"><div><span className="playground-kicker">🎮 HANDS-ON GIT WORKSHOP</span><h2>{isWorkflow?"Build a feature and merge it":"Make a code change and send it to GitHub"}</h2><p>{isWorkflow?"Create a feature branch, commit your code, publish it, then review and merge the pull request.":"Edit the sample code and use Git commands to move the file through the workflow. Inspect your changes before saving a commit."}</p></div><span className="git-lab-tag">YOU CONTROL THE COMMANDS</span></div>
   <div className="git-lab-editor">
@@ -227,7 +259,8 @@ function GitInteractiveLab({lessonId}){
    <textarea aria-label="Edit app.js code" spellCheck="false" value={code} onChange={e=>{setCode(e.target.value);setFileState("modified");setPrOpen(false);setApproved(false);setMerged(false);setOutput("✎ File changed in your working directory.\nGit detects the modification, but it is not staged. Try git status or git diff.");}}/>
    <div className="git-lab-editor-foot"><span>✎ Edit the code to create a working-tree change.</span><button type="button" onClick={()=>{setCode(starterCode);setFileState("clean");setOutput("Starter code restored. Working tree is clean.");}}>Restore starter code</button></div>
   </div>
-  <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>{isWorkflow?"Your GitHub mission":"Your Git mission"}</strong><small>Complete each objective by using the terminal below.</small></div><span>{mission.filter(x=>x[1]).length}/{mission.length} complete</span></div><div className="git-lab-mission-list">{mission.map((item,i)=><div className={item[1]?"complete":""} key={item[0]}><span>{item[1]?"✓":i+1}</span>{item[0]}</div>)}</div></div>
+  <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>{isWorkflow?"Your GitHub mission":"Your Git mission"}</strong><small>Complete each objective by using the terminal below. Stuck? Reveal the solution.</small></div><div className="git-lab-mission-actions"><span>{mission.filter(x=>x[1]).length}/{mission.length} complete</span><button type="button" onClick={()=>setShowAnswer(v=>!v)}>{showAnswer?"Hide answer":"Show answer"}</button></div></div><div className="git-lab-mission-list">{mission.map((item,i)=><div className={item[1]?"complete":""} key={item[0]}><span>{item[1]?"✓":i+1}</span>{item[0]}</div>)}</div></div>
+  {showAnswer&&<div className="git-lab-answer"><div><span className="git-lab-answer-kicker">STEP-BY-STEP SOLUTION</span><strong>{answer.title}</strong><p>{answer.explanation}</p>{answer.command&&<div className="git-lab-answer-command"><code>{answer.command}</code><button type="button" onClick={applyAnswer}>Use this command</button></div>}{answer.code&&<><pre>{answer.code}</pre><button type="button" onClick={applyAnswer}>Insert example solution</button></>}</div></div>}
   <div className="git-lab-flow" aria-label="Git workflow progress">
    {stages.map((s,i)=><div className={"git-lab-stage "+(i===activeStage?"is-current":s[3]?"is-done":"")} key={s[0]}><div className="git-lab-stage-icon">{s[3]?"✓":s[0]}</div><strong>{s[1]}</strong><small>{s[2]}</small></div>)}
   </div>
