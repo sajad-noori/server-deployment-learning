@@ -53,3 +53,57 @@
 .git-merge-cloud{opacity:.35;transition:.25s}
 .git-merge-cloud.visible{opacity:1;border-color:#7863b5;background:#2b2440}
 @media(max-width:620px){.git-visual-lab{padding:13px}.git-lab-heading h3{font-size:14px}.git-kid-badge{font-size:7px;padding:5px 6px}.git-road{gap:5px;margin:17px 0 13px}.git-stop{padding:10px 4px}.git-stop-icon{font-size:22px}.git-stop strong{font-size:8px}.git-stop small{font-size:7px}.git-road-arrow{right:-10px;font-size:13px}.git-stage-command{align-items:flex-start;flex-direction:column}.git-stage-command span{text-align:left}.git-branch-map{grid-template-columns:.9fr 1.4fr .9fr;gap:5px;padding:8px}.git-branch-origin,.git-merge-cloud{font-size:8px;padding:8px 3px}.git-branch-lines{gap:24px}.git-branch-lines span{font-size:7px}.git-stage-controls button{padding:8px 8px;font-size:8px}}
+
+
+/* Lesson-specific interactive concept playgrounds */
+.lesson-playground-wrap{margin-top:22px}
+.lesson-playground{padding:20px;border:1px solid #3b3854;border-radius:15px;background:radial-gradient(circle at 88% 5%,#292344 0,transparent 34%),linear-gradient(145deg,#171f2d,#111720);overflow:hidden}
+.playground-top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px}
+.playground-kicker{font:700 8px var(--mono);letter-spacing:1.3px;color:#b4a0ff}
+.playground-top h2{font:700 18px Manrope;color:#f2f1fa;margin:7px 0 5px}
+.playground-top p{font-size:10px;line-height:1.65;color:#9daabd;margin:0;max-width:590px}
+.playground-badge{white-space:nowrap;border:1px solid #5a4a83;background:#29223e;color:#d7caff;border-radius:20px;padding:6px 9px;font:700 8px var(--mono)}
+.playground-track{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:20px 0 13px}
+.playground-node{min-width:0;min-height:93px;padding:10px 6px;border:1px solid #303c4e;border-radius:10px;background:#151e2a;color:#aab6c8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:.2s}
+.playground-node>span{font-size:24px;line-height:1.2}
+.playground-node strong{font-size:9px;text-align:center;color:#dce3ef}
+.playground-node small{font-size:7px;color:#8190a5;text-align:center}
+.playground-node.current{border-color:#9a82e9;background:#2a2440;box-shadow:0 0 0 2px #9a82e922;transform:translateY(-2px)}
+.playground-node.visited{border-color:#34765d;background:#172c27}
+.playground-detail{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #354157;border-radius:10px;background:#101721}
+.playground-detail-icon{width:46px;height:46px;flex-shrink:0;border-radius:12px;background:#a48bf01b;display:grid;place-items:center;font-size:27px}
+.playground-detail-copy>span{font:700 8px var(--mono);letter-spacing:1px;color:#a993f2}
+.playground-detail-copy h3{font:700 13px Manrope;color:#eff1f7;margin:3px 0}
+.playground-detail-copy p{font-size:9px;line-height:1.6;color:#a5b0c0;margin:0 0 6px}
+.playground-detail-copy code{font:9px var(--mono);color:#c9baff}
+.playground-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;margin-top:10px;border:1px solid #303b4d;border-radius:9px;background:#151d29}
+.playground-controls>strong,.playground-controls>div>strong{font-size:9px;color:#dce3ef}
+.playground-toggle{display:flex;align-items:center;gap:8px;color:#b9c5d5;font-size:9px;cursor:pointer}
+.playground-toggle input{accent-color:#9d86ed;width:14px;height:14px}
+.playground-good,.playground-warning{flex-basis:100%;font-size:9px;line-height:1.5;margin:0;color:#85dfb2}
+.playground-warning{color:#f0bd79}
+.playground-chips{display:flex;gap:6px;flex-wrap:wrap}
+.playground-chips button,.playground-action{border:1px solid #3a4659;border-radius:7px;padding:7px 9px;background:#1c2735;color:#aebbd0;font-size:8px}
+.playground-chips button.active{border-color:#826acb;background:#302749;color:#e0d6ff}
+.playground-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.playground-status strong{font-size:9px;color:#e3eaf3}
+.playground-status small{font-size:8px;color:#92a0b4}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#6bd8a5;box-shadow:0 0 9px #6bd8a588}
+.status-dot.down{background:#e28b79;box-shadow:0 0 9px #e28b7988}
+.playground-meter{width:100%;display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}
+.playground-meter span{font-size:9px;color:#aab6c8}
+.playground-meter strong{font:700 9px var(--mono);color:#d6caff}
+.playground-meter i{grid-column:1/-1;height:6px;border-radius:9px;background:#293445;overflow:hidden}
+.playground-meter i b{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#8269c7,#78d9aa);transition:width .25s}
+.playground-branch{display:grid;gap:7px;width:100%;font:9px var(--mono);color:#86d8b0}
+.playground-branch span:nth-child(2){color:#a993f2;opacity:.25;transition:.2s}
+.playground-branch span.branch-visible{opacity:1}
+.playground-branch small{font:9px sans-serif;color:#a4b0c1}
+.playground-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.playground-footer>p{font-size:9px;line-height:1.6;color:#a7cbbb;margin:0;max-width:560px}
+.playground-footer>div{display:flex;gap:7px;flex-shrink:0}
+.playground-footer button{padding:8px 10px;border:1px solid #3c485a;border-radius:7px;background:#1a2431;color:#b9c4d4;font-size:8px;font-weight:700}
+.playground-footer button.playground-next{border-color:#6d5aa3;background:#57458a;color:white}
+.playground-footer button:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:700px){.lesson-playground{padding:14px}.playground-top h2{font-size:15px}.playground-badge{font-size:7px;padding:5px 6px}.playground-track{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.playground-node{min-height:83px}.playground-footer{align-items:flex-start;flex-direction:column}.playground-footer>div{width:100%;justify-content:flex-end}.playground-controls{align-items:flex-start;flex-direction:column}.playground-chips{width:100%}}
+@media(max-width:390px){.playground-track{grid-template-columns:repeat(2,minmax(0,1fr))}.playground-detail{align-items:flex-start}.playground-detail-icon{width:38px;height:38px;font-size:22px}}
