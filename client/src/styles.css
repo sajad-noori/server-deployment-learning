@@ -182,3 +182,18 @@
 .git-lab-commit-entry p{margin:0;padding:11px;border:1px dashed #344a63;border-radius:8px;color:#91a8c1;font-size:10px;line-height:1.6}
 .git-lab-commit-entry p code{color:#c6b6ff}
 @media(max-width:620px){.git-lab-mission-head{align-items:flex-start}.git-lab-mission-list{grid-template-columns:1fr}.git-lab-commit-entry>div{grid-template-columns:auto 1fr}.git-lab-commit-entry small{grid-column:2}}
+
+
+/* Revealable answer and guided command help for Git exercises */
+.git-lab-mission-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.git-lab-mission-actions>button,.git-lab-answer-command>button,.git-lab-answer>div>button{border:1px solid #54739a;border-radius:8px;padding:7px 10px;background:#243c58;color:#e5f1ff;font-size:10px;font-weight:700;cursor:pointer}
+.git-lab-mission-actions>button:hover,.git-lab-answer-command>button:hover,.git-lab-answer>div>button:hover{background:#315477}
+.git-lab-answer{margin:-7px 0 16px;padding:14px 16px;border:1px solid #5978a0;border-radius:12px;background:linear-gradient(135deg,#1c3048,#17263a);animation:gitAnswerIn .18s ease-out}
+.git-lab-answer-kicker{display:block;margin-bottom:6px;color:#91b8e8;font-size:9px;font-weight:800;letter-spacing:.12em}
+.git-lab-answer>div>strong{display:block;color:#f2f7ff;font-size:13px}
+.git-lab-answer p{margin:6px 0 10px;color:#b8c9dc;font-size:11px;line-height:1.65}
+.git-lab-answer-command{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid #344d69;border-radius:8px;background:#0d1928}
+.git-lab-answer-command code,.git-lab-answer pre{color:#a8e4c1;font:11px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.git-lab-answer pre{margin:8px 0;padding:10px;border:1px solid #344d69;border-radius:8px;background:#0d1928}
+@keyframes gitAnswerIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:620px){.git-lab-mission-actions{align-items:flex-end;flex-direction:column}.git-lab-answer-command{align-items:flex-start;flex-direction:column}}
