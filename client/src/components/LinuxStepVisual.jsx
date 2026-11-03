@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import {
-  ArrowRight, CheckCircle2, Cloud, Database, KeyRound, Laptop,
+  ArrowRight, CheckCircle2, Cloud, KeyRound, Laptop,
   LockKeyhole, Network, Package, Server, ShieldCheck, Terminal,
   UserRound, Wifi
 } from "lucide-react";
