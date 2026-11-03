@@ -105,61 +105,98 @@ function GitInteractiveLab({lessonId}){
  const [code,setCode]=useState(starterCode);
  const [fileState,setFileState]=useState("clean");
  const [command,setCommand]=useState("");
- const [output,setOutput]=useState("Your project is clean. Edit the code, then try a Git command.");
+ const [output,setOutput]=useState("Your working tree is clean. Edit app.js to begin the exercise.");
  const [branchCreated,setBranchCreated]=useState(false);
+ const [currentBranch,setCurrentBranch]=useState("main");
  const [prOpen,setPrOpen]=useState(false);
  const [approved,setApproved]=useState(false);
  const [merged,setMerged]=useState(false);
  const [history,setHistory]=useState([]);
+ const [commits,setCommits]=useState([]);
+ const [lastCommit,setLastCommit]=useState("");
  const runCommand=(raw)=>{
   const cmd=raw.trim();
   if(!cmd)return;
   const lower=cmd.toLowerCase();
   let message="";
-  if(lower==="git status"){
-   message=fileState==="clean"?"On branch "+(isWorkflow&&branchCreated?"feature/login":"main")+"\nnothing to commit, working tree clean":
-    fileState==="modified"?"On branch "+(isWorkflow&&branchCreated?"feature/login":"main")+"\nChanges not staged for commit:\n  modified: app.js":
+  if(lower==="git status"||lower==="git status -sb"){
+   const branch=currentBranch;
+   const detail=fileState==="clean"?"nothing to commit, working tree clean":
+    fileState==="modified"?"Changes not staged for commit:\n  modified: app.js":
     fileState==="staged"?"Changes to be committed:\n  modified: app.js":
-    fileState==="committed"?"On branch "+(isWorkflow&&branchCreated?"feature/login":"main")+"\nYour branch has a local commit not yet pushed.":
-    "Your branch is up to date with its remote.\nnothing to commit, working tree clean";
+    fileState==="committed"?"Your branch has a local commit not yet pushed.":
+    "Your branch is up to date with its remote.";
+   message=(lower.endsWith("-sb")?"## "+branch+(fileState==="committed"?" [ahead 1]":fileState==="pushed"?"":""):"On branch "+branch)+"\n"+detail;
+  }else if(lower==="git diff"){
+   message=fileState==="modified"||fileState==="staged"
+    ? "diff --git a/app.js b/app.js\n--- a/app.js\n+++ b/app.js\n@@ Working tree changes @@\n"+code.split("\n").map(line=>"+"+line).join("\n")+"\n\nThis is a simplified visual diff of your edited file."
+    : "No unstaged changes.\nTip: use git diff --staged to inspect changes you've added.";
+  }else if(lower==="git diff --staged"){
+   message=fileState==="staged"?"diff --git a/app.js b/app.js\n--- a/app.js\n+++ b/app.js\n@@ Staged snapshot @@\n"+code.split("\n").map(line=>"+"+line).join("\n")+"\n\nThese changes are staged and ready to commit.":"No staged changes.\nRun git add app.js first.";
   }else if(lower==="git add app.js"||lower==="git add ."){
-   if(fileState==="modified"){setFileState("staged");message="✓ Changes added to the staging area.\napp.js is now staged. It is not committed or uploaded yet."}
+   if(fileState==="modified"){setFileState("staged");message="✓ Changes added to the staging area.\napp.js is staged. Nothing has been committed or uploaded yet.\n\nNext: inspect with git diff --staged, then commit."}
    else if(fileState==="staged")message="app.js is already staged.";
-   else message="No modified files to stage. Edit and save app.js first.";
+   else message="No modified files to stage. Edit app.js first, then run git add app.js.";
+  }else if(lower==="git restore --staged app.js"){
+   if(fileState==="staged"){setFileState("modified");message="✓ Removed app.js from the staging area.\nYour edits remain in the working directory. They are not discarded."}
+   else message="app.js is not staged. Nothing to unstage.";
+  }else if(lower==="git restore app.js"){
+   if(fileState==="modified"||fileState==="staged"){setCode(starterCode);setFileState("clean");message="✓ Working-tree changes discarded.\napp.js has been restored to the starter version. This action cannot be undone in this simulation."}
+   else message="No uncommitted changes to restore.";
+  }else if(lower==="git branch"){
+   message=(currentBranch==="main"?"* main":"  main")+"\n"+(branchCreated?(currentBranch==="feature/login"?"* feature/login":"  feature/login"):"");
+  }else if(lower==="git switch main"&&isWorkflow){
+   setCurrentBranch("main");message="Switched to branch 'main'.";
+  }else if(lower.startsWith("git switch -c ")&&isWorkflow){
+   const name=cmd.slice("git switch -c ".length).trim();
+   if(!name||name.includes(" "))message="Branch name must be a single name, for example: git switch -c feature/login";
+   else if(branchCreated)message="This lab already has a feature branch. Use git switch feature/login to return to it.";
+   else{setBranchCreated(true);setCurrentBranch(name);message="✓ Switched to a new branch '"+name+"'.\nmain remains unchanged. Your next commits will belong to "+name+"."}
+  }else if(lower.startsWith("git switch ")&&isWorkflow){
+   const name=cmd.slice("git switch ".length).trim();
+   if(name==="feature/login"&&branchCreated){setCurrentBranch(name);message="Switched to branch '"+name+"'."}
+   else if(name==="main"){setCurrentBranch("main");message="Switched to branch 'main'."}
+   else message="Branch not found. Create it with git switch -c feature/login.";
   }else if(lower.startsWith("git commit")){
-   if(fileState==="staged"){setFileState("committed");message='✓ Commit created locally.\n['+(isWorkflow&&branchCreated?"feature/login":"main")+' a1b2c3d] '+(cmd.match(/-m\s+["']?(.+?)["']?$/)?.[1]||"Save changes")+"\n1 file changed."}
-   else message="Nothing staged to commit.\nRun git add app.js before committing.";
-  }else if(lower==="git push origin main"||lower==="git push"||lower==="git push -u origin feature/login"){
-   if(isWorkflow&&!branchCreated){message="No feature branch exists yet.\nCreate it first with: git switch -c feature/login"}
-   else if(fileState==="committed"){setFileState("pushed");message="✓ Push successful.\nYour commit is now on "+(isWorkflow?"origin/feature/login":"origin/main")+". GitHub has the code."}
+   const match=cmd.match(/-m\s+["'](.+?)["']\s*$/)||cmd.match(/-m\s+(.+)$/);
+   if(!match)message='Please include a commit message, e.g. git commit -m "Add greeting"';
+   else if(fileState==="staged"){
+    const msg=match[1];setFileState("committed");setLastCommit(msg);setCommits(items=>[{id:"a1b2c3d",message:msg,branch:currentBranch},...items]);
+    message="✓ Commit created locally.\n[a1b2c3d] "+msg+"\n1 file changed.\n\nThis snapshot is in your local repository. GitHub has not received it yet.";
+   }else message="Nothing staged to commit.\nRun git add app.js before committing.";
+  }else if(lower==="git log --oneline"){
+   message=commits.length?commits.map(c=>c.id+" "+c.message+" ("+c.branch+")").join("\n"):"No commits yet.\nCreate your first snapshot with git add app.js, then git commit.";
+  }else if(lower==="git push"||lower==="git push origin main"||lower==="git push -u origin feature/login"||lower.startsWith("git push -u origin ")){
+   if(isWorkflow&&currentBranch==="main"&&!merged)message="You are on main. Switch to your feature branch before publishing it.";
+   else if(fileState==="committed"){setFileState("pushed");message="✓ Push successful.\nYour local commit is now on origin/"+currentBranch+".\nGitHub has received the commit."}
    else if(fileState==="pushed")message="Everything up to date.";
    else message="There is no new local commit to push.\nEdit a file, stage it, and commit first.";
-  }else if(lower.startsWith("git switch -c ")&&isWorkflow){
-   if(branchCreated)message="You are already working on feature/login.";
-   else{setBranchCreated(true);message="✓ Switched to a new branch 'feature/login'.\nYour main branch remains unchanged."}
   }else if(lower==="open pr"&&isWorkflow){
-   if(fileState==="pushed"){setPrOpen(true);message="✓ Pull request opened: feature/login → main.\nReviewers can now inspect the changes."}
+   if(fileState==="pushed"){setPrOpen(true);message="✓ Pull request opened: "+currentBranch+" → main.\nReviewers can inspect the changes. The branches are not merged yet."}
    else message="Push your feature branch to GitHub before opening a pull request.";
   }else if(lower==="approve pr"&&isWorkflow){
    if(prOpen){setApproved(true);message="✓ Review approved.\nThe pull request is ready to merge."}
    else message="Open a pull request first.";
   }else if(lower==="merge pr"&&isWorkflow){
-   if(approved){setMerged(true);message="✓ Pull request merged into main.\nThe feature is now part of the shared project."}
+   if(approved){setMerged(true);setCurrentBranch("main");message="✓ Pull request merged into main.\nThe feature is now part of the shared project."}
    else message="The pull request needs approval before it can be merged.";
   }else if(lower==="clear"){
    message="Terminal cleared.";
   }else{
-   message="Command not recognized in this Git practice lab.\nTry: git status, git add app.js, git commit -m \"Save changes\", git push origin main"+(isWorkflow?", git switch -c feature/login, open pr, approve pr, merge pr":".");
+   message="Command not recognized in this Git practice lab.\nTry: git status, git diff, git add app.js, git restore --staged app.js, git commit -m \"Save changes\", git log --oneline"+(isWorkflow?", git switch -c feature/login, git push -u origin feature/login, open pr, approve pr, merge pr":", git push origin main")+".";
   }
-  setHistory(items=>[...items.slice(-4),"$ "+cmd]);
+  setHistory(items=>[...items.slice(-7),"$ "+cmd]);
   setOutput(message);
   setCommand("");
  };
- const reset=()=>{setCode(starterCode);setFileState("clean");setCommand("");setOutput("Your project is clean. Edit the code, then try a Git command.");setBranchCreated(false);setPrOpen(false);setApproved(false);setMerged(false);setHistory([])};
+ const reset=()=>{
+  setCode(starterCode);setFileState("clean");setCommand("");setOutput("Your working tree is clean. Edit app.js to begin the exercise.");
+  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setHistory([]);setCommits([]);setLastCommit("");
+ };
  const stages=isWorkflow?[
   ["01","main","Stable branch",true],
-  ["02","feature/login","Your isolated work",branchCreated],
-  ["03","GitHub","Feature branch pushed",fileState==="pushed"||prOpen||approved||merged],
+  ["02",branchCreated?"feature/login":"Feature branch","Isolated work",branchCreated],
+  ["03","GitHub","Published branch",fileState==="pushed"||prOpen||approved||merged],
   ["04","Pull request","Review and approval",prOpen||approved||merged],
   ["05","main updated","Feature merged",merged]
  ]:[
@@ -168,30 +205,43 @@ function GitInteractiveLab({lessonId}){
   ["03","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"],
   ["04","GitHub remote","Uploaded commit",fileState==="pushed"]
  ];
- const activeStage=isWorkflow?(merged?4:approved?3:prOpen?3:fileState==="pushed"?2:branchCreated?1:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
- const shortcuts=isWorkflow?["git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr"]:["git status","git add app.js",'git commit -m "Add greeting"',"git push origin main"];
+ const activeStage=isWorkflow?(merged?4:approved||prOpen?3:fileState==="pushed"?2:branchCreated?1:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
+ const shortcuts=isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"];
+ const mission=isWorkflow?[
+  ["Create an isolated branch",branchCreated],
+  ["Stage and commit your code",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
+  ["Publish the feature branch",fileState==="pushed"||prOpen||approved||merged],
+  ["Open and approve a pull request",approved||merged],
+  ["Merge into main",merged]
+ ]:[
+  ["Edit app.js",fileState!=="clean"],
+  ["Stage the change",["staged","committed","pushed"].includes(fileState)],
+  ["Create a local commit",["committed","pushed"].includes(fileState)],
+  ["Push the commit to GitHub",fileState==="pushed"]
+ ];
  return <section className="git-lab">
-  <div className="git-lab-heading"><div><span className="playground-kicker">🎮 HANDS-ON GIT WORKSHOP</span><h2>{isWorkflow?"Build a feature and merge it":"Make a code change and send it to GitHub"}</h2><p>{isWorkflow?"Create a feature branch, commit your code, publish it, then review and merge the pull request.":"Edit the sample code and use real Git commands to move the file through the workflow. You control every step."}</p></div><span className="git-lab-tag">YOU CONTROL THE COMMANDS</span></div>
+  <div className="git-lab-heading"><div><span className="playground-kicker">🎮 HANDS-ON GIT WORKSHOP</span><h2>{isWorkflow?"Build a feature and merge it":"Make a code change and send it to GitHub"}</h2><p>{isWorkflow?"Create a feature branch, commit your code, publish it, then review and merge the pull request.":"Edit the sample code and use Git commands to move the file through the workflow. Inspect your changes before saving a commit."}</p></div><span className="git-lab-tag">YOU CONTROL THE COMMANDS</span></div>
   <div className="git-lab-editor">
    <div className="git-lab-editor-head"><span><Code2 size={15}/> app.js <i className={fileState==="clean"?"":"git-file-dirty"}/></span><small>{fileState==="clean"?"Saved version":fileState==="modified"?"Modified · not staged":fileState==="staged"?"Staged for commit":fileState==="committed"?"Committed locally":"Pushed to GitHub"}</small></div>
-   <textarea aria-label="Edit app.js code" spellCheck="false" value={code} onChange={e=>{setCode(e.target.value);setFileState("modified");setOutput("✎ File changed in your working directory.\nGit has not staged this change yet. Try: git status");}}/>
-   <div className="git-lab-editor-foot"><span>✎ Change the code above to create a modified file.</span><button type="button" onClick={()=>{setCode(starterCode);setFileState("clean");setOutput("Starter code restored. Working tree is clean.");}}>Restore starter code</button></div>
+   <textarea aria-label="Edit app.js code" spellCheck="false" value={code} onChange={e=>{setCode(e.target.value);setFileState("modified");setPrOpen(false);setApproved(false);setMerged(false);setOutput("✎ File changed in your working directory.\nGit detects the modification, but it is not staged. Try git status or git diff.");}}/>
+   <div className="git-lab-editor-foot"><span>✎ Edit the code to create a working-tree change.</span><button type="button" onClick={()=>{setCode(starterCode);setFileState("clean");setOutput("Starter code restored. Working tree is clean.");}}>Restore starter code</button></div>
   </div>
+  <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>{isWorkflow?"Your GitHub mission":"Your Git mission"}</strong><small>Complete each objective by using the terminal below.</small></div><span>{mission.filter(x=>x[1]).length}/{mission.length} complete</span></div><div className="git-lab-mission-list">{mission.map((item,i)=><div className={item[1]?"complete":""} key={item[0]}><span>{item[1]?"✓":i+1}</span>{item[0]}</div>)}</div></div>
   <div className="git-lab-flow" aria-label="Git workflow progress">
    {stages.map((s,i)=><div className={"git-lab-stage "+(i===activeStage?"is-current":s[3]?"is-done":"")} key={s[0]}><div className="git-lab-stage-icon">{s[3]?"✓":s[0]}</div><strong>{s[1]}</strong><small>{s[2]}</small></div>)}
   </div>
   <div className="git-lab-terminal">
-   <div className="git-lab-terminal-title"><span><Terminal size={15}/> Git command line</span><small>SIMULATED REPOSITORY</small></div>
-   <form onSubmit={e=>{e.preventDefault();runCommand(command);}} className="git-lab-command-form"><span>$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder={isWorkflow?"Type a Git command or PR action...":"Type a command, e.g. git add app.js"} aria-label="Git command"/><button type="submit" disabled={!command.trim()}>Run command <ArrowRight size={14}/></button></form>
+   <div className="git-lab-terminal-title"><span><Terminal size={15}/> Git command line</span><small>SIMULATED REPOSITORY · {currentBranch}</small></div>
+   <form onSubmit={e=>{e.preventDefault();runCommand(command);}} className="git-lab-command-form"><span>$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder="Type a Git command..." aria-label="Git command"/><button type="submit" disabled={!command.trim()}>Run command <ArrowRight size={14}/></button></form>
    <pre className="git-lab-output" aria-live="polite">{output}</pre>
    {history.length>0&&<div className="git-lab-history">{history.map((item,i)=><span key={i}>{item}</span>)}</div>}
   </div>
-  <div className="git-lab-shortcuts"><div><strong>Try these commands</strong><small>Click one to load it into the command line, then run it.</small></div><div className="git-lab-shortcut-list">{shortcuts.map(cmd=><button type="button" key={cmd} onClick={()=>setCommand(cmd)}>{cmd}</button>)}</div></div>
-  <div className={"git-lab-explain "+(fileState==="pushed"||merged?"success":"")}><strong>{isWorkflow?(merged?"🎉 Feature merged!":prOpen?"🔎 Pull request review":branchCreated?"🌱 Feature branch workflow":"Start by creating a branch"):(fileState==="pushed"?"☁️ Your code is on GitHub":fileState==="committed"?"📸 A local commit has been created":fileState==="staged"?"📥 Your changes are staged":fileState==="modified"?"📝 Your file has local changes":"💻 Your working directory is clean")}</strong><p>{isWorkflow?(merged?"The reviewed feature is now included in main.":approved?"The reviewer approved the pull request. Run merge pr to finish.":prOpen?"A pull request compares your feature branch with main. It does not merge automatically.":branchCreated?"Your changes are isolated on feature/login. Commit and push them before opening a pull request.":"A feature branch gives you a safe place to work without changing main."):(fileState==="pushed"?"git push uploaded your local commit to the remote repository.":fileState==="committed"?"git commit saved a snapshot in your local repository. GitHub has not received it yet.":fileState==="staged"?"git add selected the file for your next commit. It is still only on your computer.":fileState==="modified"?"You edited app.js. Git sees the modification, but it is not staged yet.":"Edit the sample code to begin. Git will detect the file modification.")}</p></div>
+  <div className="git-lab-shortcuts"><div><strong>Command toolbox</strong><small>Select a command to load it into the terminal, then run it.</small></div><div className="git-lab-shortcut-list">{shortcuts.map(cmd=><button type="button" key={cmd} onClick={()=>setCommand(cmd)}>{cmd}</button>)}</div></div>
+  <div className="git-lab-commit-card"><div><strong>Local commit history</strong><small>{commits.length?commits.length+" commit"+(commits.length===1?"":"s")+" created in this session":"No commits yet — commits are saved locally before pushing."}</small></div><div className="git-lab-commit-entry">{commits.length?commits.map(c=><div key={c.id+c.message}><code>{c.id}</code><span>{c.message}</span><small>{c.branch}</small></div>):<p>Your first commit will appear here after <code>git commit</code>.</p>}</div></div>
+  <div className={"git-lab-explain "+(fileState==="pushed"||merged?"success":"")}><strong>{isWorkflow?(merged?"🎉 Feature merged!":approved?"✓ Pull request approved":prOpen?"🔎 Pull request is ready for review":branchCreated?"🌱 Feature branch workflow":"Start by creating a branch"):(fileState==="pushed"?"☁️ Your code is on GitHub":fileState==="committed"?"📸 A local commit has been created":fileState==="staged"?"📥 Your changes are staged":fileState==="modified"?"📝 Your file has local changes":"💻 Your working directory is clean")}</strong><p>{isWorkflow?(merged?"The reviewed feature is now included in main.":approved?"The reviewer approved the pull request. Run merge pr to finish.":prOpen?"A pull request compares your feature branch with main. It does not merge automatically.":branchCreated?"Your changes are isolated on "+currentBranch+". Commit and push them before opening a pull request.":"A feature branch gives you a safe place to work without changing main."):(fileState==="pushed"?"git push uploaded your local commit to the remote repository.":fileState==="committed"?"git commit saved a snapshot locally. GitHub has not received it yet.":fileState==="staged"?"git add selected the file for your next commit. It is still only on your computer.":fileState==="modified"?"Git sees your edits in the working directory. Stage them when you are ready.":"Edit app.js to begin. Git will detect the file modification.")}</p></div>
   <div className="git-lab-footer"><span>Practice simulation only · No real files or GitHub repository are changed.</span><button type="button" onClick={reset}>↺ Reset exercise</button></div>
  </section>;
 }
-
 function LessonPlayground({lessonId}){
  const config=playgrounds[lessonId]||playgrounds["git-basics"];
  const [stage,setStage]=useState(0),[privateSafe,setPrivateSafe]=useState(true),[firewall,setFirewall]=useState(false),[ports,setPorts]=useState(["22"]),[crashed,setCrashed]=useState(false),[upstream,setUpstream]=useState(true),[certificate,setCertificate]=useState(true),[testsPass,setTestsPass]=useState(true),[secrets,setSecrets]=useState(true),[fault,setFault]=useState("none");
