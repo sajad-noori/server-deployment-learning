@@ -197,3 +197,5 @@
 .git-lab-answer pre{margin:8px 0;padding:10px;border:1px solid #344d69;border-radius:8px;background:#0d1928}
 @keyframes gitAnswerIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:620px){.git-lab-mission-actions{align-items:flex-end;flex-direction:column}.git-lab-answer-command{align-items:flex-start;flex-direction:column}}
+
+.step-review-hint{margin:9px 2px 15px;color:#8999ae;font-size:11px;line-height:1.55}
