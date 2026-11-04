@@ -278,66 +278,44 @@ function GitInteractiveLab({lessonId}){
  </section>;
 }
 function CollaborationInteractiveLab(){
- const [issueStatus,setIssueStatus]=useState("Open");
- const [issueLabel,setIssueLabel]=useState("feature");
- const [assigned,setAssigned]=useState(false);
- const [prOpen,setPrOpen]=useState(false);
- const [review,setReview]=useState("Pending");
- const [commentResolved,setCommentResolved]=useState(false);
- const [conflict,setConflict]=useState("unresolved");
- const [checks,setChecks]=useState(false);
- const [approvalRequired,setApprovalRequired]=useState(true);
- const [directPushBlocked,setDirectPushBlocked]=useState(true);
- const [merged,setMerged]=useState(false);
- const [showGuide,setShowGuide]=useState(false);
- const reset=()=>{setIssueStatus("Open");setIssueLabel("feature");setAssigned(false);setPrOpen(false);setReview("Pending");setCommentResolved(false);setConflict("unresolved");setChecks(false);setApprovalRequired(true);setDirectPushBlocked(true);setMerged(false);setShowGuide(false);};
- const tasks=[
-  ["Create and organize an Issue",issueStatus!=="Open"||assigned],
-  ["Open a pull request",prOpen],
-  ["Address reviewer feedback",commentResolved],
-  ["Resolve the merge conflict",conflict==="resolved"],
-  ["Pass checks and approve",checks&&review==="Approved"],
-  ["Merge through the protected workflow",merged]
- ];
- const complete=tasks.filter(t=>t[1]).length;
- const pill=(active)=>({padding:"7px 11px",borderRadius:9,border:"1px solid "+(active?"#4b9b79":"var(--border, #d8dee8)"),background:active?"rgba(75,155,121,.13)":"transparent",color:"inherit",cursor:"pointer",fontSize:13});
- return <section className="git-lab collaboration-lab">
-  <div className="git-lab-heading"><div><span className="playground-kicker">🤝 GITHUB TEAM WORKSHOP</span><h2>Run a project like a team</h2><p>Practice project tracking, pull-request review, conflict resolution, and protecting the shared branch. This is a separate GitHub collaboration simulation — no code staging or push commands required.</p></div><span className="git-lab-tag">INTERACTIVE TEAM SIMULATION</span></div>
-  <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>Your collaboration mission</strong><small>Complete the team workflow using the controls in each panel.</small></div><div className="git-lab-mission-actions"><span>{complete}/{tasks.length} complete</span><button type="button" onClick={()=>setShowGuide(v=>!v)}>{showGuide?"Hide guide":"Show workflow"}</button></div></div><div className="git-lab-missiofunction CollaborationInteractiveLab(){
  const [created,setCreated]=useState(false);
  const [readme,setReadme]=useState(false);
  const [uploaded,setUploaded]=useState(false);
  const [edited,setEdited]=useState(false);
  const [issue,setIssue]=useState(false);
  const [showTip,setShowTip]=useState(true);
- const steps=[
-  ["Create a repository",created],
-  ["Add a README",readme],
-  ["Upload a project file",uploaded],
-  ["Edit a file on GitHub",edited],
-  ["Find the Issues tab",issue]
- ];
+ const steps=[["Create a repository",created],["Add a README",readme],["Upload a project file",uploaded],["Edit a file on GitHub",edited],["Find the Issues tab",issue]];
  const complete=steps.filter(s=>s[1]).length;
  const reset=()=>{setCreated(false);setReadme(false);setUploaded(false);setEdited(false);setIssue(false);setShowTip(true);};
  return <section className="git-lab collaboration-lab">
   <div className="git-lab-heading"><div><span className="playground-kicker">🐙 GITHUB BEGINNER PRACTICE</span><h2>Explore GitHub step by step</h2><p>Practice the basic things you can do on the GitHub website. No terminal commands, branches, merge conflicts, or advanced team settings.</p></div><span className="git-lab-tag">BEGINNER PRACTICE</span></div>
-  <div className="git-lab-mission">
-   <div className="git-lab-mission-head"><div><strong>Your GitHub checklist</strong><small>Click each action as you complete the matching task.</small></div><div className="git-lab-mission-actions"><span>{complete}/{steps.length} complete</span><button type="button" onClick={()=>setShowTip(v=>!v)}>{showTip?"Hide tip":"Show tip"}</button></div></div>
+  <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>Your GitHub checklist</strong><small>Click each action as you complete the matching task.</small></div><div className="git-lab-mission-actions"><span>{complete}/{steps.length} complete</span><button type="button" onClick={()=>setShowTip(v=>!v)}>{showTip?"Hide tip":"Show tip"}</button></div></div>
    <div className="git-lab-mission-list">{steps.map((s,i)=><div className={s[1]?"complete":""} key={s[0]}><span>{s[1]?"✓":i+1}</span>{s[0]}</div>)}</div>
    {showTip&&<p className="git-lab-explain">Think of GitHub as an online home for your projects. A repository holds the project, the README explains it, and the files are the actual work.</p>}
   </div>
   <div className="collab-panels" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:14,marginTop:16}}>
    <article className="content-panel"><div className="content-kicker">01 · REPOSITORY</div><h3>Create a repository</h3><p className="step-body">A repository is a folder for your project on GitHub.</p><div className="diagram-card"><div className="diagram-flow"><div className="diagram-node"><strong>My project</strong><small>Repository name</small></div><div className="diagram-arrow">→</div><div className="diagram-node"><strong>GitHub</strong><small>Online project space</small></div></div></div><button type="button" className="primary-btn" onClick={()=>setCreated(true)} disabled={created}>{created?"✓ Repository created":"Create practice repository"}</button><p className="step-body">{created?"Great! Your project now has a home on GitHub.":"On GitHub, choose New repository, enter a name, and select Create repository."}</p></article>
-   <article className="content-panel"><div className="content-kicker">02 · README</div><h3>Introduce your project</h3><p className="step-body">A README tells visitors what your project does and how to use it.</p><div className="command-card"><strong>README.md</strong><pre># My first project{"\n"}This project is a simple website.{"\n"}## How to use{"\n"}Open the project files.</pre></div><button type="button" className="primary-btn" onClick={()=>setReadme(true)} disabled={!created||readme}>{readme?"✓ README added":"Add README"}</button><p className="step-body">{!created?"Create your repository first.":readme?"Visitors can now read your project introduction.":"Choose Add a README when creating your repository, or create README.md afterward."}</p></article>
+   <article className="content-panel"><div className="content-kicker">02 · README</div><h3>Introduce your project</h3><p className="step-body">A README tells visitors what your project does and how to use it.</p><div className="command-card"><strong>README.md</strong><pre>{"# My first project\nThis project is a simple website.\n## How to use\nOpen the project files."}</pre></div><button type="button" className="primary-btn" onClick={()=>setReadme(true)} disabled={!created||readme}>{readme?"✓ README added":"Add README"}</button><p className="step-body">{!created?"Create your repository first.":readme?"Visitors can now read your project introduction.":"Choose Add a README when creating your repository, or create README.md afterward."}</p></article>
    <article className="content-panel"><div className="content-kicker">03 · PROJECT FILES</div><h3>Upload a file</h3><p className="step-body">Add a file from your computer to your GitHub repository.</p><div className="diagram-card"><div className="diagram-flow"><div className="diagram-node"><strong>index.html</strong><small>Your computer</small></div><div className="diagram-arrow">↑</div><div className="diagram-node"><strong>Repository</strong><small>GitHub website</small></div></div></div><button type="button" className="primary-btn" onClick={()=>setUploaded(true)} disabled={!created||uploaded}>{uploaded?"✓ File uploaded":"Upload index.html"}</button><p className="step-body">{!created?"Create your repository first.":uploaded?"Your project file is now shown in the repository.":"Choose Add file → Upload files, select a file, then confirm the upload."}</p></article>
-   <article className="content-panel"><div className="content-kicker">04 · EDIT FILES</div><h3>Make a small change</h3><p className="step-body">You can edit many text files directly in your browser.</p><div className="command-card"><strong>index.html</strong><pre>&lt;h1&gt;Hello GitHub!&lt;/h1&gt;</pre></div><button type="button" className="primary-btn" onClick={()=>setEdited(true)} disabled={!uploaded||edited}>{edited?"✓ File edited":"Edit this file"}</button><p className="step-body">{!uploaded?"Upload a file first.":edited?"You made a change using GitHub's website.":"Open a file, select the pencil icon, make a change, and save it."}</p></article>
+   <article className="content-panel"><div className="content-kicker">04 · EDIT FILES</div><h3>Make a small change</h3><p className="step-body">You can edit many text files directly in your browser.</p><div className="command-card"><strong>index.html</strong><pre>{"<h1>Hello GitHub!</h1>"}</pre></div><button type="button" className="primary-btn" onClick={()=>setEdited(true)} disabled={!uploaded||edited}>{edited?"✓ File edited":"Edit this file"}</button><p className="step-body">{!uploaded?"Upload a file first.":edited?"You made a change using GitHub's website.":"Open a file, select the pencil icon, make a change, and save it."}</p></article>
    <article className="content-panel"><div className="content-kicker">05 · ISSUES</div><h3>Find the Issues tab</h3><p className="step-body">Issues are a simple way to write down a bug, question, or idea for a project.</p><div className="diagram-card"><div className="diagram-flow"><div className="diagram-node"><strong>Issues</strong><small>Questions · Bugs · Ideas</small></div></div></div><button type="button" className="primary-btn" onClick={()=>setIssue(true)} disabled={!created||issue}>{issue?"✓ Found Issues":"Explore Issues"}</button><p className="step-body">{!created?"Create your repository first.":issue?"You found where project tasks and questions are listed.":"Open your repository and select the Issues tab."}</p></article>
   </div>
   <div className={"git-lab-explain "+(complete===steps.length?"success":"")}><strong>{complete===steps.length?"🎉 You know the GitHub basics!":complete+" of "+steps.length+" tasks completed"}</strong><p>{complete===steps.length?"You created a repository, added a README, uploaded and edited a file, and found Issues — all using the GitHub website.":"Complete the simple tasks above to become familiar with the GitHub website."}</p></div>
   <div className="git-lab-footer"><span>Practice simulation only · No real GitHub repository or files are created.</span><button type="button" onClick={reset}>↺ Reset practice</button></div>
  </section>;
 }
->{crashed?"App stopped":"App online"}</strong><small>{crashed?"PM2 can detect the exit and restart it.":"PM2 is supervising the process."}</small></div><button type="button" className="playground-action" onClick={()=>setCrashed(v=>!v)}>{crashed?"▶ Simulate PM2 restart":"⚠ Simulate app crash"}</button></div>;
+function LessonPlayground({lessonId}){
+ const config=playgrounds[lessonId]||playgrounds["git-basics"];
+ const [stage,setStage]=useState(0),[privateSafe,setPrivateSafe]=useState(true),[firewall,setFirewall]=useState(false),[ports,setPorts]=useState(["22"]),[crashed,setCrashed]=useState(false),[upstream,setUpstream]=useState(true),[certificate,setCertificate]=useState(true),[testsPass,setTestsPass]=useState(true),[secrets,setSecrets]=useState(true),[fault,setFault]=useState("none");
+ const current=config.stages[stage];
+ if(config.kind==="git")return <GitInteractiveLab lessonId="git-basics"/>;
+ if(config.kind==="branch")return <CollaborationInteractiveLab/>;
+ const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
+ const advance=()=>setStage(v=>Math.min(v+1,config.stages.length-1));
+ const renderControls=()=>{
+  if(config.kind==="ssh")return <div className="playground-controls"><label className="playground-toggle"><input type="checkbox" checked={privateSafe} onChange={e=>setPrivateSafe(e.target.checked)}/><span>🔐 Keep private key on my computer</span></label><p className={privateSafe?"playground-good":"playground-warning"}>{privateSafe?"Safe: only the public key is installed on the server.":"Unsafe: a private key should never be copied to the server."}</p></div>;
+  if(config.kind==="firewall")return <div className="playground-controls"><strong>Firewall port rules</strong><div className="playground-chips">{[["22","SSH"],["80","HTTP"],["443","HTTPS"],["3000","App port"]].map(([port,label])=><button type="button" key={port} className={ports.includes(port)?"active":""} onClick={()=>setPorts(p=>p.includes(port)?p.filter(x=>x!==port):[...p,port])}>{label} · {port}</button>)}</div><label className="playground-toggle"><input type="checkbox" checked={firewall} onChange={e=>setFirewall(e.target.checked)}/><span>Enable UFW firewall</span></label><p className={firewall&&!ports.includes("22")?"playground-warning":"playground-good"}>{!firewall?"Firewall is off. Review rules before enabling it.":!ports.includes("22")?"Warning: SSH is blocked. You could lock yourself out.":"Firewall on. Allowed ports: "+ports.join(", ")+"."}</p></div>;
+  if(config.kind==="pm2")return <div className="playground-controls"><div className="playground-status"><span className={crashed?"status-dot down":"status-dot"}/><strong>{crashed?"App stopped":"App online"}</strong><small>{crashed?"PM2 can detect the exit and restart it.":"PM2 is supervising the process."}</small></div><button type="button" className="playground-action" onClick={()=>setCrashed(v=>!v)}>{crashed?"▶ Simulate PM2 restart":"⚠ Simulate app crash"}</button></div>;
   if(config.kind==="proxy")return <div className="playground-controls"><label className="playground-toggle"><input type="checkbox" checked={upstream} onChange={e=>setUpstream(e.target.checked)}/><span>Node.js app is running on port 3000</span></label><p className={upstream?"playground-good":"playground-warning"}>{upstream?"Request forwarded successfully · HTTP 200":"Upstream unavailable · NGINX returns 502 Bad Gateway"}</p></div>;
   if(config.kind==="tls")return <div className="playground-controls"><label className="playground-toggle"><input type="checkbox" checked={certificate} onChange={e=>setCertificate(e.target.checked)}/><span>Valid certificate installed for this domain</span></label><p className={certificate?"playground-good":"playground-warning"}>{certificate?"🔒 HTTPS connection can be established.":"⚠ Browser cannot verify the server identity; HTTPS trust fails."}</p></div>;
   if(config.kind==="ci")return <div className="playground-controls"><label className="playground-toggle"><input type="checkbox" checked={testsPass} onChange={e=>setTestsPass(e.target.checked)}/><span>Automated tests pass</span></label><label className="playground-toggle"><input type="checkbox" checked={secrets} onChange={e=>setSecrets(e.target.checked)}/><span>Deployment key stored as a GitHub secret</span></label><p className={testsPass&&secrets?"playground-good":"playground-warning"}>{!testsPass?"Quality gate failed: deployment must stop.":!secrets?"Missing protected credential: deployment cannot authenticate safely.":"Quality gate passed and deployment credentials are protected."}</p></div>;
