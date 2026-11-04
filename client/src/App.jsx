@@ -320,7 +320,8 @@ function LessonPlayground({lessonId}){
  const config=playgrounds[lessonId]||playgrounds["git-basics"];
  const [stage,setStage]=useState(0),[privateSafe,setPrivateSafe]=useState(true),[firewall,setFirewall]=useState(false),[ports,setPorts]=useState(["22"]),[crashed,setCrashed]=useState(false),[upstream,setUpstream]=useState(true),[certificate,setCertificate]=useState(true),[testsPass,setTestsPass]=useState(true),[secrets,setSecrets]=useState(true),[fault,setFault]=useState("none");
  const current=config.stages[stage];
- if(config.kind==="git")return <GitInteractiveLab lessonId="git-basics"/>;\n if(config.kind==="branch")return <CollaborationInteractiveLab/>;
+ if(config.kind==="git")return <GitInteractiveLab lessonId="git-basics"/>;
+ if(config.kind==="branch")return <CollaborationInteractiveLab/>;
  const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
  const advance=()=>setStage(v=>Math.min(v+1,config.stages.length-1));
  const renderControls=()=>{
