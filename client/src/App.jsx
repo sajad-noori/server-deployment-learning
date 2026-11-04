@@ -270,9 +270,7 @@ function GitInteractiveLab({lessonId}){
                     ? {title:"Merge the approved change",explanation:"The merge updates GitHub main. It does not update your local main yet.",command:"merge pr"}
                     : !pulled
                       ? {title:"Update your local main",explanation:"Switch to main and pull the merge from GitHub.",command:currentBranch==="main"?"git pull origin main":"git switch main"}
-                      : !branchDeleted
-                        ? {title:"Delete the finished branch (optional)",explanation:"After merging and pulling, safely remove your local feature branch.",command:"git branch -d feature/login"}
-                        : {title:"Mission complete",explanation:"Your reviewed change is merged on GitHub and your local main is up to date."})
+                      : {title:"Mission complete",explanation:"Your reviewed change is merged on GitHub and your local main is up to date. Optional cleanup: git branch -d feature/login."})
   : (fileState==="clean"
     ? {title:"Edit the sample code",explanation:"Change the greeting text or the name in the editor above. Any edit will mark app.js as modified.",code:'function greet(name) {\n  return "Welcome, " + name + "!";\n}\n\nconsole.log(greet("Developer"));\n'}
     : fileState==="modified"
