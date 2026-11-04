@@ -197,3 +197,28 @@
 .git-lab-answer pre{margin:8px 0;padding:10px;border:1px solid #344d69;border-radius:8px;background:#0d1928}
 @keyframes gitAnswerIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:620px){.git-lab-mission-actions{align-items:flex-end;flex-direction:column}.git-lab-answer-command{align-items:flex-start;flex-direction:column}}
+
+
+/* GitHub collaboration Part 2: reviewer and next-lesson panels */
+.git-review-panel{margin:16px 0;padding:16px;border:1px solid #49617d;border-radius:13px;background:#101d2e}
+.git-review-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.git-review-head strong{color:#f1f6ff;font-size:13px}
+.git-review-head span{padding:5px 9px;border:1px solid #3d765d;border-radius:20px;color:#9de3ba;background:#173629;font-size:9px;font-weight:800}
+.git-review-panel>p{margin:8px 0 12px;color:#aebfd2;font-size:11px}
+.git-review-panel code,.git-next-lesson code{color:#c8baff}
+.git-review-diff{border:1px solid #344960;border-radius:9px;overflow:hidden;background:#0b1421}
+.git-review-diff>div{display:flex;justify-content:space-between;padding:8px 11px;background:#1a2b40;color:#dce8f5;font-size:10px}
+.git-review-diff small{color:#8ce0b6}
+.git-review-diff pre{margin:0;padding:12px;color:#b8e6cb;font:11px/1.7 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.git-review-comment{display:grid;gap:7px;margin-top:12px;color:#dce8f5;font-size:10px;font-weight:700}
+.git-review-comment textarea{width:100%;min-height:64px;resize:vertical;border:1px solid #344960;border-radius:8px;background:#0b1421;color:#c8d8e9;padding:10px;font:11px/1.6 ui-monospace,monospace}
+.git-review-comment textarea:disabled{opacity:.7}
+.git-review-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}
+.git-review-actions small{color:#93a8bf;font-size:9px}
+.git-review-actions button,.git-next-lesson button{border:1px solid #3d765d;border-radius:8px;background:#1b4937;color:#b8f0d0;padding:9px 12px;font-size:10px;font-weight:800;cursor:pointer}
+.git-review-actions button:disabled{opacity:.5;cursor:not-allowed}
+.git-next-lesson{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:18px 0 22px;padding:15px 17px;border:1px solid #55477b;border-radius:12px;background:linear-gradient(120deg,#211d36,#172638)}
+.git-next-lesson>span{flex-shrink:0;color:#bbaaff;font:800 9px ui-monospace,monospace;letter-spacing:.1em}
+.git-next-lesson p{margin:0;color:#c3cddd;font-size:11px;line-height:1.6}
+.git-next-lesson button{display:flex;align-items:center;gap:7px;flex-shrink:0;border-color:#65539b;background:#57458a;color:#fff}
+@media(max-width:620px){.git-review-head,.git-review-actions,.git-next-lesson{align-items:flex-start;flex-direction:column}.git-next-lesson button{width:100%;justify-content:center}}
