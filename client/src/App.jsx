@@ -162,6 +162,7 @@ function GitInteractiveLab({lessonId}){
   }else if(lower.startsWith("git switch -c ")&&isWorkflow){
    const name=cmd.slice("git switch -c ".length).trim();
    if(!name||name.includes(" "))message="Branch name must be a single name, for example: git switch -c feature/login";
+   else if(name!=="feature/login")message="For this practice lab, use the branch name feature/login so the later commands match.";
    else if(branchCreated)message="This lab already has a feature branch. Use git switch feature/login to return to it.";
    else{setBranchCreated(true);setCurrentBranch(name);message="✓ Switched to a new branch '"+name+"'.\nmain remains unchanged. Your next commits will belong to "+name+"."}
   }else if(lower.startsWith("git switch ")&&isWorkflow){
@@ -200,6 +201,7 @@ function GitInteractiveLab({lessonId}){
    }else if(lower==="git branch -d feature/login"&&isWorkflow){
     if(!merged)message="Cannot delete this branch yet. Merge the pull request first.";
     else if(currentBranch!=="main")message="Switch to main before deleting the finished feature branch.";
+    else if(!pulled)message="Pull origin/main first so your local main contains the merge, then delete the branch.";
     else{setBranchDeleted(true);message="Deleted branch feature/login. The merged work remains safely in main."}
    }else if(lower==="clear"){
    message="Terminal cleared.";
