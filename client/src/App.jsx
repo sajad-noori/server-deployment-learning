@@ -169,13 +169,14 @@ function GitInteractiveLab({lessonId}){
    else message=commits.length?commits.map(c=>c.id+" "+c.message+" ("+c.branch+")").join("\n"):"No commits yet.";
   }else if(lower==="git status --short"){
    message=conflictActive&&!conflictResolved?"UU app.js\nThe file has an unresolved merge conflict.":"Working tree clean.";
-  }else if(lower==="git pull origin main"||lower==="git merge origin/main"){
-   if(isConflict){
-    if(!mainMoved)message="Already up to date.";
-    else if(conflictActive)message="A merge is already in progress. Resolve app.js, stage it, then commit—or run git merge --abort.";
-    else{setConflictActive(true);setConflictResolved(false);setFileState("conflicted");setCode(makeConflict());message="Auto-merging app.js\nCONFLICT (content): Merge conflict in app.js\nAutomatic merge failed; fix conflicts and then commit the result.\n\nGit stopped because both branches changed the same line. Open app.js and resolve the markers.";}
-   }else if(isWorkflow){if(currentBranch!=="main")message="Switch to main first.";else if(merged){setPulled(true);message="Already up to date with origin/main."; }else message="No new remote commits to pull.";}
-   else message="Already up to date.";
+  }else if((lower==="git pull origin main"||lower==="git merge origin/main")&&isConflict){
+   if(!mainMoved)message="Already up to date.";else if(conflictActive)message="A merge is already in progress. Resolve app.js, stage it, then commit—or run git merge --abort.";else{setConflictActive(true);setConflictResolved(false);setFileState("conflicted");setCode(makeConflict());message="Auto-merging app.js\\nCONFLICT (content): Merge conflict in app.js\\nAutomatic merge failed; fix conflicts and then commit the result."; }
+  }else if(lower==="git pull origin main"&&isWorkflow){
+   if(currentBranch!=="main")message="Switch to main first with git switch main.";else if(!merged)message="There is no merged pull request to pull yet.";else{setPulled(true);setLocalMainBehind(false);message="✓ Fast-forwarded local main. Your local main now includes the merged feature from origin/main."; }
+  }else if(lower==="git switch -c feature/login"&&isWorkflow){
+   if(branchCreated)message="The feature branch already exists. Use git switch feature/login.";else{setBranchCreated(true);setCurrentBranch("feature/login");message="✓ Switched to a new branch feature/login. main remains unchanged."; }
+  }else if(lower==="git switch feature/login"&&isWorkflow){
+   if(branchCreated){setCurrentBranch("feature/login");message="Switched to branch feature/login."; }else message="Branch not found. Create it with git switch -c feature/login.";
   }else if(lower==="git merge --abort"){
    if(isConflict&&conflictActive&&!mergeCommitted){setConflictActive(false);setConflictResolved(false);setFileState("clean");setCode(scenario.starter);setAbortUsed(true);message="Merge aborted. Git returned feature/summary to the state before the pull. Your existing feature commit is safe.";}
    else message="There is no merge in progress to abort.";
