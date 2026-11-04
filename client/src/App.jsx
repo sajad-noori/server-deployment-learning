@@ -134,7 +134,7 @@ function GitInteractiveLab({lessonId}){
     fileState==="modified"?"Changes not staged for commit:\n  modified: app.js":
     fileState==="staged"?"Changes to be committed:\n  modified: app.js":
     fileState==="committed"?"Your branch has a local commit not yet pushed.":
-    "Your branch is up to date with its remote.";
+    (isWorkflow&&currentBranch==="main"&&localMainBehind?"Your branch is behind origin/main by 1 commit. Run git pull origin main.":"Your branch is up to date with its remote.");
    message=(lower.endsWith("-sb")?"## "+branch+(fileState==="committed"?" [ahead 1]":fileState==="pushed"?"":""):"On branch "+branch)+"\n"+detail;
   }else if(lower==="git diff"){
    message=fileState==="modified"
@@ -246,12 +246,12 @@ function GitInteractiveLab({lessonId}){
   ["Push the commit to GitHub",fileState==="pushed"]
  ];
  const answer=isWorkflow
-  ? (!history.some(x=>x.toLowerCase().includes("git status"))
+  ? (!statusChecked
     ? {title:"Check your starting point",explanation:"Confirm you are on main and the working tree is clean before starting.",command:"git status"}
     : !branchCreated
       ? {title:"Create your feature branch",explanation:"A branch gives you a separate workspace without changing main.",command:"git switch -c feature/login"}
       : fileState==="clean"
-        ? {title:"Edit the sample code",explanation:"Change authenticated: true to authenticated: Boolean(email && password) in the editor.",code:'function login(email, password) {\\n  return { email, authenticated: Boolean(email && password) };\\n}\\n'}
+        ? {title:"Edit the sample code",explanation:"Change authenticated: true to authenticated: Boolean(email && password) in the editor.",code:'function login(email, password) {\n  return { email, authenticated: Boolean(email && password) };\n}\n'}
         : fileState==="modified"
           ? {title:"Stage your change",explanation:"Stage app.js so it can be included in your next commit.",command:"git add app.js"}
           : fileState==="staged"
@@ -291,7 +291,7 @@ function GitInteractiveLab({lessonId}){
   </div>
   <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>{isWorkflow?"Your GitHub mission":"Your Git mission"}</strong><small>Complete each objective by using the terminal below. Stuck? Reveal the solution.</small></div><div className="git-lab-mission-actions"><span>{mission.filter(x=>x[1]).length}/{mission.length} complete</span><button type="button" onClick={()=>setShowAnswer(v=>!v)}>{showAnswer?"Hide answer":"Show answer"}</button></div></div><div className="git-lab-mission-list">{mission.map((item,i)=><div className={item[1]?"complete":""} key={item[0]}><span>{item[1]?"✓":i+1}</span>{item[0]}</div>)}</div></div>
   {showAnswer&&<div className="git-lab-answer"><div><span className="git-lab-answer-kicker">STEP-BY-STEP SOLUTION</span><strong>{answer.title}</strong><p>{answer.explanation}</p>{answer.command&&<div className="git-lab-answer-command"><code>{answer.command}</code><button type="button" onClick={applyAnswer}>Use this command</button></div>}{answer.code&&<><pre>{answer.code}</pre><button type="button" onClick={applyAnswer}>Insert example solution</button></>}</div></div>}
-  {isWorkflow&&prOpen&&<div className="git-review-panel"><div className="git-review-head"><strong>Pull request #1 · Add login validation</strong><span>{merged?"Merged":approved?"Approved":"Open · awaiting review"}</span></div><p><code>feature/login</code> wants to merge into <code>main</code></p><div className="git-review-diff"><div><span>app.js · Files changed</span><small>+1 −1</small></div><pre>- return { "{ email, authenticated: true }" };\\n+ return { "{ email, authenticated: Boolean(email && password) }" };</pre></div><label className="git-review-comment">Reviewer comment<textarea defaultValue="Looks good. The change is clear and ready to merge." disabled={approved||merged}/></label><div className="git-review-actions"><small>Review the proposed change before approving.</small><button type="button" disabled={approved||merged} onClick={()=>{setApproved(true);setOutput("✓ Review approved. The pull request is ready to merge.");}}>✓ Approve pull request</button></div></div>}
+  {isWorkflow&&prOpen&&<div className="git-review-panel"><div className="git-review-head"><strong>Pull request #1 · Add login validation</strong><span>{merged?"Merged":approved?"Approved":"Open · awaiting review"}</span></div><p><code>feature/login</code> wants to merge into <code>main</code></p><div className="git-review-diff"><div><span>app.js · Files changed</span><small>+1 −1</small></div><pre>- return { "{ email, authenticated: true }" };\n+ return { "{ email, authenticated: Boolean(email && password) }" };</pre></div><label className="git-review-comment">Reviewer comment<textarea defaultValue="Looks good. The change is clear and ready to merge." disabled={approved||merged}/></label><div className="git-review-actions"><small>Review the proposed change before approving.</small><button type="button" disabled={approved||merged} onClick={()=>{setApproved(true);setOutput("✓ Review approved. The pull request is ready to merge.");}}>✓ Approve pull request</button></div></div>}
   <div className="git-lab-flow" aria-label="Git workflow progress">
    {stages.map((s,i)=><div className={"git-lab-stage "+(i===activeStage?"is-current":s[3]?"is-done":"")} key={s[0]}><div className="git-lab-stage-icon">{s[3]?"✓":s[0]}</div><strong>{s[1]}</strong><small>{s[2]}</small></div>)}
   </div>
