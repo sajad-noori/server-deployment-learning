@@ -18,7 +18,7 @@ make("git-basics","Git foundations","git","Beginner","25 min","Understand reposi
 ["Push to GitHub","A push sends your local commits to a remote repository such as GitHub.","git push origin main","Uploads commits on your local main branch to origin/main."]
 ],"Which command moves selected changes into the staging area?",["git push","git add","git commit"],1,"git add stages changes. git commit records the staged snapshot, and git push uploads commits to a remote."),
 make("github-workflow","Collaborate on GitHub: branch, pull request, review, merge","git","Intermediate","35 min","Work safely on a feature branch, publish it, request review, merge it, and update your local main branch.","Complete the team workflow: create a feature branch, commit and publish a change, open and approve a pull request, merge it, then pull the updated main branch.",[
-["Why branches exist","A branch is a separate line of work. Make changes without changing the stable main branch used by the team.","git branch",null,["main","feature branch","shared project"],["Stable code","Isolated change","Merge after review"]],
+["Why branches exist","Start by checking your working tree with git status. Teams protect main so unfinished work does not go straight into the shared stable branch. Instead, create a feature branch, publish it, and ask for review before merging.","git status","Shows your current branch and whether your working tree is clean.",["Push straight to main","Feature branch","Pull request + merge"],["Risky direct change","Isolated work","Review before main updates"]],
 ["Create a feature branch","Start from main, then create and switch to a branch for one focused change.","git switch -c feature/login","Creates feature/login and switches to it."],
 ["Edit, stage, and commit","Edit the starter file, stage the change, and save it as a local commit. A commit is not uploaded yet.","git add app.js && git commit -m \"Add login validation\"","Stages app.js and records a local snapshot."],
 ["Publish your branch","Push the feature branch and set upstream tracking so Git remembers its remote branch.","git push -u origin feature/login","Publishes the branch as origin/feature/login and sets upstream tracking."],
@@ -178,7 +178,7 @@ function GitInteractiveLab({lessonId}){
   }else if(lower==="git log --oneline"){
    message=commits.length?commits.map(c=>c.id+" "+c.message+" ("+c.branch+")").join("\n"):"No commits yet.\nCreate your first snapshot with git add app.js, then git commit.";
   }else if(lower==="git push"||lower==="git push origin main"||lower==="git push -u origin feature/login"||lower.startsWith("git push -u origin ")){
-   if(isWorkflow&&currentBranch==="main")message="✕ Push rejected: main is protected in this team workflow. Create a feature branch, push it, and open a pull request for review.";
+   if(isWorkflow&&(currentBranch==="main"||lower.endsWith("origin main")))message="✕ Push rejected: main is protected in this team workflow. Create a feature branch, push it, and open a pull request for review.";
    else if(fileState==="committed"){setFileState("pushed");message="✓ Push successful.\nYour local commit is now on origin/"+currentBranch+".\nUpstream tracking is set to origin/"+currentBranch+".\nGitHub has received the commit."}
    else if(fileState==="pushed")message="Everything up to date.";
    else message="There is no new local commit to push.\nEdit a file, stage it, and commit first.";
@@ -211,7 +211,7 @@ function GitInteractiveLab({lessonId}){
  };
  const reset=()=>{
   setCode(starterCode);setFileState("clean");setCommand("");setOutput("Your working tree is clean. Edit app.js to begin the exercise.");
-  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setStatusChecked(false);setHistory([]);setCommits([]);setLastCommit("");
+  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setStatusChecked(false);setShowAnswer(false);setHistory([]);setCommits([]);setLastCommit("");
  };
  const stages=isWorkflow?[
   ["01","Feature branch","Isolated work",branchCreated],
