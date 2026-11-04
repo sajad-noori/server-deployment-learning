@@ -129,6 +129,7 @@ function GitInteractiveLab({lessonId}){
   const lower=cmd.toLowerCase();
   let message="";
   if(lower==="git status"||lower==="git status -sb"){
+   if(isWorkflow)setStatusChecked(true);
    const branch=currentBranch;
    const detail=fileState==="clean"?"nothing to commit, working tree clean":
     fileState==="modified"?"Changes not staged for commit:\n  modified: app.js":
