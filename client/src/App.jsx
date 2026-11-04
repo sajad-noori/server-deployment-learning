@@ -104,6 +104,9 @@ function GitInteractiveLab({lessonId}){
  const [prOpen,setPrOpen]=useState(false);
  const [approved,setApproved]=useState(false);
  const [merged,setMerged]=useState(false);
+  const [localMainBehind,setLocalMainBehind]=useState(false);
+  const [pulled,setPulled]=useState(false);
+  const [branchDeleted,setBranchDeleted]=useState(false);
  const [history,setHistory]=useState([]);
  const [commits,setCommits]=useState([]);
  const [lastCommit,setLastCommit]=useState("");
@@ -141,7 +144,8 @@ function GitInteractiveLab({lessonId}){
   }else if(lower==="git branch"){
    message=(currentBranch==="main"?"* main":"  main")+"\n"+(branchCreated?(currentBranch==="feature/login"?"* feature/login":"  feature/login"):"");
   }else if(lower==="git switch main"&&isWorkflow){
-   setCurrentBranch("main");message="Switched to branch 'main'.";
+   if(!merged)message="You can switch back to main after the pull request has been merged.";
+   else{setCurrentBranch("main");message="Switched to branch main. Your local main is still behind origin/main. Run git pull origin main.";}
   }else if(lower.startsWith("git switch -c ")&&isWorkflow){
    const name=cmd.slice("git switch -c ".length).trim();
    if(!name||name.includes(" "))message="Branch name must be a single name, for example: git switch -c feature/login";
@@ -162,8 +166,8 @@ function GitInteractiveLab({lessonId}){
   }else if(lower==="git log --oneline"){
    message=commits.length?commits.map(c=>c.id+" "+c.message+" ("+c.branch+")").join("\n"):"No commits yet.\nCreate your first snapshot with git add app.js, then git commit.";
   }else if(lower==="git push"||lower==="git push origin main"||lower==="git push -u origin feature/login"||lower.startsWith("git push -u origin ")){
-   if(isWorkflow&&currentBranch==="main"&&!merged)message="You are on main. Switch to your feature branch before publishing it.";
-   else if(fileState==="committed"){setFileState("pushed");message="✓ Push successful.\nYour local commit is now on origin/"+currentBranch+".\nGitHub has received the commit."}
+   if(isWorkflow&&currentBranch==="main")message="✕ Push rejected: main is protected in this team workflow. Create a feature branch, push it, and open a pull request for review.";
+   else if(fileState==="committed"){setFileState("pushed");message="✓ Push successful.\nYour local commit is now on origin/"+currentBranch+".\nUpstream tracking is set to origin/"+currentBranch+".\nGitHub has received the commit."}
    else if(fileState==="pushed")message="Everything up to date.";
    else message="There is no new local commit to push.\nEdit a file, stage it, and commit first.";
   }else if(lower==="open pr"&&isWorkflow){
@@ -173,9 +177,18 @@ function GitInteractiveLab({lessonId}){
    if(prOpen){setApproved(true);message="✓ Review approved.\nThe pull request is ready to merge."}
    else message="Open a pull request first.";
   }else if(lower==="merge pr"&&isWorkflow){
-   if(approved){setMerged(true);setCurrentBranch("main");message="✓ Pull request merged into main.\nThe feature is now part of the shared project."}
+   if(approved){setMerged(true);setLocalMainBehind(true);message="✓ Pull request merged into GitHub main.\nYour local main has NOT changed yet. Switch to main, then run git pull origin main."}
    else message="The pull request needs approval before it can be merged.";
-  }else if(lower==="clear"){
+  }else if(lower==="git pull origin main"&&isWorkflow){
+    if(currentBranch!=="main")message="Switch to main first with git switch main, then pull the merged changes.";
+    else if(!merged)message="There is no merged pull request to pull yet. Complete the review and merge first.";
+    else if(!localMainBehind)message="Already up to date.";
+    else{setLocalMainBehind(false);setPulled(true);message="✓ Fast-forwarded local main. Your local main now includes the merged feature from origin/main."}
+   }else if(lower==="git branch -d feature/login"&&isWorkflow){
+    if(!merged)message="Cannot delete this branch yet. Merge the pull request first.";
+    else if(currentBranch!=="main")message="Switch to main before deleting the finished feature branch.";
+    else{setBranchDeleted(true);message="Deleted branch feature/login. The merged work remains safely in main."}
+   }else if(lower==="clear"){
    message="Terminal cleared.";
   }else{
    message="Command not recognized in this Git practice lab.\nTry: git status, git diff, git add app.js, git restore --staged app.js, git commit -m \"Save changes\", git log --oneline"+(isWorkflow?", git switch -c feature/login, git push -u origin feature/login, open pr, approve pr, merge pr":", git push origin main")+".";
@@ -186,28 +199,33 @@ function GitInteractiveLab({lessonId}){
  };
  const reset=()=>{
   setCode(starterCode);setFileState("clean");setCommand("");setOutput("Your working tree is clean. Edit app.js to begin the exercise.");
-  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setHistory([]);setCommits([]);setLastCommit("");
+  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setHistory([]);setCommits([]);setLastCommit("");
  };
  const stages=isWorkflow?[
   ["01","main","Stable branch",true],
   ["02",branchCreated?"feature/login":"Feature branch","Isolated work",branchCreated],
   ["03","GitHub","Published branch",fileState==="pushed"||prOpen||approved||merged],
   ["04","Pull request","Review and approval",prOpen||approved||merged],
-  ["05","main updated","Feature merged",merged]
+  ["05","GitHub main","Feature merged",merged],
+   ["06","Local main","Pulled and up to date",pulled]
  ]:[
   ["01","Working folder","Modified file",fileState==="modified"],
   ["02","Staging area","Selected changes",fileState==="staged"],
   ["03","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"],
   ["04","GitHub remote","Uploaded commit",fileState==="pushed"]
  ];
- const activeStage=isWorkflow?(merged?4:approved||prOpen?3:fileState==="pushed"?2:branchCreated?1:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
- const shortcuts=isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"];
+ const activeStage=isWorkflow?(pulled?5:merged?4:approved||prOpen?3:fileState==="pushed"?2:fileState==="committed"?1:branchCreated?0:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
+ const shortcuts=isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr","git switch main","git pull origin main","git branch -d feature/login"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"];
  const mission=isWorkflow?[
   ["Create an isolated branch",branchCreated],
   ["Stage and commit your code",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
   ["Publish the feature branch",fileState==="pushed"||prOpen||approved||merged],
   ["Open and approve a pull request",approved||merged],
-  ["Merge into main",merged]
+  ["Open a pull request",prOpen||approved||merged],
+   ["Review and approve the pull request",approved||merged],
+   ["Merge into GitHub main",merged],
+   ["Switch to local main and pull",pulled],
+   ["Delete the finished feature branch",branchDeleted]
  ]:[
   ["Edit app.js",fileState!=="clean"],
   ["Stage the change",["staged","committed","pushed"].includes(fileState)],
@@ -273,7 +291,7 @@ function LessonPlayground({lessonId}){
  const config=playgrounds[lessonId]||playgrounds["git-basics"];
  const [stage,setStage]=useState(0),[privateSafe,setPrivateSafe]=useState(true),[firewall,setFirewall]=useState(false),[ports,setPorts]=useState(["22"]),[crashed,setCrashed]=useState(false),[upstream,setUpstream]=useState(true),[certificate,setCertificate]=useState(true),[testsPass,setTestsPass]=useState(true),[secrets,setSecrets]=useState(true),[fault,setFault]=useState("none");
  const current=config.stages[stage];
- if(config.kind==="git")return <GitInteractiveLab lessonId="git-basics"/>; const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
+ if(config.kind==="git")return <GitInteractiveLab lessonId={lessonId}/>; const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
  const advance=()=>setStage(v=>Math.min(v+1,config.stages.length-1));
  const renderControls=()=>{
   if(config.kind==="ssh")return <div className="playground-controls"><label className="playground-toggle"><input type="checkbox" checked={privateSafe} onChange={e=>setPrivateSafe(e.target.checked)}/><span>🔐 Keep private key on my computer</span></label><p className={privateSafe?"playground-good":"playground-warning"}>{privateSafe?"Safe: only the public key is installed on the server.":"Unsafe: a private key should never be copied to the server."}</p></div>;
