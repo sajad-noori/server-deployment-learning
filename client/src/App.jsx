@@ -332,11 +332,12 @@ function LessonPlayground({lessonId}){
 export default function App(){
  const [active,setActive]=useState("git-basics"),[stepIndex,setStepIndex]=useState(0),[completed,setCompleted]=useState(()=>JSON.parse(localStorage.getItem("deploylab-progress")||"[]")),[search,setSearch]=useState(""),[filter,setFilter]=useState("All"),[view,setView]=useState("dashboard"),[choice,setChoice]=useState(null),[submitted,setSubmitted]=useState(false),[terminal,setTerminal]=useState([{type:"system",text:"DeployLab practice shell · simulated environment"},{type:"system",text:"Type help to see supported commands. This is not a real server."}]),[input,setInput]=useState(""),[api,setApi]=useState("checking"),[menu,setMenu]=useState(false);
  useEffect(()=>localStorage.setItem("deploylab-progress",JSON.stringify(completed)),[completed]);
+ useEffect(()=>{const handlePopState=(event)=>{const state=event.state;if(state?.deployLabView==="lesson"){setActive(state.lessonId);setStepIndex(0);setChoice(null);setSubmitted(false);setView("lesson")}else{setView("dashboard")}};window.addEventListener("popstate",handlePopState);return()=>window.removeEventListener("popstate",handlePopState)},[]);
  useEffect(()=>{fetch((import.meta.env.VITE_API_URL||"http://localhost:5000")+"/api/health").then(r=>setApi(r.ok?"online":"offline")).catch(()=>setApi("offline"))},[]);
  const lesson=lessons.find(l=>l.id===active)||lessons[0],step=lesson.steps[stepIndex],progress=Math.round(completed.length/total*100);
  const filtered=useMemo(()=>lessons.filter(l=>(filter==="All"||(filter==="Completed"?l.steps.every((_,i)=>completed.includes(l.id+":"+i)):l.level===filter))&&(l.title+" "+l.summary+" "+l.group).toLowerCase().includes(search.toLowerCase())),[filter,search,completed]);
  const done=(id,i)=>completed.includes(id+":"+i),lessonDone=lesson.steps.every((_,i)=>done(lesson.id,i));
- function openLesson(id){setActive(id);setStepIndex(0);setChoice(null);setSubmitted(false);setView("lesson");setMenu(false)}
+ function openLesson(id){window.history.pushState({deployLabView:"lesson",lessonId:id},"",`#lesson/${id}`);setActive(id);setStepIndex(0);setChoice(null);setSubmitted(false);setView("lesson");setMenu(false)}
  function mark(){if(!done(lesson.id,stepIndex))setCompleted(p=>[...p,lesson.id+":"+stepIndex])}
  function run(e){e.preventDefault();const cmd=input.trim().toLowerCase();if(!cmd)return;if(cmd==="clear")setTerminal([]);else setTerminal(p=>[...p,{type:"command",text:input.trim()},{type:"output",text:commands[cmd]||("bash: "+input.trim()+": command not found\nThis is a simulator. Type help for supported commands.")}]);setInput("")}
  function copy(s){navigator.clipboard?.writeText(s).catch(()=>{})}
