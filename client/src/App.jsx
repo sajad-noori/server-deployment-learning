@@ -118,7 +118,8 @@ function GitInteractiveLab({lessonId}){
  const [merged,setMerged]=useState(false);
   const [localMainBehind,setLocalMainBehind]=useState(false);
   const [pulled,setPulled]=useState(false);
-  const [branchDeleted,setBranchDeleted]=useState(false);\n  const [statusChecked,setStatusChecked]=useState(false);
+  const [branchDeleted,setBranchDeleted]=useState(false);
+  const [statusChecked,setStatusChecked]=useState(false);
  const [history,setHistory]=useState([]);
  const [commits,setCommits]=useState([]);
  const [lastCommit,setLastCommit]=useState("");
