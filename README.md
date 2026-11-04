@@ -1,6 +1,6 @@
 # Server Deployment Learning
 
-A practical, interactive learning platform for Git, GitHub, Linux server administration, Node.js deployment, NGINX, PM2, HTTPS, and CI/CD.
+A practical, interactive learning platform for Git foundations, GitHub collaboration (branches, pull requests, review and merge), Linux server administration, Node.js deployment, NGINX, PM2, HTTPS, and CI/CD.
 
 ## Stack
 - Frontend: React + Vite
