@@ -214,11 +214,12 @@ function GitInteractiveLab({lessonId}){
   setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setHistory([]);setCommits([]);setLastCommit("");
  };
  const stages=isWorkflow?[
-  ["01","main","Stable branch",true],
-  ["02",branchCreated?"feature/login":"Feature branch","Isolated work",branchCreated],
-  ["03","GitHub","Published branch",fileState==="pushed"||prOpen||approved||merged],
-  ["04","Pull request","Review and approval",prOpen||approved||merged],
+  ["01","Feature branch","Isolated work",branchCreated],
+  ["02","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
+  ["03","Remote branch","Published on GitHub",fileState==="pushed"||prOpen||approved||merged],
+  ["04","Pull request","Reviewed and approved",approved||merged],
   ["05","GitHub main","Feature merged",merged],
+  ["06","Local main","Pulled and up to date",pulled],
    ["06","Local main","Pulled and up to date",pulled]
  ]:[
   ["01","Working folder","Modified file",fileState==="modified"],
@@ -229,15 +230,15 @@ function GitInteractiveLab({lessonId}){
  const activeStage=isWorkflow?(pulled?5:merged?4:approved||prOpen?3:fileState==="pushed"?2:fileState==="committed"?1:branchCreated?0:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
  const shortcuts=isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr","git switch main","git pull origin main","git branch -d feature/login"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"];
  const mission=isWorkflow?[
-  ["Create an isolated branch",branchCreated],
-  ["Stage and commit your code",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
-  ["Publish the feature branch",fileState==="pushed"||prOpen||approved||merged],
-  ["Open and approve a pull request",approved||merged],
+  ["Check status on main",history.some(x=>x.toLowerCase().includes("git status"))],
+  ["Create and switch to a feature branch",branchCreated],
+  ["Edit, stage, and commit the code",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
+  ["Push with upstream tracking",fileState==="pushed"||prOpen||approved||merged],
   ["Open a pull request",prOpen||approved||merged],
-   ["Review and approve the pull request",approved||merged],
-   ["Merge into GitHub main",merged],
-   ["Switch to local main and pull",pulled],
-   ["Delete the finished feature branch",branchDeleted]
+  ["Review and approve the pull request",approved||merged],
+  ["Merge into GitHub main",merged],
+  ["Switch to local main and pull",pulled],
+  ["Delete the finished feature branch",branchDeleted]
  ]:[
   ["Edit app.js",fileState!=="clean"],
   ["Stage the change",["staged","committed","pushed"].includes(fileState)],
@@ -245,23 +246,29 @@ function GitInteractiveLab({lessonId}){
   ["Push the commit to GitHub",fileState==="pushed"]
  ];
  const answer=isWorkflow
-  ? (!branchCreated
-    ? {title:"Create your feature branch",explanation:"A branch gives you a separate workspace. This command creates feature/login and switches to it.",command:"git switch -c feature/login"}
-    : fileState==="clean"
-      ? {title:"Make a small code change",explanation:"Edit app.js in the editor above. For example, change the return line to: return { email, authenticated: Boolean(email && password) }; Then continue with staging.",code:'function login(email, password) {\n  return { email, authenticated: Boolean(email && password) };\n}\n'}
-      : fileState==="modified"
-        ? {title:"Stage your change",explanation:"This selects app.js for the next commit. It does not upload anything to GitHub.",command:"git add app.js"}
-        : fileState==="staged"
-          ? {title:"Create a commit",explanation:"A commit saves a snapshot in your local Git history. Add a short message describing the change.",command:'git commit -m "Add login validation"'}
-          : fileState==="committed"
-            ? {title:"Publish your branch",explanation:"Push sends your local commit to GitHub so others can review it.",command:"git push -u origin feature/login"}
-            : !prOpen
-              ? {title:"Open a pull request",explanation:"A pull request asks for your feature branch to be reviewed and merged into main.",command:"open pr"}
-              : !approved
-                ? {title:"Approve the pull request",explanation:"In this practice simulation, this represents a reviewer approving the proposed changes.",command:"approve pr"}
-                : !merged
-                  ? {title:"Merge the pull request",explanation:"Merge integrates the approved feature branch into main.",command:"merge pr"}
-                  : {title:"Mission complete",explanation:"You created a branch, committed and pushed a change, and merged the pull request."})
+  ? (!history.some(x=>x.toLowerCase().includes("git status"))
+    ? {title:"Check your starting point",explanation:"Confirm you are on main and the working tree is clean before starting.",command:"git status"}
+    : !branchCreated
+      ? {title:"Create your feature branch",explanation:"A branch gives you a separate workspace without changing main.",command:"git switch -c feature/login"}
+      : fileState==="clean"
+        ? {title:"Edit the sample code",explanation:"Change authenticated: true to authenticated: Boolean(email && password) in the editor.",code:'function login(email, password) {\\n  return { email, authenticated: Boolean(email && password) };\\n}\\n'}
+        : fileState==="modified"
+          ? {title:"Stage your change",explanation:"Stage app.js so it can be included in your next commit.",command:"git add app.js"}
+          : fileState==="staged"
+            ? {title:"Create a local commit",explanation:"Save your staged change in your local Git history.",command:'git commit -m "Add login validation"'}
+            : fileState==="committed"
+              ? {title:"Publish the feature branch",explanation:"Push the branch and set upstream tracking to origin/feature/login.",command:"git push -u origin feature/login"}
+              : !prOpen
+                ? {title:"Open a pull request",explanation:"Ask teammates to review your branch before it is merged into main.",command:"open pr"}
+                : !approved
+                  ? {title:"Review and approve",explanation:"Inspect the diff in the reviewer panel, then approve the proposed change.",command:"approve pr"}
+                  : !merged
+                    ? {title:"Merge the approved change",explanation:"The merge updates GitHub main. It does not update your local main yet.",command:"merge pr"}
+                    : !pulled
+                      ? {title:"Update your local main",explanation:"Switch to main and pull the merge from GitHub.",command:currentBranch==="main"?"git pull origin main":"git switch main"}
+                      : !branchDeleted
+                        ? {title:"Delete the finished branch (optional)",explanation:"After merging and pulling, safely remove your local feature branch.",command:"git branch -d feature/login"}
+                        : {title:"Mission complete",explanation:"Your reviewed change is merged on GitHub and your local main is up to date."})
   : (fileState==="clean"
     ? {title:"Edit the sample code",explanation:"Change the greeting text or the name in the editor above. Any edit will mark app.js as modified.",code:'function greet(name) {\n  return "Welcome, " + name + "!";\n}\n\nconsole.log(greet("Developer"));\n'}
     : fileState==="modified"
@@ -284,6 +291,7 @@ function GitInteractiveLab({lessonId}){
   </div>
   <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>{isWorkflow?"Your GitHub mission":"Your Git mission"}</strong><small>Complete each objective by using the terminal below. Stuck? Reveal the solution.</small></div><div className="git-lab-mission-actions"><span>{mission.filter(x=>x[1]).length}/{mission.length} complete</span><button type="button" onClick={()=>setShowAnswer(v=>!v)}>{showAnswer?"Hide answer":"Show answer"}</button></div></div><div className="git-lab-mission-list">{mission.map((item,i)=><div className={item[1]?"complete":""} key={item[0]}><span>{item[1]?"✓":i+1}</span>{item[0]}</div>)}</div></div>
   {showAnswer&&<div className="git-lab-answer"><div><span className="git-lab-answer-kicker">STEP-BY-STEP SOLUTION</span><strong>{answer.title}</strong><p>{answer.explanation}</p>{answer.command&&<div className="git-lab-answer-command"><code>{answer.command}</code><button type="button" onClick={applyAnswer}>Use this command</button></div>}{answer.code&&<><pre>{answer.code}</pre><button type="button" onClick={applyAnswer}>Insert example solution</button></>}</div></div>}
+  {isWorkflow&&prOpen&&<div className="git-review-panel"><div className="git-review-head"><strong>Pull request #1 · Add login validation</strong><span>{merged?"Merged":approved?"Approved":"Open · awaiting review"}</span></div><p><code>feature/login</code> wants to merge into <code>main</code></p><div className="git-review-diff"><div><span>app.js · Files changed</span><small>+1 −1</small></div><pre>- return { "{ email, authenticated: true }" };\\n+ return { "{ email, authenticated: Boolean(email && password) }" };</pre></div><label className="git-review-comment">Reviewer comment<textarea defaultValue="Looks good. The change is clear and ready to merge." disabled={approved||merged}/></label><div className="git-review-actions"><small>Review the proposed change before approving.</small><button type="button" disabled={approved||merged} onClick={()=>{setApproved(true);setOutput("✓ Review approved. The pull request is ready to merge.");}}>✓ Approve pull request</button></div></div>}
   <div className="git-lab-flow" aria-label="Git workflow progress">
    {stages.map((s,i)=><div className={"git-lab-stage "+(i===activeStage?"is-current":s[3]?"is-done":"")} key={s[0]}><div className="git-lab-stage-icon">{s[3]?"✓":s[0]}</div><strong>{s[1]}</strong><small>{s[2]}</small></div>)}
   </div>
@@ -347,7 +355,7 @@ export default function App(){
  {filtered.length===0&&<div className="empty-state"><Search size={26}/><strong>No lessons found</strong><span>Try another search term or filter.</span></div>}
  <section className="bottom-banner"><div className="banner-icon"><Terminal size={22}/></div><div><strong>Ready to get your hands dirty?</strong><span>Open the practice terminal and experiment with common server commands.</span></div><button onClick={()=>setView("practice")}>Open terminal <ArrowRight size={15}/></button></section></div>}
  {view==="lesson"&&<div className="page-content lesson-page"><div className="lesson-heading"><button className="back-link" onClick={()=>setView("dashboard")}><ArrowLeft size={15}/> All lessons</button><div className="lesson-title-row"><div><div className="eyebrow">{course.name.toUpperCase()} <span className="dot-sep">·</span> {lesson.level.toUpperCase()}</div><h1>{lesson.title}</h1><p>{lesson.summary}</p></div><div className="lesson-time"><Clock3 size={15}/> {lesson.duration}</div></div>{lesson.id!=="git-basics"&&<div className="lesson-progress"><div className="progress-track"><i style={{width:lesson.steps.filter((_,i)=>done(lesson.id,i)).length/lesson.steps.length*100+"%"}}/></div><span>{lesson.steps.filter((_,i)=>done(lesson.id,i)).length} / {lesson.steps.length} steps complete</span></div>}</div>
- <div className="lesson-playground-wrap"><LessonPlayground key={lesson.id} lessonId={lesson.id}/></div>{lesson.id!=="git-basics"&&<div className="lesson-layout"><div className="lesson-main"><div className="step-tabs">{lesson.steps.map((s,i)=><button key={s.title} onClick={()=>{setStepIndex(i);setChoice(null);setSubmitted(false)}} className={stepIndex===i?"current":done(lesson.id,i)?"step-done":""}><span>{done(lesson.id,i)?<Check size={13}/>:String(i+1).padStart(2,"0")}</span><small>{s.title}</small></button>)}</div>
+ <div className="lesson-playground-wrap"><LessonPlayground key={lesson.id} lessonId={lesson.id}/></div>{lesson.id==="github-workflow"&&<div className="git-next-lesson"><span>UP NEXT</span><p>A merge into <code>main</code> can trigger automation. Continue with GitHub Actions to learn how.</p><button type="button" onClick={()=>openLesson("github-actions")}>Start GitHub Actions <ArrowRight size={14}/></button></div>}{lesson.id!=="git-basics"&&<div className="lesson-layout"><div className="lesson-main"><div className="step-tabs">{lesson.steps.map((s,i)=><button key={s.title} onClick={()=>{setStepIndex(i);setChoice(null);setSubmitted(false)}} className={stepIndex===i?"current":done(lesson.id,i)?"step-done":""}><span>{done(lesson.id,i)?<Check size={13}/>:String(i+1).padStart(2,"0")}</span><small>{s.title}</small></button>)}</div>
  <article className="content-panel"><div className="content-kicker">STEP {String(stepIndex+1).padStart(2,"0")} <span>/ {String(lesson.steps.length).padStart(2,"0")}</span></div><h2>{step.title}</h2><p className="step-body">{step.body}</p>
  {step.diagram&&<div className="diagram-card"><div className="diagram-label"><span><Activity size={14}/> HOW IT WORKS</span><span>VISUAL MAP</span></div><div className="diagram-flow">{step.diagram.map((d,i)=><div className="diagram-node-wrap" key={d}><div className="diagram-node"><div className="node-number">{String(i+1).padStart(2,"0")}</div><strong>{d}</strong><small>{step.detail?.[i]||""}</small></div>{i<step.diagram.length-1&&<div className="diagram-arrow"><ArrowRight size={16}/></div>}</div>)}</div></div>}
  {step.command&&<div className="command-card"><div className="command-head"><span><Terminal size={14}/> COMMAND TO KNOW</span><button onClick={()=>copy(step.command)}><Copy size={13}/> Copy</button></div><pre><span className="prompt">$ </span>{step.command}</pre><p>{step.explain}</p></div>}
