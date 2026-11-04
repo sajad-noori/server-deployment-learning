@@ -28,7 +28,13 @@ make("github-workflow","Collaborate on GitHub: branch, pull request, review, mer
 ["Update your local main","Switch back to main and pull. Until you pull, your local main still lacks the merged commit.","git switch main && git pull origin main","Downloads the merge so your local main matches GitHub."],
 ["Clean up the feature branch","After merging and switching to main, delete the finished local feature branch if you no longer need it.","git branch -d feature/login","Safely deletes the merged local feature branch."]
 ],"What does opening a pull request do?",["It immediately pushes changes into main","It asks for a change to be reviewed and merged","It downloads the latest main branch"],1,"A pull request proposes changes from one branch into another. Teammates can inspect the diff, discuss it, approve it, and then merge it."),
-make("ssh-linux","Connect to Linux with SSH","linux","Beginner","35 min","Securely access a remote Linux server using SSH keys.","Describe the SSH connection and authenticate using a key pair.",[
+make("git-conflicts","Resolve merge conflicts","git","Intermediate","40 min","Understand why two branches can change the same line, resolve the conflict, and finish the pull request.","Read Git conflict markers, decide the final code, commit the resolution, and complete the merge safely.",[
+["Why conflicts happen","While you worked on your feature branch, Sara merged her own change into main. Both of you edited the same line. Nobody did anything wrong: Git needs you to decide how the two changes should fit together.","git log --oneline --graph --all", "The graph shows that your feature branch and main have diverged.",["main · Sara","\\\\","feature branch · You"],["Sara's commit","Both changed one line","Your commit"]],
+["Read the conflict markers","The opening marker starts your version (HEAD). The separator divides the two versions. The closing marker starts the incoming change from main.","git status","Git reports an unmerged path while the conflict is unresolved."],
+["Choose the final result","Keep mine, keep theirs, or combine both ideas. The correct result is the code your team intends to keep—not automatically one side.","git diff","Inspect the conflict and decide what the final file should contain."],
+["Finish the merge","After editing, stage the resolved file, commit the merge, and push your feature branch. The pull request becomes mergeable after the conflict resolution reaches GitHub.","git add app.js && git commit -m \\"Resolve merge conflict\\"", "The merge commit records the resolution."],
+["Avoid and recover from conflicts","Pull often, keep pull requests focused, and communicate when editing shared files. If you need to back out before committing, use git merge --abort.","git merge --abort","Aborts the in-progress merge and returns the branch to its pre-merge state."] 
+],"What do the lines at the top and bottom of a conflicted section mean?",["They mark the start of your version and the incoming version","They show the file name and line number","They indicate that Git has deleted the file"],0,"<<<<<<< HEAD starts your current branch's version. >>>>>>> main starts the incoming version from the branch being merged. The ======= line separates them."),make("ssh-linux","Connect to Linux with SSH","linux","Beginner","35 min","Securely access a remote Linux server using SSH keys.","Describe the SSH connection and authenticate using a key pair.",[
 ["What SSH does","SSH creates an encrypted connection between your computer (the client) and a remote server. You can execute commands without physically accessing the machine.",null,null,["Your computer","Encrypted SSH tunnel","Linux server"],["SSH client","Port 22 / TCP","sshd service"]],
 ["Generate a key pair","An SSH key pair has a private key that stays on your computer and a public key that you install on the server.","ssh-keygen -t ed25519 -C your-email@example.com","Creates a modern Ed25519 key pair. Protect the private key with a passphrase."],
 ["Copy the public key","Add your public key to the server account's authorized_keys file. Never send your private key to the server.","ssh-copy-id user@YOUR_SERVER_IP","Installs your public key for key-based authentication."],
@@ -92,6 +98,7 @@ pwd:"/home/deploy/my-app",ls:"README.md  package.json  package-lock.json  server
 const playgrounds={
  "git-basics":{title:"Move a file from your laptop to GitHub",intro:"Play the journey: each button moves your file to the next Git stage.",stages:[["💻","Working folder","Your edits live on your computer."],["📥","Staging area","Choose the exact changes for the next snapshot."],["📸","Local commit","Save a permanent snapshot in your local Git history."],["☁️","GitHub remote","Push commits so the remote repository receives them."]],actions:["Edit a file","git add app.js","git commit -m \"Save work\"","git push origin main"],tip:"git add selects · git commit saves locally · git push sends commits to GitHub.",kind:"git"},
  "github-workflow":{title:"Collaborate safely with branches and pull requests",intro:"Follow a team change from your local feature branch to an approved merge and an updated local main.",stages:[["🌿","Local branch","Create an isolated feature branch."],["📸","Local commit","Save your change in Git history."],["☁️","Remote branch","Publish the feature branch to GitHub."],["🔎","Pull request","Review the diff and approve the change."],["🔀","GitHub main","Merge the approved pull request."],["⬇️","Local main","Pull so your local main catches up."]],actions:["git switch -c feature/login","git add app.js && git commit","git push -u origin feature/login","open pr · approve pr","merge pr","git switch main · git pull origin main"],tip:"A merge updates GitHub main first. Your local main is still behind until you switch to it and pull.",kind:"git"},
+ "git-conflicts":{title:"Resolve merge conflicts safely",intro:"Two branches changed the same line. Learn to inspect, resolve, and finish the merge.",stages:[["🌿","Diverged","Sara and you have new commits."],["⚠️","Conflicted","Git found overlapping edits."],["🧩","Resolved","Choose the final code."],["📸","Merge commit","Record the resolution."],["☁️","Pushed","Update the pull request."],["🔀","Merged","Complete the review."]],actions:["git log --oneline --graph --all","git pull origin main","Edit app.js","git add app.js && git commit","git push origin feature/summary","approve pr · merge pr"],tip:"A conflict is a decision for the team, not a sign that somebody made a mistake.",kind:"git"},
  "ssh-linux":{title:"Unlock a secure remote connection",intro:"Explore how a key pair proves who you are without sending your private key.",stages:[["💻","Your computer","The SSH client holds your private key."],["🔑","Key pair","A public key can be shared; the private key stays secret."],["📂","authorized_keys","The server stores the public key for your account."],["🛡️","sshd checks","The server verifies that you control the matching private key."],["🖥️","Remote shell","A successful check opens an encrypted session."]],actions:["Prepare your computer","Generate an Ed25519 key","Install the public key","Verify the key challenge","Connect with SSH"],tip:"Never upload or message your private key. Only the public key belongs on the server.",kind:"ssh"},
  "server-setup":{title:"Build a safer Linux server",intro:"Turn a fresh server into a safer place to host an application.",stages:[["📦","System updates","Install security and package updates."],["👤","Deploy user","Use a normal account instead of running the app as root."],["🚪","Firewall rules","Allow only the network ports your server needs."],["🧱","Protected server","Enable the firewall after allowing SSH access."]],actions:["Update packages","Create deploy user","Allow SSH, HTTP and HTTPS","Enable firewall"],tip:"Keep your current SSH session open and test a second connection before closing it.",kind:"firewall"},
  "node-deploy":{title:"Send your Node.js app live",intro:"Move from source code to a running application, one stage at a time.",stages:[["🐙","GitHub","Your source code and package files live in a repository."],["🖥️","Linux server","Clone the project into the deployment directory."],["📦","Dependencies","npm ci installs the locked dependencies."],["🟢","Node.js process","The app starts and listens on its configured port."],["🌐","HTTP response","A browser or proxy can receive the app's response."]],actions:["Choose repository","git clone ...","npm ci","npm start","Request the app"],tip:"The practice visual is a simulation; it does not deploy a real application.",kind:"deploy"},
@@ -103,210 +110,146 @@ const playgrounds={
  "logs":{title:"Find where a website request is failing",intro:"Choose a fault and follow the request path to find the first place to investigate.",stages:[["🧭","DNS","Does the domain resolve to the right server?"],["🧱","Firewall","Are the required ports reachable?"],["🚦","NGINX","Is the web server running and proxy configured?"],["⚙️","Node.js","Is the upstream application running and listening?"],["🗄️","Database","Can the application reach its data store?"]],actions:["Check DNS","Check firewall","Inspect NGINX","Inspect app process","Check database"],tip:"Diagnose from the outside in. Check logs and evidence before changing configuration.",kind:"diagnostics"}
 };
 function GitInteractiveLab({lessonId}){
- const isWorkflow=lessonId==="github-workflow";
- const starterCode=isWorkflow
-  ? 'function login(email, password) {\n  // TODO: validate the user\n  return { email, authenticated: true };\n}\n'
-  : 'function greet(name) {\n  return "Hello, " + name + "!";\n}\n\nconsole.log(greet("Developer"));\n';
- const [code,setCode]=useState(starterCode);
+ const mode=lessonId==="git-conflicts"?"conflicts":lessonId==="github-workflow"?"workflow":"basics";
+ const isWorkflow=mode==="workflow",isConflict=mode==="conflicts";
+ const scenarios=[
+  {starter:"function getAccess(user) {\n  return user.role === \"admin\";\n}\n\nconsole.log(getAccess(user));\n",mine:'  return user.role === "admin";',theirs:'  return user.isActive;',accepted:["  return user.role === \"admin\";","  return user.isActive;"]},
+  {starter:"function buildMessage(user) {\n  return \"Welcome, \" + user.name;\n}\n\nconsole.log(buildMessage(user));\n",mine:'  return "Welcome, " + user.name;',theirs:'  return "Welcome back, " + user.name;',accepted:["  return \"Welcome, \" + user.name + \" — \" + user.name;","  return \"Welcome back, \" + user.name;","  return \"Welcome, \" + user.name + \" (returning member)\";"]}
+ ];
+ const [round,setRound]=useState(0);
+ const scenario=scenarios[round];
+ const baseCode=isConflict?scenario.starter:isWorkflow?'function login(email, password) {\n  // TODO: validate the user\n  return { email, authenticated: true };\n}\n':'function greet(name) {\n  return "Hello, " + name + "!";\n}\n\nconsole.log(greet("Developer"));\n';
+ const [code,setCode]=useState(baseCode);
  const [fileState,setFileState]=useState("clean");
  const [command,setCommand]=useState("");
- const [output,setOutput]=useState("Your working tree is clean. Edit app.js to begin the exercise.");
- const [branchCreated,setBranchCreated]=useState(false);
- const [currentBranch,setCurrentBranch]=useState("main");
- const [prOpen,setPrOpen]=useState(false);
+ const [output,setOutput]=useState(isConflict?"You are on feature/summary. Your commit is ready; main has moved ahead because Sara merged a change.":"Your working tree is clean. Edit app.js to begin the exercise.");
+ const [branchCreated,setBranchCreated]=useState(isConflict);
+ const [currentBranch,setCurrentBranch]=useState(isConflict?"feature/summary":"main");
+ const [prOpen,setPrOpen]=useState(isConflict);
  const [approved,setApproved]=useState(false);
  const [merged,setMerged]=useState(false);
-  const [localMainBehind,setLocalMainBehind]=useState(false);
-  const [pulled,setPulled]=useState(false);
-  const [branchDeleted,setBranchDeleted]=useState(false);
-  const [statusChecked,setStatusChecked]=useState(false);
+ const [localMainBehind,setLocalMainBehind]=useState(false);
+ const [pulled,setPulled]=useState(false);
+ const [branchDeleted,setBranchDeleted]=useState(false);
+ const [statusChecked,setStatusChecked]=useState(false);
+ const [logChecked,setLogChecked]=useState(false);
+ const [conflictActive,setConflictActive]=useState(false);
+ const [conflictResolved,setConflictResolved]=useState(false);
+ const [mergeCommitted,setMergeCommitted]=useState(false);
+ const [pushed,setPushed]=useState(false);
+ const [mainMoved,setMainMoved]=useState(isConflict);
  const [history,setHistory]=useState([]);
- const [commits,setCommits]=useState([]);
+ const [commits,setCommits]=useState(isConflict?[{id:"7fa31c2",message:"Add feature summary",branch:"feature/summary"}]:[]);
  const [lastCommit,setLastCommit]=useState("");
  const [showAnswer,setShowAnswer]=useState(false);
+ const [tab,setTab]=useState(0);
+ const [abortUsed,setAbortUsed]=useState(false);
+ const [saraApproved,setSaraApproved]=useState(false);
+ const markers=["<<<<<<< HEAD","=======",">>>>>>> origin/main"];
+ const markerText=markers.some(m=>code.includes(m));
+ const hasMine=code.includes(scenario.mine);
+ const hasTheirs=code.includes(scenario.theirs);
+ const validResolution= !markerText && (round===0 ? scenario.accepted.some(v=>code.includes(v)) : code.includes("Welcome")&&code.includes(userNameSafe(scenario.mine))&&code.includes("back"));
+ function userNameSafe(value){return value.includes("Welcome back")?"back":"name";}
+ const checkResolution=()=>{
+  if(markerText)return "Conflict markers remain: "+markers.filter(m=>code.includes(m)).join(", ")+". Remove every marker before staging.";
+  if(round===0&&!scenario.accepted.some(v=>code.includes(v)))return "The file is marker-free, but the chosen line does not match either valid Round 1 version. Keep your admin-role check or Sara's active-user check.";
+  if(round===1&&!(code.includes("Welcome")&&code.includes("back")&&code.includes("name")))return "Round 2 needs both ideas: keep the user's name and include Sara's returning-member greeting. One side is missing.";
+  return "";
+ };
+ const makeConflict=()=>"<<<<<<< HEAD\n"+scenario.mine+"\n=======\n"+scenario.theirs+"\n>>>>>>> origin/main";
  const runCommand=(raw)=>{
-  const cmd=raw.trim();
-  if(!cmd)return;
-  const lower=cmd.toLowerCase();
+  const cmd=raw.trim(),lower=cmd.toLowerCase();if(!cmd)return;
   let message="";
   if(lower==="git status"||lower==="git status -sb"){
-   if(isWorkflow)setStatusChecked(true);
-   const branch=currentBranch;
-   const detail=fileState==="clean"?"nothing to commit, working tree clean":
-    fileState==="modified"?"Changes not staged for commit:\n  modified: app.js":
-    fileState==="staged"?"Changes to be committed:\n  modified: app.js":
-    fileState==="committed"?"Your branch has a local commit not yet pushed.":
-    (isWorkflow&&currentBranch==="main"&&localMainBehind?"Your branch is behind origin/main by 1 commit. Run git pull origin main.":"Your branch is up to date with its remote.");
-   message=(lower.endsWith("-sb")?"## "+branch+(fileState==="committed"?" [ahead 1]":fileState==="pushed"?"":""):"On branch "+branch)+"\n"+detail;
+   if(isConflict){setStatusChecked(true);message=conflictActive?(conflictResolved?"On branch feature/summary\nAll conflicts fixed but you are still merging.\nChanges to be committed: app.js":"On branch feature/summary\nYou have unmerged paths.\n  both modified: app.js\nfix conflicts and run git add app.js"):"On branch feature/summary\nYour branch and 'origin/main' have diverged.\nnothing to commit, working tree clean";}
+   else{if(isWorkflow)setStatusChecked(true);message="On branch "+currentBranch+"\n"+(fileState==="clean"?"nothing to commit, working tree clean":fileState==="modified"?"Changes not staged for commit:\n  modified: app.js":fileState==="staged"?"Changes to be committed:\n  modified: app.js":"Your branch has local changes.");}
+  }else if(lower==="git log --oneline"||lower==="git log --oneline --graph --all"){
+   if(isConflict){setLogChecked(true);message="* 7fa31c2 (HEAD -> feature/summary) Add feature summary\n| * 91b8e20 (origin/main, main) Sara updates welcome message\n|/\n* 4d2c9a1 Base application";}
+   else message=commits.length?commits.map(c=>c.id+" "+c.message+" ("+c.branch+")").join("\n"):"No commits yet.";
+  }else if(lower==="git status --short"){
+   message=conflictActive&&!conflictResolved?"UU app.js\nThe file has an unresolved merge conflict.":"Working tree clean.";
+  }else if(lower==="git pull origin main"||lower==="git merge origin/main"){
+   if(isConflict){
+    if(!mainMoved)message="Already up to date.";
+    else if(conflictActive)message="A merge is already in progress. Resolve app.js, stage it, then commit—or run git merge --abort.";
+    else{setConflictActive(true);setConflictResolved(false);setFileState("conflicted");setCode(makeConflict());message="Auto-merging app.js\nCONFLICT (content): Merge conflict in app.js\nAutomatic merge failed; fix conflicts and then commit the result.\n\nGit stopped because both branches changed the same line. Open app.js and resolve the markers.";}
+   }else if(isWorkflow){if(currentBranch!=="main")message="Switch to main first.";else if(merged){setPulled(true);message="Already up to date with origin/main."; }else message="No new remote commits to pull.";}
+   else message="Already up to date.";
+  }else if(lower==="git merge --abort"){
+   if(isConflict&&conflictActive&&!mergeCommitted){setConflictActive(false);setConflictResolved(false);setFileState("clean");setCode(scenario.starter);setAbortUsed(true);message="Merge aborted. Git returned feature/summary to the state before the pull. Your existing feature commit is safe.";}
+   else message="There is no merge in progress to abort.";
   }else if(lower==="git diff"){
-   message=fileState==="modified"
-    ? "diff --git a/app.js b/app.js\n--- a/app.js\n+++ b/app.js\n@@ Working tree changes @@\n"+code.split("\n").map(line=>"+"+line).join("\n")+"\n\nThis is a simplified visual diff of your edited file."
-    : "No unstaged changes.\nTip: use git diff --staged to inspect changes you've added.";
-  }else if(lower==="git diff --staged"){
-   message=fileState==="staged"?"diff --git a/app.js b/app.js\n--- a/app.js\n+++ b/app.js\n@@ Staged snapshot @@\n"+code.split("\n").map(line=>"+"+line).join("\n")+"\n\nThese changes are staged and ready to commit.":"No staged changes.\nRun git add app.js first.";
+   message=conflictActive?code:"No unstaged changes.";
   }else if(lower==="git add app.js"||lower==="git add ."){
-   if(fileState==="modified"){setFileState("staged");message="✓ Changes added to the staging area.\napp.js is staged. Nothing has been committed or uploaded yet.\n\nNext: inspect with git diff --staged, then commit."}
-   else if(fileState==="staged")message="app.js is already staged.";
-   else message="No modified files to stage. Edit app.js first, then run git add app.js.";
-  }else if(lower==="git restore --staged app.js"){
-   if(fileState==="staged"){setFileState("modified");message="✓ Removed app.js from the staging area.\nYour edits remain in the working directory. They are not discarded."}
-   else message="app.js is not staged. Nothing to unstage.";
-  }else if(lower==="git restore app.js"){
-   if(fileState==="modified"){setCode(starterCode);setFileState("clean");message="✓ Unstaged working-tree changes discarded.\napp.js has been restored to the last committed version in this simplified exercise."}
-   else if(fileState==="staged")message="app.js has staged changes. Use git restore --staged app.js to unstage them before discarding your edits.";
-   else message="No unstaged changes to restore.";
-  }else if(lower==="git branch"){
-   message=(currentBranch==="main"?"* main":"  main")+"\n"+(branchCreated&&!branchDeleted?(currentBranch==="feature/login"?"* feature/login":"  feature/login"):"");
-  }else if(lower==="git switch main"&&isWorkflow){
-   if(!merged)message="You can switch back to main after the pull request has been merged.";
-   else{setCurrentBranch("main");message="Switched to branch main. Your local main is still behind origin/main. Run git pull origin main.";}
-  }else if(lower.startsWith("git switch -c ")&&isWorkflow){
-   const name=cmd.slice("git switch -c ".length).trim();
-   if(!name||name.includes(" "))message="Branch name must be a single name, for example: git switch -c feature/login";
-   else if(name!=="feature/login")message="For this practice lab, use the branch name feature/login so the later commands match.";
-   else if(branchCreated)message="This lab already has a feature branch. Use git switch feature/login to return to it.";
-   else{setBranchCreated(true);setCurrentBranch(name);message="✓ Switched to a new branch '"+name+"'.\nmain remains unchanged. Your next commits will belong to "+name+"."}
-  }else if(lower.startsWith("git switch ")&&isWorkflow){
-   const name=cmd.slice("git switch ".length).trim();
-   if(name==="feature/login"&&branchCreated&&!branchDeleted){setCurrentBranch(name);message="Switched to branch '"+name+"'."}
-   else if(name==="main"){setCurrentBranch("main");message="Switched to branch 'main'."}
-   else message="Branch not found. Create it with git switch -c feature/login.";
+   if(isConflict&&conflictActive){const issue=checkResolution();if(issue)message="✕ Cannot stage this resolution yet.\n"+issue;else{setConflictResolved(true);setFileState("staged");message="✓ All conflict markers are gone and the final result is valid. app.js is staged as resolved."}}
+   else if(fileState==="modified"){setFileState("staged");message="✓ app.js staged."}
+   else message="No modified file to stage. Edit app.js first.";
   }else if(lower.startsWith("git commit")){
    const match=cmd.match(/-m\s+["'](.+?)["']\s*$/)||cmd.match(/-m\s+(.+)$/);
-   if(!match)message='Please include a commit message, e.g. git commit -m "Add greeting"';
-   else if(fileState==="staged"){
-    const msg=match[1];setFileState("committed");setLastCommit(msg);setCommits(items=>[{id:"a1b2c3d",message:msg,branch:currentBranch},...items]);
-    message="✓ Commit created locally.\n[a1b2c3d] "+msg+"\n1 file changed.\n\nThis snapshot is in your local repository. GitHub has not received it yet.";
-   }else message="Nothing staged to commit.\nRun git add app.js before committing.";
-  }else if(lower==="git log --oneline"){
-   message=commits.length?commits.map(c=>c.id+" "+c.message+" ("+c.branch+")").join("\n"):"No commits yet.\nCreate your first snapshot with git add app.js, then git commit.";
-  }else if(lower==="git push"||lower==="git push origin main"||lower==="git push origin feature/login"||lower==="git push -u origin feature/login"||lower.startsWith("git push -u origin ")){
-   if(isWorkflow&&(currentBranch==="main"||lower.endsWith("origin main")))message="✕ Push rejected: main is protected in this team workflow. Create a feature branch, push it, and open a pull request for review.";
-   else if(fileState==="committed"){setFileState("pushed");message="✓ Push successful.\nYour local commit is now on origin/"+currentBranch+".\nUpstream tracking is set to origin/"+currentBranch+".\nGitHub has received the commit."}
-   else if(fileState==="pushed")message="Everything up to date.";
-   else message="There is no new local commit to push.\nEdit a file, stage it, and commit first.";
-  }else if(lower==="open pr"&&isWorkflow){
-   if(fileState==="pushed"){setPrOpen(true);message="✓ Pull request opened: "+currentBranch+" → main.\nReviewers can inspect the changes. The branches are not merged yet."}
-   else message="Push your feature branch to GitHub before opening a pull request.";
-  }else if(lower==="approve pr"&&isWorkflow){
-   if(prOpen){setApproved(true);message="✓ Review approved.\nThe pull request is ready to merge."}
+   if(!match)message='Add a message: git commit -m "Resolve merge conflict"';
+   else if(isConflict&&conflictActive){
+    if(!conflictResolved||markerText){message="✕ The lab blocks this commit while conflict markers remain or the resolution has not been staged.\nReal Git can create a commit containing marker text; this simulation blocks it because the resulting code would be broken.";}
+    else{setMergeCommitted(true);setFileState("committed");setLastCommit(match[1]);setCommits(items=>[{id:"c81d4a2",message:match[1],branch:currentBranch},...items]);message="✓ Merge commit created: c81d4a2\nThe conflict resolution is now recorded in your feature branch.";}
+   }else if(fileState==="staged"){setFileState("committed");setLastCommit(match[1]);setCommits(items=>[{id:"a1b2c3d",message:match[1],branch:currentBranch},...items]);message="✓ Commit created locally."}
+   else message="Nothing staged to commit. Run git add app.js first.";
+  }else if(lower==="git push"||lower==="git push origin feature/summary"||lower==="git push -u origin feature/summary"||lower==="git push origin feature/login"||lower==="git push -u origin feature/login"){
+   if(isConflict){
+    if(conflictActive&&!mergeCommitted)message="✕ Push rejected: unmerged paths remain. Resolve app.js, stage it, and create the merge commit before pushing.";
+    else if(mergeCommitted){setPushed(true);setFileState("pushed");message="✓ Pushed feature/summary to origin. The merge commit is now on GitHub, so the pull request can be merged.";}
+    else message="No new commits to push.";
+   }else if(isWorkflow&&currentBranch==="main")message="✕ Push rejected: main is protected. Use a feature branch and pull request.";
+   else if(fileState==="committed"){setFileState("pushed");message="✓ Push successful. Your commit is on origin/"+currentBranch+"."}
+   else message="There is no new local commit to push.";
+  }else if(lower==="open pr"&&isWorkflow){setPrOpen(fileState==="pushed");message=fileState==="pushed"?"✓ Pull request opened: feature/login → main.":"Push your feature branch first.";}
+  else if(lower==="open pr"&&isConflict){message=conflictActive?"Pull request #2 is blocked: this branch has merge conflicts.":"Pull request #2 is open.";}
+  else if(lower==="approve pr"&&(isWorkflow||isConflict)){
+   if(isConflict&&(!pushed||!conflictResolved))message="Resolve the conflict and push the branch before approval.";
+   else if(prOpen||isConflict){setApproved(true);message="✓ Review approved. The pull request is ready to merge.";}
    else message="Open a pull request first.";
-  }else if(lower==="merge pr"&&isWorkflow){
-   if(approved){setMerged(true);setLocalMainBehind(true);message="✓ Pull request merged into GitHub main.\nYour local main has NOT changed yet. Switch to main, then run git pull origin main."}
+  }else if(lower==="merge pr"&&(isWorkflow||isConflict)){
+   if(isConflict&&!pushed)message="Push the resolved merge commit before merging this pull request.";
+   else if(approved||saraApproved){setMerged(true);setLocalMainBehind(true);message="✓ Pull request merged into GitHub main. Switch to main and pull to update your local copy.";}
    else message="The pull request needs approval before it can be merged.";
-  }else if(lower==="git pull origin main"&&isWorkflow){
-    if(currentBranch!=="main")message="Switch to main first with git switch main, then pull the merged changes.";
-    else if(!merged)message="There is no merged pull request to pull yet. Complete the review and merge first.";
-    else if(!localMainBehind)message="Already up to date.";
-    else{setLocalMainBehind(false);setPulled(true);message="✓ Fast-forwarded local main. Your local main now includes the merged feature from origin/main."}
-   }else if(lower==="git branch -d feature/login"&&isWorkflow){
-    if(!merged)message="Cannot delete this branch yet. Merge the pull request first.";
-    else if(currentBranch!=="main")message="Switch to main before deleting the finished feature branch.";
-    else if(!pulled)message="Pull origin/main first so your local main contains the merge, then delete the branch.";
-    else{setBranchDeleted(true);message="Deleted branch feature/login. The merged work remains safely in main."}
-   }else if(lower==="clear"){
-   message="Terminal cleared.";
-  }else{
-   message="Command not recognized in this Git practice lab.\nTry: git status, git diff, git add app.js, git restore --staged app.js, git commit -m \"Save changes\", git log --oneline"+(isWorkflow?", git switch -c feature/login, git push -u origin feature/login, open pr, approve pr, merge pr":", git push origin main")+".";
-  }
-  setHistory(items=>[...items.slice(-7),"$ "+cmd]);
-  setOutput(message);
-  setCommand("");
+  }else if(lower==="git switch main"&&(isWorkflow||isConflict)){
+   if(!merged)message="Switch back to main after the pull request has been merged.";
+   else{setCurrentBranch("main");message="Switched to branch main. Run git pull origin main to update it.";}
+  }else if(lower==="git pull origin main"&&isWorkflow&&currentBranch==="main"&&merged){setPulled(true);setLocalMainBehind(false);message="✓ Local main now includes the merged change.";}
+  else if(lower==="git branch"){message="* "+currentBranch+(isConflict?"\n  main\n  feature/summary": "\n  main\n  feature/login");}
+  else if(lower==="clear"){message="Terminal cleared.";}
+  else message="Command not recognized. Try git status, git log --oneline --graph --all, git pull origin main, git merge --abort, git add app.js, git commit, or git push.";
+  setHistory(items=>[...items.slice(-7),"$ "+cmd]);setOutput(message);setCommand("");
  };
  const reset=()=>{
-  setCode(starterCode);setFileState("clean");setCommand("");setOutput("Your working tree is clean. Edit app.js to begin the exercise.");
-  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setStatusChecked(false);setShowAnswer(false);setHistory([]);setCommits([]);setLastCommit("");
+  setRound(0);setCode(isConflict?scenarios[0].starter:baseCode);setFileState("clean");setCommand("");setOutput(isConflict?"You are on feature/summary. Your commit is ready; main has moved ahead because Sara merged a change.":"Your working tree is clean. Edit app.js to begin the exercise.");
+  setBranchCreated(isConflict);setCurrentBranch(isConflict?"feature/summary":"main");setPrOpen(isConflict);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setStatusChecked(false);setLogChecked(false);setConflictActive(false);setConflictResolved(false);setMergeCommitted(false);setPushed(false);setMainMoved(isConflict);setAbortUsed(false);setShowAnswer(false);setHistory([]);setCommits(isConflict?[{id:"7fa31c2",message:"Add feature summary",branch:"feature/summary"}]:[]);setLastCommit("");
  };
- const stages=isWorkflow?[
-  ["01","Feature branch","Isolated work",branchCreated],
-  ["02","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
-  ["03","Remote branch","Published on GitHub",fileState==="pushed"||prOpen||approved||merged],
-  ["04","Pull request","Reviewed and approved",approved||merged],
-  ["05","GitHub main","Feature merged",merged],
-  ["06","Local main","Pulled and up to date",pulled],
-   ["06","Local main","Pulled and up to date",pulled]
- ]:[
-  ["01","Working folder","Modified file",fileState==="modified"],
-  ["02","Staging area","Selected changes",fileState==="staged"],
-  ["03","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"],
-  ["04","GitHub remote","Uploaded commit",fileState==="pushed"]
- ];
- const activeStage=isWorkflow?(pulled?5:merged?4:approved||prOpen?3:fileState==="pushed"?2:fileState==="committed"?1:branchCreated?0:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
- const shortcuts=isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr","git switch main","git pull origin main","git branch -d feature/login"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"];
- const mission=isWorkflow?[
-  ["Check status on main",statusChecked],
-  ["Create and switch to a feature branch",branchCreated],
-  ["Edit app.js",fileState!=="clean"],
-  ["Stage and commit the change",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
-  ["Push with upstream tracking",fileState==="pushed"||prOpen||approved||merged],
-  ["Open a pull request",prOpen||approved||merged],
-  ["Review and approve the pull request",approved||merged],
-  ["Merge into GitHub main",merged],
-  ["Switch to local main and pull",pulled],
-  ["Delete the finished branch (optional)",branchDeleted]
- ]:[
-  ["Edit app.js",fileState!=="clean"],
-  ["Stage the change",["staged","committed","pushed"].includes(fileState)],
-  ["Create a local commit",["committed","pushed"].includes(fileState)],
-  ["Push the commit to GitHub",fileState==="pushed"]
- ];
- const answer=isWorkflow
-  ? (!statusChecked
-    ? {title:"Check your starting point",explanation:"Confirm you are on main and the working tree is clean before starting.",command:"git status"}
-    : !branchCreated
-      ? {title:"Create your feature branch",explanation:"A branch gives you a separate workspace without changing main.",command:"git switch -c feature/login"}
-      : fileState==="clean"
-        ? {title:"Edit the sample code",explanation:"Change authenticated: true to authenticated: Boolean(email && password) in the editor.",code:'function login(email, password) {\n  return { email, authenticated: Boolean(email && password) };\n}\n'}
-        : fileState==="modified"
-          ? {title:"Stage your change",explanation:"Stage app.js so it can be included in your next commit.",command:"git add app.js"}
-          : fileState==="staged"
-            ? {title:"Create a local commit",explanation:"Save your staged change in your local Git history.",command:'git commit -m "Add login validation"'}
-            : fileState==="committed"
-              ? {title:"Publish the feature branch",explanation:"Push the branch and set upstream tracking to origin/feature/login.",command:"git push -u origin feature/login"}
-              : !prOpen
-                ? {title:"Open a pull request",explanation:"Ask teammates to review your branch before it is merged into main.",command:"open pr"}
-                : !approved
-                  ? {title:"Review and approve",explanation:"Inspect the diff in the reviewer panel, then approve the proposed change.",command:"approve pr"}
-                  : !merged
-                    ? {title:"Merge the approved change",explanation:"The merge updates GitHub main. It does not update your local main yet.",command:"merge pr"}
-                    : !pulled
-                      ? {title:"Update your local main",explanation:"Switch to main and pull the merge from GitHub.",command:currentBranch==="main"?"git pull origin main":"git switch main"}
-                      : {title:"Mission complete",explanation:"Your reviewed change is merged on GitHub and your local main is up to date. Optional cleanup: git branch -d feature/login."})
-  : (fileState==="clean"
-    ? {title:"Edit the sample code",explanation:"Change the greeting text or the name in the editor above. Any edit will mark app.js as modified.",code:'function greet(name) {\n  return "Welcome, " + name + "!";\n}\n\nconsole.log(greet("Developer"));\n'}
-    : fileState==="modified"
-      ? {title:"Stage your change",explanation:"Add the edited file to Git's staging area. Staging prepares it for the next commit.",command:"git add app.js"}
-      : fileState==="staged"
-        ? {title:"Create a local commit",explanation:"Save the staged change as a snapshot in your local Git repository.",command:'git commit -m "Update greeting"'}
-        : fileState==="committed"
-          ? {title:"Push to GitHub",explanation:"Send your local commit to the remote repository. This is the step that publishes it on GitHub.",command:"git push origin main"}
-          : {title:"Mission complete",explanation:"Your commit has been pushed to GitHub. You completed the basic Git workflow."});
- const applyAnswer=()=>{
-  if(answer.command){setCommand(answer.command);return;}
-  if(answer.code){setCode(answer.code);setFileState("modified");setOutput("✓ Example solution inserted. app.js is now modified. Continue with the next Git command.");}
- };
+ const nextRound=()=>{setRound(1);setCode(scenarios[1].starter);setFileState("clean");setConflictActive(false);setConflictResolved(false);setMergeCommitted(false);setPushed(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setMainMoved(true);setPrOpen(true);setStatusChecked(false);setLogChecked(false);setOutput("Round 2: both branches added useful parts to the welcome message. Pull main to reveal the conflict.");setHistory([]);setCommits([{id:"d2a8f10",message:"Add welcome message",branch:"feature/summary"}]);setShowAnswer(false);};
+ const stages=isConflict?[["01","Diverged","main moved ahead",mainMoved],["02","Conflicted","same line changed",conflictActive],["03","Resolved","final code chosen",conflictResolved],["04","Committed","merge commit saved",mergeCommitted],["05","Pushed","resolution on GitHub",pushed],["06","Merged","pull request merged",merged]]:isWorkflow?[["01","Feature branch","Isolated work",branchCreated],["02","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"],["03","Remote branch","Published",fileState==="pushed"],["04","Pull request","Reviewed",approved||merged],["05","GitHub main","Merged",merged],["06","Local main","Pulled",pulled]]:[["01","Working folder","Modified file",fileState==="modified"],["02","Staging area","Selected changes",fileState==="staged"],["03","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"],["04","GitHub remote","Uploaded commit",fileState==="pushed"]];
+ const activeStage=isConflict?(merged?5:pushed?4:mergeCommitted?3:conflictResolved?2:conflictActive?1:0):isWorkflow?(pulled?5:merged?4:approved?3:fileState==="pushed"?2:fileState==="committed"?1:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
+ const mission=isConflict?[["Check status and inspect the log",statusChecked&&logChecked],["Open the pull request and notice conflicts",prOpen],["Pull latest main into your branch",conflictActive],["Inspect unmerged status",conflictActive&&statusChecked],["Resolve every marker in app.js",conflictResolved],["Stage the resolved file",conflictResolved],["Create the merge commit",mergeCommitted],["Push the branch",pushed],["Approve and merge the pull request",merged],["Switch to main and pull",pulled],["Optional: abort a merge safely",abortUsed]]:isWorkflow?[["Check status on main",statusChecked],["Create a feature branch",branchCreated],["Edit app.js",fileState!=="clean"],["Stage and commit",fileState==="committed"||fileState==="pushed"],["Push with upstream",fileState==="pushed"],["Open pull request",prOpen],["Approve review",approved],["Merge pull request",merged],["Switch to main and pull",pulled]]:[["Edit app.js",fileState!=="clean"],["Stage the change",["staged","committed","pushed"].includes(fileState)],["Create a local commit",["committed","pushed"].includes(fileState)],["Push to GitHub",fileState==="pushed"]];
+ const answer=isConflict?(!statusChecked?{title:"Check the branch status",command:"git status",explanation:"See that your feature branch has diverged from main."}:!logChecked?{title:"Inspect the commit graph",command:"git log --oneline --graph --all",explanation:"Sara's main commit and your feature commit are on different lines."}:!conflictActive?{title:"Bring main into your branch",command:"git pull origin main",explanation:"Git combines the histories and pauses when it finds the same line changed twice."}:!conflictResolved?{title:"Resolve the conflict",code:round===0?scenario.accepted[0]: 'function buildMessage(user) {\n  return "Welcome back, " + user.name + " — " + user.name;\n}\n\nconsole.log(buildMessage(user));',explanation:"Remove every marker and choose a valid final result. Round 2 must keep both ideas."}:!mergeCommitted?{title:"Stage the resolution",command:"git add app.js",explanation:"Stage the resolved file, then create the merge commit."}:!mergeCommitted?{title:"Commit the merge",command:'git commit -m "Resolve merge conflict"',explanation:"The merge commit records your final combined result."}:!pushed?{title:"Push the resolved branch",command:"git push origin feature/summary",explanation:"Publish the merge commit so GitHub can re-check the pull request."}:!merged?{title:"Approve and merge",command:"approve pr",explanation:"Approve the reviewed result, then run merge pr."}:!pulled?{title:"Update local main",command:"git switch main",explanation:"Switch to main and run git pull origin main."}:{title:"Mission complete",explanation:"The conflict is resolved, pushed, merged, and present on local main."}:{title:"Next step",command:"git status",explanation:"Follow the mission checklist."};
+ const applyAnswer=()=>{if(answer.command)setCommand(answer.command);else if(answer.code){setCode(answer.code);setConflictResolved(false);setFileState("modified");setOutput("Example inserted. Review the final code, then run git add app.js.");}};
+ const tabs=[["Why conflicts happen","Two branches changed the same line. Git cannot guess which meaning the team wants."],["Read the markers","<<<<<<< HEAD begins your version. ======= separates the versions. >>>>>>> origin/main begins Sara's incoming version."],["Choose the result","Round 1 accepts either side. Round 2 requires both the original name and Sara's returning-member idea."],["Finish the merge","Remove all markers, stage, commit, push, then approve and merge the pull request."],["Avoid conflicts","Pull often, keep pull requests small, and coordinate when touching the same files. Use git merge --abort to safely back out before committing."]];
  return <section className="git-lab">
-  <div className="git-lab-heading"><div><span className="playground-kicker">🎮 HANDS-ON GIT WORKSHOP</span><h2>{isWorkflow?"Build a feature and merge it":"Make a code change and send it to GitHub"}</h2><p>{isWorkflow?"Create a feature branch, commit your code, publish it, then review and merge the pull request.":"Edit the sample code and use Git commands to move the file through the workflow. Inspect your changes before saving a commit."}</p></div><span className="git-lab-tag">YOU CONTROL THE COMMANDS</span></div>
+  <div className="git-lab-heading"><div><span className="playground-kicker">🎮 HANDS-ON GIT WORKSHOP</span><h2>{isConflict?"Resolve merge conflicts":isWorkflow?"Build a feature and merge it":"Make a code change and send it to GitHub"}</h2><p>{isConflict?"Sara merged a change into main while you worked on your feature branch. Both of you edited the same line. Your job is to decide what the final code should be.":isWorkflow?"Create a feature branch, commit your code, publish it, then review and merge the pull request.":"Edit the sample code and use Git commands to move the file through the workflow."}</p></div><span className="git-lab-tag">{isConflict?"SAFE CONFLICT PRACTICE":"YOU CONTROL THE COMMANDS"}</span></div>
+  {isConflict&&<><div className="git-conflict-story"><strong>📖 The story</strong><p>While you worked on your feature branch, Sara merged her own change into <code>main</code>. Both of you edited the same line. Nobody did anything wrong—Git needs your help to combine the work.</p><small>Starting point: <code>feature/summary</code> · Your commit is already made · <code>main</code> has moved ahead</small></div><div className="git-conflict-tabs">{tabs.map((t,i)=><button type="button" key={t[0]} className={tab===i?"active":""} onClick={()=>setTab(i)}>{i+1}. {t[0]}</button>)}</div><div className="git-conflict-tab-detail"><strong>{tabs[tab][0]}</strong><p>{tabs[tab][1]}</p>{tab===0&&<div className="git-conflict-branch-diagram"><span>main · Sara <b>●────●</b></span><span>feature · You <b>●────●</b></span><small>Both branches changed the same line after their shared base.</small></div>}</div><div className="git-conflict-anatomy"><strong>Conflict anatomy</strong><div><span className="marker-mine"><<<<<<< HEAD · your version</span><span className="marker-divider">======= · separator</span><span className="marker-theirs">>>>>>>> origin/main · Sara's version</span></div></div></>}
   <div className="git-lab-editor">
-   <div className="git-lab-editor-head"><span><Code2 size={15}/> app.js <i className={fileState==="clean"?"":"git-file-dirty"}/></span><small>{fileState==="clean"?"Saved version":fileState==="modified"?"Modified · not staged":fileState==="staged"?"Staged for commit":fileState==="committed"?"Committed locally":"Pushed to GitHub"}</small></div>
-   <textarea aria-label="Edit app.js code" spellCheck="false" value={code} onChange={e=>{setCode(e.target.value);setFileState("modified");setPrOpen(false);setApproved(false);setMerged(false);setOutput("✎ File changed in your working directory.\nGit detects the modification, but it is not staged. Try git status or git diff.");}}/>
-   <div className="git-lab-editor-foot"><span>✎ Edit the code to create a working-tree change.</span><button type="button" onClick={()=>{setCode(starterCode);setFileState("clean");setOutput("Starter code restored. Working tree is clean.");}}>Restore starter code</button></div>
+   <div className="git-lab-editor-head"><span><Code2 size={15}/> app.js <i className={fileState==="clean"?"":"git-file-dirty"}/></span><small>{isConflict?(conflictActive?(conflictResolved?"Resolved · staged":"Conflict · edit both sides carefully"):"Starter file · 6 lines"):fileState==="clean"?"Saved version":fileState==="modified"?"Modified · not staged":fileState==="staged"?"Staged for commit":fileState==="committed"?"Committed locally":"Pushed to GitHub"}</small></div>
+   {isConflict&&conflictActive&&<div className="git-conflict-legend"><span className="marker-mine">Your version (HEAD)</span><span className="marker-divider">Divider (=======)</span><span className="marker-theirs">Sara's version (origin/main)</span></div>}
+   <div className="git-conflict-editor-wrap">{isConflict&&conflictActive&&<pre className="git-conflict-highlight" aria-hidden="true">{code.split("\n").map((line,i)=><span key={i} className={line.startsWith("<<<<<<<")?"marker-mine":line==="======="?"marker-divider":line.startsWith(">>>>>>>")?"marker-theirs":line===scenario.mine?"marker-mine":line===scenario.theirs?"marker-theirs":""}>{line||" "}</span>)}</pre>}<textarea aria-label="Edit app.js code" spellCheck="false" value={code} onChange={e=>{setCode(e.target.value);if(isConflict){setConflictResolved(false);setFileState("modified");setOutput("File edited. Check that every conflict marker is removed and the final code follows this round's rule.");}else{setFileState("modified");setPrOpen(false);setApproved(false);setMerged(false);setOutput("File changed in your working directory. Try git status or git diff.");}}}/></div>
+   <div className="git-lab-editor-foot"><span>{isConflict?"Edit the conflicted file directly. Remove every marker.":"Edit the code to create a working-tree change."}</span><button type="button" onClick={()=>{setCode(isConflict?scenario.starter:baseCode);setFileState("clean");setConflictResolved(false);setOutput("Starter code restored.");}}>Restore starter code</button></div>
   </div>
-  <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>{isWorkflow?"Your GitHub mission":"Your Git mission"}</strong><small>Complete each objective by using the terminal below. Stuck? Reveal the solution.</small></div><div className="git-lab-mission-actions"><span>{mission.filter((x,i)=>x[1]&&(!isWorkflow||i<9)).length}/{isWorkflow?mission.length-1:mission.length} complete</span><button type="button" onClick={()=>setShowAnswer(v=>!v)}>{showAnswer?"Hide answer":"Show answer"}</button></div></div><div className="git-lab-mission-list">{mission.map((item,i)=><div className={item[1]?"complete":""} key={item[0]}><span>{item[1]?"✓":i+1}</span>{item[0]}</div>)}</div></div>
+  {isConflict&&conflictActive&&<div className="git-conflict-help"><strong>Need a hint?</strong><span>These shortcuts insert a suggested resolution. You can also type the final code yourself.</span><div><button type="button" onClick={()=>setCode(scenario.mine+"\n")}>Keep mine</button><button type="button" onClick={()=>setCode(scenario.theirs+"\n")}>Keep theirs</button><button type="button" onClick={()=>setCode(round===0?scenario.mine+"\n":'  return "Welcome back, " + user.name + " — " + user.name;\n')}>Keep both / combine</button></div><small>{round===0?"Round 1: either side is acceptable.":"Round 2: keep the name and the returning-member idea."}</small></div>}
+  <div className="git-lab-mission"><div className="git-lab-mission-head"><div><strong>{isConflict?"Your conflict-resolution mission":isWorkflow?"Your GitHub mission":"Your Git mission"}</strong><small>Use the terminal below. The lab checks your resolution before staging and committing.</small></div><div className="git-lab-mission-actions"><span>{mission.filter(x=>x[1]).length}/{mission.length} complete</span><button type="button" onClick={()=>setShowAnswer(v=>!v)}>{showAnswer?"Hide answer":"Show answer"}</button></div></div><div className="git-lab-mission-list">{mission.map((item,i)=><div className={item[1]?"complete":""} key={item[0]}><span>{item[1]?"✓":i+1}</span>{item[0]}</div>)}</div></div>
   {showAnswer&&<div className="git-lab-answer"><div><span className="git-lab-answer-kicker">STEP-BY-STEP SOLUTION</span><strong>{answer.title}</strong><p>{answer.explanation}</p>{answer.command&&<div className="git-lab-answer-command"><code>{answer.command}</code><button type="button" onClick={applyAnswer}>Use this command</button></div>}{answer.code&&<><pre>{answer.code}</pre><button type="button" onClick={applyAnswer}>Insert example solution</button></>}</div></div>}
-  {isWorkflow&&prOpen&&<div className="git-review-panel"><div className="git-review-head"><strong>Pull request #1 · Add login validation</strong><span>{merged?"Merged":approved?"Approved":"Open · awaiting review"}</span></div><p><code>feature/login</code> wants to merge into <code>main</code></p><div className="git-review-diff"><div><span>app.js · Files changed</span><small>+1 −1</small></div><pre>- return { "{ email, authenticated: true }" };\n+ return { "{ email, authenticated: Boolean(email && password) }" };</pre></div><label className="git-review-comment">Reviewer comment<textarea defaultValue="Looks good. The change is clear and ready to merge." disabled={approved||merged}/></label><div className="git-review-actions"><small>Review the proposed change before approving.</small><button type="button" disabled={approved||merged} onClick={()=>{setApproved(true);setOutput("✓ Review approved. The pull request is ready to merge.");}}>✓ Approve pull request</button></div></div>}
-  <div className="git-lab-flow" aria-label="Git workflow progress">
-   {stages.map((s,i)=><div className={"git-lab-stage "+(i===activeStage?"is-current":s[3]?"is-done":"")} key={s[0]}><div className="git-lab-stage-icon">{s[3]?"✓":s[0]}</div><strong>{s[1]}</strong><small>{s[2]}</small></div>)}
-  </div>
-  <div className="git-lab-terminal">
-   <div className="git-lab-terminal-title"><span><Terminal size={15}/> Git command line</span><small>SIMULATED REPOSITORY · {currentBranch}</small></div>
-   <form onSubmit={e=>{e.preventDefault();runCommand(command);}} className="git-lab-command-form"><span>$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder="Type a Git command..." aria-label="Git command"/><button type="submit" disabled={!command.trim()}>Run command <ArrowRight size={14}/></button></form>
-   <pre className="git-lab-output" aria-live="polite">{output}</pre>
-   {history.length>0&&<div className="git-lab-history">{history.map((item,i)=><span key={i}>{item}</span>)}</div>}
-  </div>
-  <div className="git-lab-shortcuts"><div><strong>Command toolbox</strong><small>Select a command to load it into the terminal, then run it.</small></div><div className="git-lab-shortcut-list">{shortcuts.map(cmd=><button type="button" key={cmd} onClick={()=>setCommand(cmd)}>{cmd}</button>)}</div></div>
-  <div className="git-lab-commit-card"><div><strong>Local commit history</strong><small>{commits.length?commits.length+" commit"+(commits.length===1?"":"s")+" created in this session":"No commits yet — commits are saved locally before pushing."}</small></div><div className="git-lab-commit-entry">{commits.length?commits.map(c=><div key={c.id+c.message}><code>{c.id}</code><span>{c.message}</span><small>{c.branch}</small></div>):<p>Your first commit will appear here after <code>git commit</code>.</p>}</div></div>
-  <div className={"git-lab-explain "+(fileState==="pushed"||merged?"success":"")}><strong>{isWorkflow?(merged?(pulled?"🎉 Local main is up to date":"🎉 Feature merged on GitHub — pull locally"):approved?"✓ Pull request approved":prOpen?"🔎 Pull request is ready for review":branchCreated?"🌱 Feature branch workflow":"Start by creating a branch"):(fileState==="pushed"?"☁️ Your code is on GitHub":fileState==="committed"?"📸 A local commit has been created":fileState==="staged"?"📥 Your changes are staged":fileState==="modified"?"📝 Your file has local changes":"💻 Your working directory is clean")}</strong><p>{isWorkflow?(merged?(pulled?"Your local main now includes the merged feature and matches origin/main.":"GitHub main contains the approved feature, but your local main is still behind. Switch to main and run git pull origin main."):approved?"The reviewer approved the pull request. Run merge pr to finish.":prOpen?"A pull request compares your feature branch with main. It does not merge automatically.":branchCreated?"Your changes are isolated on "+currentBranch+". Commit and push them before opening a pull request.":"A feature branch gives you a safe place to work without changing main."):(fileState==="pushed"?"git push uploaded your local commit to the remote repository.":fileState==="committed"?"git commit saved a snapshot locally. GitHub has not received it yet.":fileState==="staged"?"git add selected the file for your next commit. It is still only on your computer.":fileState==="modified"?"Git sees your edits in the working directory. Stage them when you are ready.":"Edit app.js to begin. Git will detect the file modification.")}</p></div>
+  {isConflict&&prOpen&&<div className="git-review-panel"><div className="git-review-head"><strong>Pull request #2 · Update feature summary</strong><span>{merged?"Merged":pushed?"No conflicts · ready for review":"⚠ Has conflicts"}</span></div><p><code>feature/summary</code> wants to merge into <code>main</code></p>{!pushed?<div className="git-conflict-banner">This branch has conflicts that must be resolved before GitHub can merge it.</div>:<div className="git-conflict-mergeable">✓ This branch has no conflicts with the base branch.</div>}<div className="git-review-actions"><small>{pushed?"Review the resolved diff, approve, then merge.":"Resolve locally and push the merge commit to update this pull request."}</small><button type="button" disabled={!pushed||approved||merged} onClick={()=>{setApproved(true);setOutput("✓ Review approved. Run merge pr to finish.");}}>✓ Approve pull request</button></div></div>}
+  <div className="git-lab-flow" aria-label="Git workflow progress">{stages.map((s,i)=><div className={"git-lab-stage "+(i===activeStage?"is-current":s[3]?"is-done":"")} key={s[0]+s[1]}><div className="git-lab-stage-icon">{s[3]?"✓":s[0]}</div><strong>{s[1]}</strong><small>{s[2]}</small></div>)}</div>
+  <div className="git-lab-terminal"><div className="git-lab-terminal-title"><span><Terminal size={15}/> Git command line</span><small>SIMULATED REPOSITORY · {currentBranch}</small></div><form onSubmit={e=>{e.preventDefault();runCommand(command);}} className="git-lab-command-form"><span>$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder="Type a Git command..." aria-label="Git command"/><button type="submit" disabled={!command.trim()}>Run command <ArrowRight size={14}/></button></form><pre className="git-lab-output" aria-live="polite">{output}</pre>{history.length>0&&<div className="git-lab-history">{history.map((item,i)=><span key={i}>{item}</span>)}</div>}</div>
+  <div className="git-lab-shortcuts"><div><strong>Command toolbox</strong><small>Select a command to load it into the terminal, then run it.</small></div><div className="git-lab-shortcut-list">{(isConflict?["git status","git log --oneline --graph --all","git pull origin main","git status --short","git diff","git merge --abort","git add app.js",'git commit -m "Resolve merge conflict"',"git push origin feature/summary","approve pr","merge pr","git switch main","git pull origin main"]:isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr","git switch main","git pull origin main"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"]).map(cmd=><button type="button" key={cmd} onClick={()=>setCommand(cmd)}>{cmd}</button>)}</div></div>
+  <div className="git-lab-commit-card"><div><strong>Local commit history</strong><small>{commits.length?commits.length+" commit(s) in this session":"No commits yet."}</small></div><div className="git-lab-commit-entry">{commits.map(c=><div key={c.id+c.message}><code>{c.id}</code><span>{c.message}</span><small>{c.branch}</small></div>)}</div></div>
+  <div className={"git-lab-explain "+(isConflict?conflictResolved?"success":"":fileState==="pushed"||merged?"success":"")}><strong>{isConflict?(merged?"🎉 Conflict resolved and pull request merged":pushed?"✓ GitHub now sees a mergeable pull request":conflictResolved?"✓ The final file is resolved":conflictActive?"⚠ Resolve the conflict markers":"🌿 Your branches have diverged"):isWorkflow?(merged?"🎉 Feature merged on GitHub":approved?"✓ Pull request approved":prOpen?"🔎 Pull request is open":"Start by creating a branch"):(fileState==="pushed"?"☁️ Your code is on GitHub":"💻 Your working directory")}</strong><p>{isConflict?(conflictActive?(checkResolution()||"The final file is ready. Stage it, commit the merge, and push the branch."):"Sara's commit is on main while your feature commit is on feature/summary. Pull main into your branch to let Git identify overlapping edits."):isWorkflow?"A feature branch keeps work separate until it has been reviewed and merged.":"Git records snapshots locally before you push them to GitHub."}</p></div>
+  {isConflict&&round===0&&conflictResolved&&<div className="git-conflict-round-next"><strong>Round 1 complete.</strong><span>Now try Round 2: both changes matter, so combine them in one final line.</span><button type="button" onClick={nextRound}>Start Round 2 <ArrowRight size={14}/></button></div>}
   <div className="git-lab-footer"><span>Practice simulation only · No real files or GitHub repository are changed.</span><button type="button" onClick={reset}>↺ Reset exercise</button></div>
  </section>;
 }
