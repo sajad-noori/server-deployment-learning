@@ -118,7 +118,7 @@ function GitInteractiveLab({lessonId}){
  const [merged,setMerged]=useState(false);
   const [localMainBehind,setLocalMainBehind]=useState(false);
   const [pulled,setPulled]=useState(false);
-  const [branchDeleted,setBranchDeleted]=useState(false);
+  const [branchDeleted,setBranchDeleted]=useState(false);\n  const [statusChecked,setStatusChecked]=useState(false);
  const [history,setHistory]=useState([]);
  const [commits,setCommits]=useState([]);
  const [lastCommit,setLastCommit]=useState("");
@@ -211,7 +211,7 @@ function GitInteractiveLab({lessonId}){
  };
  const reset=()=>{
   setCode(starterCode);setFileState("clean");setCommand("");setOutput("Your working tree is clean. Edit app.js to begin the exercise.");
-  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setHistory([]);setCommits([]);setLastCommit("");
+  setBranchCreated(false);setCurrentBranch("main");setPrOpen(false);setApproved(false);setMerged(false);setLocalMainBehind(false);setPulled(false);setBranchDeleted(false);setStatusChecked(false);setHistory([]);setCommits([]);setLastCommit("");
  };
  const stages=isWorkflow?[
   ["01","Feature branch","Isolated work",branchCreated],
@@ -230,7 +230,7 @@ function GitInteractiveLab({lessonId}){
  const activeStage=isWorkflow?(pulled?5:merged?4:approved||prOpen?3:fileState==="pushed"?2:fileState==="committed"?1:branchCreated?0:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
  const shortcuts=isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr","git switch main","git pull origin main","git branch -d feature/login"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"];
  const mission=isWorkflow?[
-  ["Check status on main",history.some(x=>x.toLowerCase().includes("git status"))],
+  ["Check status on main",statusChecked],
   ["Create and switch to a feature branch",branchCreated],
   ["Edit, stage, and commit the code",fileState==="committed"||fileState==="pushed"||prOpen||approved||merged],
   ["Push with upstream tracking",fileState==="pushed"||prOpen||approved||merged],
