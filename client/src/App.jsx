@@ -230,7 +230,57 @@ function GitInteractiveLab({lessonId}){
  const stages=isConflict?[["01","Diverged","main moved ahead",mainMoved],["02","Conflicted","same line changed",conflictActive],["03","Resolved","final code chosen",conflictResolved],["04","Committed","merge commit saved",mergeCommitted],["05","Pushed","resolution on GitHub",pushed],["06","Merged","pull request merged",merged]]:isWorkflow?[["01","Feature branch","Isolated work",branchCreated],["02","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"],["03","Remote branch","Published",fileState==="pushed"],["04","Pull request","Reviewed",approved||merged],["05","GitHub main","Merged",merged],["06","Local main","Pulled",pulled]]:[["01","Working folder","Modified file",fileState==="modified"],["02","Staging area","Selected changes",fileState==="staged"],["03","Local commit","Saved snapshot",fileState==="committed"||fileState==="pushed"],["04","GitHub remote","Uploaded commit",fileState==="pushed"]];
  const activeStage=isConflict?(merged?5:pushed?4:mergeCommitted?3:conflictResolved?2:conflictActive?1:0):isWorkflow?(pulled?5:merged?4:approved?3:fileState==="pushed"?2:fileState==="committed"?1:0):({clean:0,modified:0,staged:1,committed:2,pushed:3})[fileState];
  const mission=isConflict?[["Check status and inspect the log",statusChecked&&logChecked],["Open the pull request and notice conflicts",prOpen],["Pull latest main into your branch",conflictActive],["Inspect unmerged status",conflictActive&&statusChecked],["Resolve every marker in app.js",conflictResolved],["Stage the resolved file",conflictResolved],["Create the merge commit",mergeCommitted],["Push the branch",pushed],["Approve and merge the pull request",merged],["Switch to main and pull",pulled],["Optional: abort a merge safely",abortUsed]]:isWorkflow?[["Check status on main",statusChecked],["Create a feature branch",branchCreated],["Edit app.js",fileState!=="clean"],["Stage and commit",fileState==="committed"||fileState==="pushed"],["Push with upstream",fileState==="pushed"],["Open pull request",prOpen],["Approve review",approved],["Merge pull request",merged],["Switch to main and pull",pulled]]:[["Edit app.js",fileState!=="clean"],["Stage the change",["staged","committed","pushed"].includes(fileState)],["Create a local commit",["committed","pushed"].includes(fileState)],["Push to GitHub",fileState==="pushed"]];
- const answer=isConflict?(!statusChecked?{title:"Check the branch status",command:"git status",explanation:"See that your feature branch has diverged from main."}:!logChecked?{title:"Inspect the commit graph",command:"git log --oneline --graph --all",explanation:"Sara's main commit and your feature commit are on different lines."}:!conflictActive&&!mergeCommitted?{title:"Bring main into your branch",command:"git pull origin main",explanation:"Git combines the histories and pauses when it finds the same line changed twice."}:checkResolution()?{title:"Resolve the conflict",code:round===0?resolvedCode(scenario.accepted[0]):resolvedCode('  return "Welcome, " + user.name + " — welcome back!";'),explanation:"Remove every marker and choose a valid final result. Round 2 must keep both ideas."}:!conflictResolved?{title:"Stage the resolution",command:"git add app.js",explanation:"Your edited file passes the resolution check. Stage app.js before committing."}:{title:"Commit the merge",command:'git commit -m "Resolve merge conflict"',explanation:"The resolved file is staged. Create the merge commit to record your decision."}}:!pushed?{title:"Push the resolved branch",command:"git push origin feature/summary",explanation:"Publish the merge commit so GitHub can re-check the pull request."}:!merged?{title:"Approve and merge",command:"approve pr",explanation:"Approve the reviewed result, then run merge pr."}:!pulled?{title:"Update local main",command:"git switch main",explanation:"Switch to main and run git pull origin main."}:{title:"Mission complete",explanation:"The conflict is resolved, pushed, merged, and present on local main."}:{title:"Next step",command:"git status",explanation:"Follow the mission checklist."};
+ const answer=isConflict
+  ? (!statusChecked
+    ? {title:"Check the branch status",command:"git status",explanation:"See that your feature branch has diverged from main."}
+    : !logChecked
+      ? {title:"Inspect the commit graph",command:"git log --oneline --graph --all",explanation:"Sara's main commit and your feature commit are on different lines."}
+      : !conflictActive&&!mergeCommitted
+        ? {title:"Bring main into your branch",command:"git pull origin main",explanation:"Git combines the histories and pauses when it finds the same line changed twice."}
+        : checkResolution()
+          ? {title:"Resolve the conflict",code:round===0?resolvedCode(scenario.accepted[0]):resolvedCode('  return "Welcome, " + user.name + " — welcome back!";'),explanation:"Remove every marker and choose a valid final result. Round 2 must keep both ideas."}
+          : !conflictResolved
+            ? {title:"Stage the resolution",command:"git add app.js",explanation:"Your edited file passes the resolution check. Stage app.js before committing."}
+            : !mergeCommitted
+              ? {title:"Commit the merge",command:'git commit -m "Resolve merge conflict"',explanation:"The resolved file is staged. Create the merge commit to record your decision."}
+              : !pushed
+                ? {title:"Push the resolved branch",command:"git push origin feature/summary",explanation:"Publish the merge commit so GitHub can re-check the pull request."}
+                : !merged
+                  ? {title:"Approve and merge",command:"approve pr",explanation:"Approve the reviewed result, then run merge pr."}
+                  : !pulled
+                    ? {title:"Update local main",command:currentBranch==="main"?"git pull origin main":"git switch main",explanation:"Switch to main and pull the merged result."}
+                    : {title:"Mission complete",explanation:"The conflict is resolved, pushed, merged, and present on local main."})
+  : isWorkflow
+    ? (!statusChecked
+      ? {title:"Check your starting point",command:"git status",explanation:"Confirm you are on main and the working tree is clean before starting."}
+      : !branchCreated
+        ? {title:"Create your feature branch",command:"git switch -c feature/login",explanation:"A branch gives you a separate workspace without changing main."}
+        : fileState==="clean"
+          ? {title:"Edit the sample code",code:'function login(email, password) {\n  return { email, authenticated: Boolean(email && password) };\n}\n',explanation:"Add a simple email and password validation check."}
+          : fileState==="modified"
+            ? {title:"Stage your change",command:"git add app.js",explanation:"Stage app.js so it can be included in your next commit."}
+            : fileState==="staged"
+              ? {title:"Create a local commit",command:'git commit -m "Add login validation"',explanation:"Save your staged change in your local Git history."}
+              : fileState==="committed"
+                ? {title:"Publish the feature branch",command:"git push -u origin feature/login",explanation:"Push the branch and set upstream tracking."}
+                : !prOpen
+                  ? {title:"Open a pull request",command:"open pr",explanation:"Ask teammates to review your branch before it is merged into main."}
+                  : !approved
+                    ? {title:"Review and approve",command:"approve pr",explanation:"Inspect the diff in the reviewer panel, then approve the proposed change."}
+                    : !merged
+                      ? {title:"Merge the approved change",command:"merge pr",explanation:"The merge updates GitHub main. It does not update your local main yet."}
+                      : !pulled
+                        ? {title:"Update your local main",command:currentBranch==="main"?"git pull origin main":"git switch main",explanation:"Switch to main and pull the merge from GitHub."}
+                        : {title:"Mission complete",explanation:"Your reviewed change is merged on GitHub and your local main is up to date."})
+    : (fileState==="clean"
+      ? {title:"Edit the sample code",explanation:"Change the greeting text or the name in the editor above.",code:'function greet(name) {\n  return "Welcome, " + name + "!";\n}\n\nconsole.log(greet("Developer"));\n'}
+      : fileState==="modified"
+        ? {title:"Stage your change",command:"git add app.js",explanation:"Add the edited file to Git's staging area."}
+        : fileState==="staged"
+          ? {title:"Create a local commit",command:'git commit -m "Update greeting"',explanation:"Save the staged change as a local snapshot."}
+          : fileState==="committed"
+            ? {title:"Push to GitHub",command:"git push origin main",explanation:"Send your local commit to the remote repository."}
+            : {title:"Mission complete",explanation:"Your commit has been pushed to GitHub."});
  const applyAnswer=()=>{if(answer.command)setCommand(answer.command);else if(answer.code){setCode(answer.code);setConflictResolved(false);setFileState("modified");setOutput("Example inserted. Review the final code, then run git add app.js.");}};
  const tabs=[["Why conflicts happen","Two branches changed the same line. Git cannot guess which meaning the team wants."],["Read the markers","<<<<<<< HEAD begins your version. ======= separates the versions. >>>>>>> origin/main begins Sara's incoming version."],["Choose the result","Round 1 accepts either side. Round 2 requires both the original name and Sara's returning-member idea."],["Finish the merge","Remove all markers, stage, commit, push, then approve and merge the pull request."],["Avoid conflicts","Pull often, keep pull requests small, and coordinate when touching the same files. Use git merge --abort to safely back out before committing."]];
  return <section className="git-lab">
@@ -253,7 +303,7 @@ function GitInteractiveLab({lessonId}){
   <div className="git-lab-shortcuts"><div><strong>Command toolbox</strong><small>Select a command to load it into the terminal, then run it.</small></div><div className="git-lab-shortcut-list">{(isConflict?["git status","git log --oneline --graph --all","git pull origin main","git status --short","git diff","git merge --abort","git add app.js",'git commit -m "Resolve merge conflict"',"git push origin feature/summary","approve pr","merge pr","git switch main","git pull origin main"]:isWorkflow?["git status","git switch -c feature/login","git add app.js",'git commit -m "Add login"',"git push -u origin feature/login","open pr","approve pr","merge pr","git switch main","git pull origin main"]:["git status","git diff","git add app.js","git diff --staged",'git commit -m "Add greeting"',"git log --oneline","git push origin main"]).map(cmd=><button type="button" key={cmd} onClick={()=>setCommand(cmd)}>{cmd}</button>)}</div></div>
   <div className="git-lab-commit-card"><div><strong>Local commit history</strong><small>{commits.length?commits.length+" commit(s) in this session":"No commits yet."}</small></div><div className="git-lab-commit-entry">{commits.map(c=><div key={c.id+c.message}><code>{c.id}</code><span>{c.message}</span><small>{c.branch}</small></div>)}</div></div>
   <div className={"git-lab-explain "+(isConflict?conflictResolved?"success":"":fileState==="pushed"||merged?"success":"")}><strong>{isConflict?(merged?"🎉 Conflict resolved and pull request merged":pushed?"✓ GitHub now sees a mergeable pull request":conflictResolved?"✓ The final file is resolved":conflictActive?"⚠ Resolve the conflict markers":"🌿 Your branches have diverged"):isWorkflow?(merged?"🎉 Feature merged on GitHub":approved?"✓ Pull request approved":prOpen?"🔎 Pull request is open":"Start by creating a branch"):(fileState==="pushed"?"☁️ Your code is on GitHub":"💻 Your working directory")}</strong><p>{isConflict?(conflictActive?(checkResolution()||"The final file is ready. Stage it, commit the merge, and push the branch."):"Sara's commit is on main while your feature commit is on feature/summary. Pull main into your branch to let Git identify overlapping edits."):isWorkflow?"A feature branch keeps work separate until it has been reviewed and merged.":"Git records snapshots locally before you push them to GitHub."}</p></div>
-  {isConflict&&round===0&&merged&&<div className="git-conflict-round-next"><strong>Round 1 complete.</strong><span>Now try Round 2: both changes matter, so combine them in one final line.</span><button type="button" onClick={nextRound}>Start Round 2 <ArrowRight size={14}/></button></div>}
+  {isConflict&&round===0&&pulled&&<div className="git-conflict-round-next"><strong>Round 1 complete.</strong><span>Now try Round 2: both changes matter, so combine them in one final line.</span><button type="button" onClick={nextRound}>Start Round 2 <ArrowRight size={14}/></button></div>}
   <div className="git-lab-footer"><span>Practice simulation only · No real files or GitHub repository are changed.</span><button type="button" onClick={reset}>↺ Reset exercise</button></div>
  </section>;
 }
