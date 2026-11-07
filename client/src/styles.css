@@ -248,3 +248,47 @@
 .git-conflict-highlight{min-height:160px;padding:18px 20px 18px}
 .git-conflict-editor-wrap textarea{position:absolute;inset:0;width:100%;height:100%;min-height:100%;padding:18px 20px;color:transparent!important;background:transparent!important;caret-color:#f4f7ff;resize:vertical;line-height:1.8;z-index:2}
 .git-conflict-editor-wrap textarea::selection{background:#7596c055;color:transparent}
+
+
+/* Interactive GitHub team workspace */
+.gh-experience{margin:20px 0 22px;padding:20px;background:linear-gradient(135deg,#151d2b,#121925 58%,#19172a);border:1px solid #30384b;border-radius:16px;box-shadow:0 14px 35px #0002;overflow:hidden}
+.gh-experience-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.gh-eyebrow{display:flex;align-items:center;gap:6px;color:#b9a5ff;font:600 10px var(--mono);letter-spacing:1px}
+.gh-experience-intro h3{margin:8px 0 4px;color:#f4f2ff;font:700 19px Manrope,sans-serif;letter-spacing:-.45px}
+.gh-experience-intro p{margin:0;color:#9ba8bb;font-size:12px;line-height:1.6}
+.gh-xp-card{min-width:116px;padding:10px 12px;border:1px solid #51416e;background:#241d38;border-radius:12px;display:flex;flex-direction:column;gap:3px}
+.gh-xp-card span{display:flex;align-items:center;gap:5px;color:#c5adff;font:500 9px var(--mono);letter-spacing:.7px}
+.gh-xp-card strong{color:#fff;font:800 22px Manrope,sans-serif}
+.gh-xp-card small{color:#a99acb;font-size:10px}
+.gh-tabs{display:flex;gap:7px;margin:18px 0 0;padding-bottom:12px;border-bottom:1px solid #2a3443;overflow-x:auto}
+.gh-tabs button{display:flex;align-items:center;gap:7px;white-space:nowrap;padding:8px 11px;border:1px solid transparent;border-radius:8px;background:transparent;color:#96a2b5;font-size:11px;font-weight:600}
+.gh-tabs button:hover,.gh-tabs button.active{background:#28233d;border-color:#51416e;color:#e3d8ff}
+.gh-story-view,.gh-repo-view,.gh-awards-view{padding-top:15px;animation:gh-fade-in .22s ease-out}
+@keyframes gh-fade-in{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.gh-teammates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.gh-person{position:relative;display:flex;align-items:center;gap:9px;padding:10px;background:#192332;border:1px solid #2a3749;border-radius:11px;min-width:0}
+.gh-avatar{width:31px;height:31px;flex:0 0 31px;display:grid;place-items:center;border-radius:10px;color:#fff;font-weight:800;font-size:12px}
+.gh-avatar.you{background:linear-gradient(145deg,#7964d7,#5142a4)}.gh-avatar.sara{background:linear-gradient(145deg,#db8c70,#985b78)}.gh-avatar.bot{background:linear-gradient(145deg,#398e85,#286b75)}
+.gh-person div{min-width:0;display:flex;flex-direction:column;gap:2px}.gh-person strong{color:#e8edf7;font-size:11px}.gh-person small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8998ad;font-size:9px}
+.gh-person .online-dot{width:6px;height:6px;border-radius:50%;background:#55d69a;margin-left:auto;box-shadow:0 0 0 3px #55d69a1a}
+.gh-live-status{display:flex;align-items:center;gap:10px;margin:13px 0;padding:11px 13px;background:#1a2630;border:1px solid #294b49;border-radius:10px}
+.gh-pulse{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#58d6a2;box-shadow:0 0 0 5px #58d6a21b;animation:gh-pulse 1.8s infinite}
+@keyframes gh-pulse{50%{box-shadow:0 0 0 8px #58d6a200}}
+.gh-live-status div{display:flex;flex-direction:column;gap:3px}.gh-live-status small{color:#86b9aa;font:500 9px var(--mono);letter-spacing:.8px}.gh-live-status strong{color:#e0f7ed;font-size:12px}
+.gh-activity{padding:12px 13px;background:#111923;border:1px solid #283443;border-radius:11px}
+.gh-activity-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.gh-activity-heading strong{color:#e7ecf5;font-size:12px}.gh-activity-heading small{color:#8190a5;font-size:9px}
+.gh-event{display:flex;align-items:center;gap:9px;min-height:35px;border-top:1px solid #222d3a}.gh-event-marker{width:18px;height:18px;flex:0 0 18px;display:grid;place-items:center;border-radius:50%;font-size:10px;font-weight:800}.gh-event.done .gh-event-marker{background:#173d35;color:#68ddb0}.gh-event.pending .gh-event-marker{background:#2a3341;color:#8a97aa}
+.gh-event div{display:flex;gap:5px;min-width:0;flex:1;align-items:baseline}.gh-event div strong{color:#d8e0ed;font-size:10px}.gh-event div span{color:#95a2b5;font-size:10px}.gh-event>small{color:#6f8197;font-size:9px}
+.gh-repo-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px;background:#111923;border:1px solid #293747;border-radius:11px}
+.gh-repo-header div{display:flex;flex-direction:column;gap:4px}.gh-repo-header small{color:#8190a5;font:500 9px var(--mono);letter-spacing:.8px}.gh-repo-header strong{color:#f0f3fa;font-size:13px}
+.gh-private-pill{display:flex;align-items:center;gap:5px;padding:6px 8px;border-radius:20px;background:#1b3934;color:#83d9b7;font-size:9px}
+.gh-branch-map{position:relative;margin:12px 0;padding:12px 14px;background:#111923;border:1px solid #293747;border-radius:11px}
+.gh-branch-row{position:relative;display:flex;align-items:center;gap:10px;min-height:47px}.gh-branch-row+.gh-branch-row{border-top:1px dashed #2c3949}
+.gh-branch-dot{width:10px;height:10px;border-radius:50%;background:#4d5b6d;border:2px solid #8492a5;flex:0 0 10px}.gh-branch-dot.done{background:#58d6a2;border-color:#58d6a2;box-shadow:0 0 0 4px #58d6a21b}
+.gh-branch-row div{display:flex;flex-direction:column;gap:2px}.gh-branch-row strong{color:#e4eaf4;font:600 11px var(--mono)}.gh-branch-row small{color:#8797ab;font-size:10px}.gh-branch-label{margin-left:auto;color:#9b8bd3;font:500 8px var(--mono);letter-spacing:.6px}
+.gh-branch-connector{display:flex;align-items:center;gap:8px;margin:9px 0 0 4px;padding:9px 10px;border-left:2px solid #7661c6;background:#211e32;color:#c7b9f2;font-size:10px}
+.gh-pr-preview{padding:13px;background:#111923;border:1px solid #293747;border-radius:11px}.gh-pr-preview>div{display:flex;align-items:center;gap:8px;color:#b8a6f3}.gh-pr-preview strong{color:#e8edf7;font-size:11px}.gh-pr-preview>div span{margin-left:auto;padding:4px 7px;border-radius:20px;font-size:9px}.gh-pr-preview .draft{background:#2c3542;color:#9caabd}.gh-pr-preview .open{background:#203d32;color:#80d8ae}.gh-pr-preview .merged{background:#2a2442;color:#c9b5ff}.gh-pr-preview p{margin:9px 0 3px;color:#e0e7f1;font:11px var(--mono)}.gh-pr-preview>small{color:#8494a8;font-size:10px}
+.gh-award-feature{display:flex;align-items:center;gap:13px;padding:14px;background:linear-gradient(120deg,#292342,#1b2635);border:1px solid #4b4169;border-radius:12px}.gh-award-feature>span{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#493b6b;color:#e4d7ff}.gh-award-feature div{display:flex;flex-direction:column;gap:3px}.gh-award-feature small{color:#b6a4e6;font:500 9px var(--mono);letter-spacing:.8px}.gh-award-feature strong{color:#fff;font-size:15px}.gh-award-feature p{margin:0;color:#a8b1c2;font-size:10px;line-height:1.5}
+.gh-award-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:11px 0}.gh-award-grid>div{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;padding:12px;background:#111923;border:1px solid #2b3646;border-radius:10px;color:#6f8095}.gh-award-grid>div.unlocked{background:#1a302d;border-color:#326052;color:#78d9b2}.gh-award-grid strong{color:#dce5ef;font-size:10px}.gh-award-grid small{color:#8494a8;font-size:9px;line-height:1.4}
+.gh-progress{margin-top:12px}.gh-progress>div{display:flex;justify-content:space-between;color:#cbd5e3;font-size:10px}.gh-progress>div span{color:#a995e7;font-family:var(--mono)}.gh-progress>i{display:block;height:6px;margin-top:8px;border-radius:10px;background:#283342;overflow:hidden}.gh-progress>i b{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#7e69d5,#55d6a2);transition:width .35s ease}
+@media(max-width:650px){.gh-experience{padding:14px}.gh-experience-top{gap:9px}.gh-xp-card{min-width:90px;padding:8px}.gh-xp-card strong{font-size:18px}.gh-teammates{grid-template-columns:1fr}.gh-person{padding:8px}.gh-event div{flex-direction:column;gap:1px}.gh-award-grid{grid-template-columns:1fr}.gh-activity-heading{align-items:flex-start;flex-direction:column}}
