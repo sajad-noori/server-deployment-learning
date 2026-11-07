@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
-import { useState } from "react";
 
 export function GitInteractiveLab({lessonId}){
  const mode=lessonId==="git-conflicts"?"conflicts":lessonId==="github-workflow"?"workflow":"basics";
