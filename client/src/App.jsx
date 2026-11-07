@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
 
-import { groups, lessons, total, commands, playgrounds } from "./data/lessons.js";
+import { groups, lessons, total, commands } from "./data/lessons.js";
 
 import { GitInteractiveLab } from "./components/GitInteractiveLab.jsx";
 import { LessonPlayground } from "./components/LessonPlayground.jsx";
