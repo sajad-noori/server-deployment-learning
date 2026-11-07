@@ -104,7 +104,7 @@ export function GitInteractiveLab({lessonId}){
     else{setMergeCommitted(true);setConflictActive(false);setFileState("committed");setLastCommit(match[1]);setCommits(items=>[{id:"c81d4a2",message:match[1],branch:currentBranch},...items]);message="✓ Merge commit created: c81d4a2\nThe conflict resolution is now recorded in your feature branch.";}
    }else if(fileState==="staged"){setFileState("committed");setLastCommit(match[1]);setCommits(items=>[{id:"a1b2c3d",message:match[1],branch:currentBranch},...items]);message="✓ Commit created locally."}
    else message="Nothing staged to commit. Run git add app.js first.";
-  }else if(lower==="git push"||lower==="git push origin feature/summary"||lower==="git push -u origin feature/summary"||lower==="git push origin feature/login"||lower==="git push -u origin feature/login"){
+  }else if(lower==="git push"||lower==="git push origin main"||lower==="git push origin feature/summary"||lower==="git push -u origin feature/summary"||lower==="git push origin feature/login"||lower==="git push -u origin feature/login"){
    if(isConflict){
     if(conflictActive&&!mergeCommitted)message="✕ Push rejected: unmerged paths remain. Resolve app.js, stage it, and create the merge commit before pushing.";
     else if(mergeCommitted){setPushed(true);setFileState("pushed");message="✓ Pushed feature/summary to origin. The merge commit is now on GitHub, so the pull request can be merged.";}
