@@ -272,7 +272,9 @@ function GitInteractiveLab({lessonId}){
               : !pushed
                 ? {title:"Push the resolved branch",command:"git push origin feature/summary",explanation:"Publish the merge commit so GitHub can re-check the pull request."}
                 : !merged
-                  ? {title:"Approve and merge",command:"approve pr",explanation:"Approve the reviewed result, then run merge pr."}
+                  ? !approved
+                    ? {title:"Approve the pull request",command:"approve pr",explanation:"First approve the pull request. This records the review but does NOT merge it yet. After this command succeeds, Show answer will guide you to the separate merge step."}
+                    : {title:"Merge the approved pull request",command:"merge pr",explanation:"The review is now approved. Run merge pr as a separate command to merge the feature into GitHub main. The mission is complete only after the merge succeeds."}
                   : !pulled
                     ? {title:"Update local main",command:currentBranch==="main"?"git pull origin main":"git switch main",explanation:"Switch to main and pull the merged result."}
                     : {title:"Mission complete",explanation:"The conflict is resolved, pushed, merged, and present on local main."})
