@@ -255,9 +255,11 @@ function GitInteractiveLab({lessonId}){
       : !prOpen
         ? {title:"Open the pull request",command:"open pr",explanation:"Open feature/summary → main. GitHub detects that main has changed the same line."}
         : !conflictActive&&!mergeCommitted
-          ? {title:"Pull latest main into your feature branch",command:"git pull origin main",explanation:"Git combines the histories and pauses when it finds the same line changed twice."}
-          : checkResolution()
-          ? {title:"Resolve the conflict",code:round===0?resolvedCode(scenario.accepted[0]):resolvedCode('  return "Welcome, " + user.name + " — welcome back!";'),explanation:"Remove every marker and choose a valid final result. Round 2 must keep both ideas."}
+          ? {title:"Pull latest main into your feature branch",command:"git pull origin main",explanation:"Git combines the histories and pauses when it finds the same line changed twice. This creates an unresolved merge conflict in app.js."}
+          : conflictActive&&!unmergedStatusChecked
+            ? {title:"Inspect unmerged status",command:"git status --short",explanation:"Look for the line UU app.js. The first U means the index has an unresolved conflict, and the second U means the working-tree version is also unmerged. This confirms both branches modified the same file. Run this command before editing the conflict."}
+            : checkResolution()
+              ? {title:"Resolve the conflict",code:round===0?resolvedCode(scenario.accepted[0]):resolvedCode('  return "Welcome, " + user.name + " — welcome back!";'),explanation:"Remove every conflict marker and choose a valid final result. Round 1 accepts either version; round 2 must preserve the name and include Sara's returning-member idea."}
           : !conflictResolved
             ? {title:"Stage the resolution",command:"git add app.js",explanation:"Your edited file passes the resolution check. Stage app.js before committing."}
             : !mergeCommitted
