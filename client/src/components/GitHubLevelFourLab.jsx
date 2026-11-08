@@ -64,10 +64,9 @@ export function GitHubLevelFourLab(){
  const [output,setOutput]=useState("Welcome to the GitHub team challenge. Start with git status.");
  const [history,setHistory]=useState([]);
  const [showAnswer,setShowAnswer]=useState(false);
- const [answerCode,setAnswerCode]=useState(false);
  const [codeTouched,setCodeTouched]=useState(()=>init("codeTouched",false));
 
- useEffect(()=>{try{localStorage.setItem(key,JSON.stringify({code,branch,branchCreated,statusChecked,fileStaged,commitOne,pushed,prOpen,reviewReady,fileStagedTwo,commitTwo,pushTwo,approved,merged,pulled,deleted,codeTouched}))}catch{}},[code,branch,branchCreated,statusChecked,fileStaged,commitOne,pushed,prOpen,reviewReady,fileStagedTwo,commitTwo,pushTwo,approved,merged,pulled,deleted,completed,codeTouched,reviewTouched]);
+ useEffect(()=>{try{localStorage.setItem(key,JSON.stringify({code,branch,branchCreated,statusChecked,fileStaged,commitOne,pushed,prOpen,reviewReady,fileStagedTwo,commitTwo,pushTwo,approved,merged,pulled,deleted,codeTouched}))}catch{}},[code,branch,branchCreated,statusChecked,fileStaged,commitOne,pushed,prOpen,reviewReady,fileStagedTwo,commitTwo,pushTwo,approved,merged,pulled,deleted,codeTouched]);
 
  const profileReady=code.includes('title: "Frontend Developer"');
  const feedbackReady=profileReady&&code.includes('focus: "React and Node.js"');
