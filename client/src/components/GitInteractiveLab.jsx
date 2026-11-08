@@ -88,7 +88,8 @@ export function GitInteractiveLab({lessonId}){
    if(branchCreated){setCurrentBranch("feature/login");message="Switched to branch feature/login."; }else message="Branch not found. Create it with git switch -c feature/login.";
   }else if(lower==="git merge --abort"){
    if(isConflict&&abortPracticeActive){setAbortPracticeActive(false);setAbortUsed(true);message="✓ Merge aborted successfully. The temporary merge was cancelled, app.js returned to its pre-merge version, and your existing feature commit is safe.";}
-   else if(isConflict&&conflictActive&&!mergeCommitted){setConflictActive(false);setConflictResolved(false);setFileState("clean");setCode(scenario.starter);setAbortUsed(true);message="Merge aborted. Git returned feature/summary to the state before the pull. Your existing feature commit is safe.";}\n   else message="There is no merge in progress to abort. Start the optional abort practice below first.";
+   else if(isConflict&&conflictActive&&!mergeCommitted){setConflictActive(false);setConflictResolved(false);setFileState("clean");setCode(scenario.starter);setAbortUsed(true);message="Merge aborted. Git returned feature/summary to the state before the pull. Your existing feature commit is safe.";}
+   else message="There is no merge in progress to abort. Start the optional abort practice below first.";
   }else if(lower==="git diff"){
    message=conflictActive&&fileState!=="staged"?code:"No unstaged changes.";
   }else if(lower==="git diff --staged"){
