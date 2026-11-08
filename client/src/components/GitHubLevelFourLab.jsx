@@ -120,6 +120,7 @@ export function GitHubLevelFourLab({onComplete}){
    else msg="There is nothing new staged to commit.";
   }else if(c==="git push -u origin feature/profile-card"||c==="git push"){
    if(!commitOne)msg="Create the first commit before pushing.";
+   else if(!pushed&&c!=="git push -u origin feature/profile-card")msg="Use -u on the first push to publish the branch and set upstream tracking: git push -u origin feature/profile-card.";
    else if(!pushed){setPushed(true);msg="✓ Branch published to origin/feature/profile-card. Upstream tracking is set.";}
    else if(!commitTwo)msg="No new commit to push yet. Address the review feedback, stage, and commit first.";
    else if(!pushTwo){setPushTwo(true);msg="✓ New commit pushed. Pull request #12 now includes your review update.";}
