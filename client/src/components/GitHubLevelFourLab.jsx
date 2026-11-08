@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Code2, Terminal } from "lucide-react";
+import { ArrowRight, CheckCircle2, Code2, Terminal } from "lucide-react";
 
 const starter = `const profile = {
   name: "Alex",
@@ -40,7 +40,7 @@ const steps = [
  ["Delete the finished branch","git branch -d feature/profile-card","Clean up the local feature branch after merging."],
 ];
 
-export function GitHubLevelFourLab(){
+export function GitHubLevelFourLab({onComplete}){
  const key="deploylab-github-level-four";
  const saved=(()=>{try{return JSON.parse(localStorage.getItem(key)||"null")}catch{return null}})();
  const init=(name,fallback)=>saved?.[name]??fallback;
@@ -164,7 +164,7 @@ export function GitHubLevelFourLab(){
   {showAnswer&&<div className="git-lab-answer"><div><span className="git-lab-answer-kicker">HINT · NEXT ACTION</span><strong>{answer.title}</strong><p>{answer.why}</p>{answer.command&&<div className="git-lab-answer-command"><code>{answer.command}</code><button type="button" onClick={runAnswer}>Use this command</button></div>}{answer.code&&<><pre>{answer.code}</pre><button type="button" onClick={runAnswer}>Apply this code to app.js</button></>}</div></div>}
   <div className="git-lab-shortcuts"><div><strong>Command toolbox</strong><small>Click a command to load it. You still need to run it.</small></div><div className="git-lab-shortcut-list">{["git status","git switch -c feature/profile-card","git add app.js",'git commit -m "Add profile card"',"git push -u origin feature/profile-card","open pr",'git commit -m "Address review feedback"',"git push","approve pr","merge pr","git switch main","git pull origin main","git branch -d feature/profile-card","git branch"].map(c=><button type="button" key={c} onClick={()=>setCommand(c)}>{c}</button>)}</div></div>
   <div className="git-lab-flow" aria-label="GitHub challenge progress">{[["🌿","Feature branch",branchCreated],["☁️","Published",pushed],["🔎","Pull request",prOpen],["📝","Review update",pushTwo],["🔀","Merged",merged],["🧹","Cleaned up",deleted]].map((s,i)=><div className={"git-lab-stage "+(s[2]?"is-done":"")} key={s[1]}><div className="git-lab-stage-icon">{s[2]?"✓":s[0]}</div><strong>{s[1]}</strong></div>)}</div>
-  <div className={"git-lab-explain "+(allDone?"success":"")}><strong>{allDone?"🏆 Level 4 complete": "Your next objective: "+steps[current][0]}</strong><p>{allDone?"You handled the full GitHub collaboration loop, including review feedback and branch cleanup.":answer.why}</p></div>
+  <div className={"git-lab-explain "+(allDone?"success":"")}><strong>{allDone?"🏆 Level 4 complete": "Your next objective: "+steps[current][0]}</strong><p>{allDone?"You handled the full GitHub collaboration loop, including review feedback and branch cleanup.":answer.why}</p>{allDone&&<button type="button" className="complete-btn marked" onClick={onComplete}><CheckCircle2 size={16}/> Mark level complete</button>}</div>
   <div className="git-lab-footer"><span>Practice simulation only · Your real GitHub repository is not changed.</span><button type="button" onClick={reset}>↺ Reset challenge</button></div>
  </section>;
 }
