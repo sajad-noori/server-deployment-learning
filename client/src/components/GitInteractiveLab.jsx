@@ -67,7 +67,7 @@ export function GitInteractiveLab({lessonId}){
    if(isConflict){setLogChecked(true);message="* 7fa31c2 (HEAD -> feature/summary) Add feature summary\n| * 91b8e20 (origin/main, main) Sara updates welcome message\n|/\n* 4d2c9a1 Base application";}
    else message=commits.length?commits.map(c=>c.id+" "+c.message+" ("+c.branch+")").join("\n"):"No commits yet.";
   }else if(lower==="git status --short"){
-   if(isConflict&&conflictActive)setUnmergedStatusChecked(true);
+   if(isConflict&&(conflictActive||abortPracticeActive))setUnmergedStatusChecked(true);
    message=abortPracticeActive?"UU app.js\nA temporary merge is in progress.":conflictActive
     ? conflictResolved
       ? fileState==="staged"?"M  app.js\nAll conflicts fixed; the merge is still in progress.":" M app.js\nConflict markers are resolved, but app.js is not staged yet."
@@ -87,7 +87,8 @@ export function GitInteractiveLab({lessonId}){
   }else if(lower==="git switch feature/login"&&isWorkflow){
    if(branchCreated){setCurrentBranch("feature/login");message="Switched to branch feature/login."; }else message="Branch not found. Create it with git switch -c feature/login.";
   }else if(lower==="git merge --abort"){
-   if(isConflict&&abortPracticeActive){setAbortPracticeActive(false);setAbortUsed(true);message="✓ Merge aborted successfully. The temporary merge was cancelled, app.js returned to its pre-merge version, and your existing feature commit is safe.";}\n   else if(isConflict&&conflictActive&&!mergeCommitted){setConflictActive(false);setConflictResolved(false);setFileState("clean");setCode(scenario.starter);setAbortUsed(true);message="Merge aborted. Git returned feature/summary to the state before the pull. Your existing feature commit is safe.";}\n   else message="There is no merge in progress to abort. Start the optional abort practice below first.";
+   if(isConflict&&abortPracticeActive){setAbortPracticeActive(false);setAbortUsed(true);message="✓ Merge aborted successfully. The temporary merge was cancelled, app.js returned to its pre-merge version, and your existing feature commit is safe.";}
+   else if(isConflict&&conflictActive&&!mergeCommitted){setConflictActive(false);setConflictResolved(false);setFileState("clean");setCode(scenario.starter);setAbortUsed(true);message="Merge aborted. Git returned feature/summary to the state before the pull. Your existing feature commit is safe.";}\n   else message="There is no merge in progress to abort. Start the optional abort practice below first.";
   }else if(lower==="git diff"){
    message=conflictActive&&fileState!=="staged"?code:"No unstaged changes.";
   }else if(lower==="git diff --staged"){
