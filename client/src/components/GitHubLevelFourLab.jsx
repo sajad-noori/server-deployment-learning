@@ -149,7 +149,7 @@ export function GitHubLevelFourLab(){
   setOutput(msg);setHistory(v=>[...v.slice(-7),"$ "+cmd]);setCommand("");
  }
  function reset(){
-  localStorage.removeItem(key);setCode(starter);setBranch("main");setBranchCreated(false);setStatusChecked(false);setFileStaged(false);setCommitOne(false);setPushed(false);setPrOpen(false);setReviewReady(false);setFileStagedTwo(false);setCommitTwo(false);setPushTwo(false);setApproved(false);setMerged(false);setPulled(false);setDeleted(false);setCodeTouched(false);setReviewTouched(false);setCommand("");setOutput("Welcome to the GitHub team challenge. Start with git status.");setHistory([]);setShowAnswer(false);
+  localStorage.removeItem(key);setCode(starter);setBranch("main");setBranchCreated(false);setStatusChecked(false);setFileStaged(false);setCommitOne(false);setPushed(false);setPrOpen(false);setReviewReady(false);setFileStagedTwo(false);setCommitTwo(false);setPushTwo(false);setApproved(false);setMerged(false);setPulled(false);setDeleted(false);setCodeTouched(false);setCommand("");setOutput("Welcome to the GitHub team challenge. Start with git status.");setHistory([]);setShowAnswer(false);
  }
  const runAnswer=()=>{if(answer.command){setCommand(answer.command);setOutput("Command loaded. Click Run command to execute it.");}else if(answer.code){setCode(answer.code);setCodeTouched(true);setReviewReady(prOpen);setOutput("✓ Suggested app.js content applied. Continue with git add app.js.");}};
  return <section className="git-lab">
