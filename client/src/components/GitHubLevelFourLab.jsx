@@ -144,7 +144,7 @@ export function GitHubLevelFourLab(){
    if(!pulled)msg="Update local main first. Then delete the merged feature branch.";
    else{setDeleted(true);setBranchCreated(false);msg="Deleted branch feature/profile-card (was b72e4f1). Your main branch is safe.";}
   }else if(c==="git branch"){
-   msg="* "+branch+"\n"+(branch==="main"?"  feature/profile-card":"  main");
+   msg="* "+branch+"\n"+(deleted?"":branch==="main"?"  feature/profile-card":"  main");
   }else if(c==="clear"){msg="Terminal cleared.";}
   setOutput(msg);setHistory(v=>[...v.slice(-7),"$ "+cmd]);setCommand("");
  }
