@@ -74,7 +74,7 @@ export function GitHubLevelFourLab(){
 
  const profileReady=code.includes('title: "Frontend Developer"');
  const feedbackReady=profileReady&&code.includes('focus: "React and Node.js"');
- const done=[statusChecked,branchCreated,profileReady&&fileStaged,commitOne,pushed,prOpen,feedbackReady&&reviewReady,fileStagedTwo,commitTwo,pushTwo,approved&&merged,pulled,deleted];
+ const done=[statusChecked,branchCreated,profileReady,fileStaged,commitOne,pushed,prOpen,feedbackReady&&reviewReady,fileStagedTwo,commitTwo,pushTwo,approved&&merged,pulled,deleted];
  const next=done.findIndex(x=>!x);
  const allDone=done.every(Boolean);
  const current=allDone?steps.length-1:Math.max(0,next);
@@ -111,9 +111,9 @@ export function GitHubLevelFourLab(){
   }else if(c==="git add app.js"){
    if(!branchCreated)msg="Create the feature branch first.";
    else if(!profileReady)msg='The requested title is missing. Edit app.js and set title to "Frontend Developer" before staging.';
-   else if(!fileStaged){setFileStaged(true);msg="✓ app.js staged. Ready for the first commit.";}
    else if(prOpen&&!feedbackReady)msg="The reviewer requested the focus field. Add it before staging this second change.";
    else if(prOpen&&!fileStagedTwo){setFileStagedTwo(true);msg="✓ Review update staged. Create the second commit.";}
+   else if(!prOpen&&!fileStaged){setFileStaged(true);msg="✓ app.js staged. Ready for the first commit.";}
    else msg="No unstaged changes to add.";
   }else if(c.startsWith("git commit")){
    const message=cmd.match(/-m\s+["'](.+?)["']\s*$/)||cmd.match(/-m\s+(.+)$/);
