@@ -2,6 +2,8 @@ const SERVER_DIRECTORY = "/home/deploy";
 
 export const initialServerState = {
   connected: false,
+  sshKeyCreated: false,
+  publicKeyInstalled: false,
   user: "laptop",
   packagesUpdated: false,
   nginxInstalled: false,
@@ -15,6 +17,8 @@ export const initialServerState = {
 };
 
 export const initialServerChecks = {
+  sshKeyCreated: false,
+  publicKeyInstalled: false,
   connected: false,
   identityVerified: false,
   packagesUpdated: false,
@@ -30,6 +34,8 @@ export const initialServerChecks = {
 };
 
 export const serverTasks = [
+  { label: "Create an SSH key pair on your computer", key: "sshKeyCreated" },
+  { label: "Install the public key on the server", key: "publicKeyInstalled" },
   { label: "Connect to the remote server", key: "connected" },
   { label: "Verify the deployment account", key: "identityVerified" },
   { label: "Refresh package information", key: "packagesUpdated" },
@@ -43,6 +49,8 @@ export const serverTasks = [
 ];
 
 export function getNextServerCommand(checks) {
+  if (!checks.sshKeyCreated) return "ssh-keygen -t ed25519 -C \"deploylab-key\"";
+  if (!checks.publicKeyInstalled) return "ssh-copy-id deploy@203.0.113.10";
   if (!checks.connected) return "ssh deploy@203.0.113.10";
   if (!checks.identityVerified) return "id";
   if (!checks.packagesUpdated) return "sudo apt update";
@@ -77,7 +85,7 @@ export function executeServerCommand({ command, server, checks }) {
 
   if (!raw) return result();
   if (key === "help") {
-    output = "Supported commands: ssh deploy@203.0.113.10, id, sudo apt update, sudo apt install nginx -y, sudo ufw allow OpenSSH, sudo ufw allow 80/tcp && sudo ufw allow 443/tcp, sudo ufw enable, sudo ufw status, ss -tulpn, systemctl status ssh, journalctl -u ssh -n 5, df -h && free -h, pwd, clear";
+    output = "Supported commands: ssh-keygen -t ed25519 -C "deploylab-key", ssh-copy-id deploy@203.0.113.10, ssh deploy@203.0.113.10, id, sudo apt update, sudo apt install nginx -y, sudo ufw allow OpenSSH, sudo ufw allow 80/tcp && sudo ufw allow 443/tcp, sudo ufw enable, sudo ufw status, ss -tulpn, systemctl status ssh, journalctl -u ssh -n 5, df -h && free -h, pwd, clear";
     return result();
   }
   if (key === "clear") return { output: "", server, checks, clearHistory: true };
@@ -85,8 +93,22 @@ export function executeServerCommand({ command, server, checks }) {
     output = nextServer.connected ? SERVER_DIRECTORY : "/Users/learner";
     return result();
   }
+  if (key === 'ssh-keygen -t ed25519 -c "deploylab-key"') {
+    nextServer.sshKeyCreated = true;
+    nextChecks.sshKeyCreated = true;
+    output = "Generating public/private ed25519 key pair.\\nYour private key is saved on this computer at ~/.ssh/id_ed25519.\\nYour public key is saved at ~/.ssh/id_ed25519.pub.\\nKeep the private key secret; only the .pub file is shared.";
+    return result();
+  }
+  if (key === "ssh-copy-id deploy@203.0.113.10") {
+    if (!nextChecks.sshKeyCreated) return { ...result(), output: "Create your SSH key pair on this computer first with ssh-keygen.", error: true };
+    nextServer.publicKeyInstalled = true;
+    nextChecks.publicKeyInstalled = true;
+    output = "Public key installed for deploy@203.0.113.10.\\nThe private key remains on your computer.";
+    return result();
+  }
   if (key === "ssh deploy@203.0.113.10") {
-    if (nextChecks.connected) output = "Already connected to deploy@203.0.113.10.";
+    if (!nextChecks.publicKeyInstalled) return { ...result(), output: "Install your public key first with ssh-copy-id deploy@203.0.113.10.", error: true };
+    if (!nextChecks.connected) output = "Already connected to deploy@203.0.113.10.";
     else {
       nextServer.connected = true;
       nextServer.user = "deploy";
