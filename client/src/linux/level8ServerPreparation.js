@@ -85,7 +85,7 @@ export function executeServerCommand({ command, server, checks }) {
 
   if (!raw) return result();
   if (key === "help") {
-    output = "Supported commands: ssh-keygen -t ed25519 -C "deploylab-key", ssh-copy-id deploy@203.0.113.10, ssh deploy@203.0.113.10, id, sudo apt update, sudo apt install nginx -y, sudo ufw allow OpenSSH, sudo ufw allow 80/tcp && sudo ufw allow 443/tcp, sudo ufw enable, sudo ufw status, ss -tulpn, systemctl status ssh, journalctl -u ssh -n 5, df -h && free -h, pwd, clear";
+    output = `Supported commands: ssh-keygen -t ed25519 -C "deploylab-key", ssh-copy-id deploy@203.0.113.10, ssh deploy@203.0.113.10, id, sudo apt update, sudo apt install nginx -y, sudo ufw allow OpenSSH, sudo ufw allow 80/tcp && sudo ufw allow 443/tcp, sudo ufw enable, sudo ufw status, ss -tulpn, systemctl status ssh, journalctl -u ssh -n 5, df -h && free -h, pwd, clear`;
     return result();
   }
   if (key === "clear") return { output: "", server, checks, clearHistory: true };
