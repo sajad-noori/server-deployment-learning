@@ -71,7 +71,6 @@ export function GitHubLevelFourLab({onComplete}){
  const profileReady=code.includes('title: "Frontend Developer"');
  const feedbackReady=profileReady&&code.includes('focus: "React and Node.js"');
  const done=[statusChecked,branchCreated,profileReady,fileStaged,commitOne,pushed,prOpen,feedbackReady&&reviewReady,fileStagedTwo,commitTwo,pushTwo,approved&&merged,pulled,deleted];
- const next=done.findIndex(x=>!x);
  const allDone=done.every(Boolean);
  const progress=done.filter(Boolean).length;
  const answer=useMemo(()=>{
