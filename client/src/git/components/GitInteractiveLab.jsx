@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { GitHubExperience } from "./GitHubExperience.jsx";
+import { GitHubExperience } from "../shared/GitHubExperience.jsx";
 import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
 
 export function GitInteractiveLab({lessonId}){

@@ -2,16 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
 
 import { groups, lessons as existingLessons, commands } from "./data/lessons.js";
+import { gitLessons } from "./git/lessons.js";
 import { linuxPracticeLesson } from "./data/linuxPractice.js";
 import { linuxFilePracticeLesson } from "./data/linuxFilePractice.js";
 import { linuxFileOperationsLesson } from "./data/linuxFileOperations.js";
 import { linuxFileManagementLesson } from "./data/linuxFileManagement.js";
 import { linuxPermissionsLesson } from "./data/linuxPermissions.js";
 
-import { GitInteractiveLab } from "./components/GitInteractiveLab.jsx";
 import { LessonPlayground } from "./components/LessonPlayground.jsx";
 
-const lessons = [...existingLessons.filter((lesson) => lesson.group === "git"), linuxPracticeLesson, linuxFilePracticeLesson, linuxFileOperationsLesson, linuxFileManagementLesson, linuxPermissionsLesson, ...existingLessons.filter((lesson) => lesson.group !== "git" && lesson.group !== "linux")];
+const lessons = [...gitLessons, linuxPracticeLesson, linuxFilePracticeLesson, linuxFileOperationsLesson, linuxFileManagementLesson, linuxPermissionsLesson, ...existingLessons.filter((lesson) => lesson.group !== "git" && lesson.group !== "linux")];
 const total = lessons.reduce((count, lesson) => count + lesson.steps.length, 0);
 
 
