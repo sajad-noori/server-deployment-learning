@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
 
-import { groups, lessons, total, commands } from "./data/lessons.js";
+import { groups, lessons as existingLessons, commands } from "./data/lessons.js";
+import { linuxPracticeLesson } from "./data/linuxPractice.js";
+
+const lessons = [...existingLessons.filter((lesson) => lesson.group === "git"), linuxPracticeLesson, ...existingLessons.filter((lesson) => lesson.group !== "git" && lesson.group !== "linux")];
+const total = lessons.reduce((count, lesson) => count + lesson.steps.length, 0);
 
 import { GitInteractiveLab } from "./components/GitInteractiveLab.jsx";
 import { LessonPlayground } from "./components/LessonPlayground.jsx";
 
 export default function App(){
- const [active,setActive]=useState("git-basics"),[stepIndex,setStepIndex]=useState(0),[completed,setCompleted]=useState(()=>JSON.parse(localStorage.getItem("deploylab-progress")||"[]")),[search,setSearch]=useState(""),[filter,setFilter]=useState("All"),[view,setView]=useState("dashboard"),[choice,setChoice]=useState(null),[submitted,setSubmitted]=useState(false),[terminal,setTerminal]=useState([{type:"system",text:"DeployLab practice shell · simulated environment"},{type:"system",text:"Type help to see supported commands. This is not a real server."}]),[input,setInput]=useState(""),[api,setApi]=useState("checking"),[menu,setMenu]=useState(false);
+ const [active,setActive]=useState("git-basics"),[stepIndex,setStepIndex]=useState(0),[completed,setCompleted]=useState(()=>JSON.parse(localStorage.getItem("deploylab-progress")||"[]").filter(key=>lessons.some(lesson=>key.startsWith(lesson.id+":")))),[search,setSearch]=useState(""),[filter,setFilter]=useState("All"),[view,setView]=useState("dashboard"),[choice,setChoice]=useState(null),[submitted,setSubmitted]=useState(false),[terminal,setTerminal]=useState([{type:"system",text:"DeployLab practice shell · simulated environment"},{type:"system",text:"Type help to see supported commands. This is not a real server."}]),[input,setInput]=useState(""),[api,setApi]=useState("checking"),[menu,setMenu]=useState(false);
  useEffect(()=>localStorage.setItem("deploylab-progress",JSON.stringify(completed)),[completed]);
  useEffect(()=>{const handlePopState=(event)=>{const state=event.state;if(state?.deployLabView==="lesson"){setActive(state.lessonId);setStepIndex(0);setChoice(null);setSubmitted(false);setView("lesson")}else{setView("dashboard")}};window.addEventListener("popstate",handlePopState);return()=>window.removeEventListener("popstate",handlePopState)},[]);
  useEffect(()=>{fetch((import.meta.env.VITE_API_URL||"http://localhost:5000")+"/api/health").then(r=>setApi(r.ok?"online":"offline")).catch(()=>setApi("offline"))},[]);
