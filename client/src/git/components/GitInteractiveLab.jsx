@@ -219,7 +219,7 @@ export function GitInteractiveLab({lessonId}){
     <div className="git-lab-terminal">
      <div className="git-lab-terminal-title"><span><Terminal size={15}/> Git command line</span><small>SIMULATED · {currentBranch}</small></div>
      <form onSubmit={e=>{e.preventDefault();runCommand(command);}} className="git-lab-command-form"><span>$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder="Enter a Git command..." aria-label="Git command"/><button type="submit" disabled={!command.trim()}>Run <ArrowRight size={14}/></button></form>
-     <pre className="git-lab-output" aria-live="polite">{output}</pre>{history.length>0&&<div className="git-lab-history">{history.map((item,i)=><span key={i}>{item}</span>)}</div>}
+     <pre className="git-lab-output" aria-live="polite">{output}</pre>
     </div>
    </div>
    <aside className="git-clean-checklist" style={{border:"1px solid #2b3b4d",borderRadius:12,padding:16,background:"#111b29",alignSelf:"start"}}>
