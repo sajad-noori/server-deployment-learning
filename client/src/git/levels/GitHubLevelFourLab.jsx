@@ -160,12 +160,11 @@ export function GitHubLevelFourLab({onComplete}){
      <div className="git-lab-editor-head"><span><Code2 size={15}/> app.js</span><small>{feedbackReady?"Review feedback added":profileReady?"Title updated":"Starter file"}</small></div>
      <textarea aria-label="Edit app.js" spellCheck="false" value={code} onChange={e=>{const nextCode=e.target.value;setCode(nextCode);setCodeTouched(true);setReviewReady(prOpen&&nextCode.includes('focus: "React and Node.js"'));setFileStaged(false);setFileStagedTwo(false);setOutput("File changed. Stage it with git add app.js when ready.");}}/>
      <div className="git-lab-editor-foot"><span>{prOpen?'Reviewer request: add focus: "React and Node.js".':'Change title to Frontend Developer.'}</span><button type="button" onClick={()=>{setCode(starter);setCodeTouched(false);setReviewReady(false);setFileStaged(false);setFileStagedTwo(false);}}>Restore starter</button></div>
-     {prOpen&&<div className="git-conflict-help"><strong>Review feedback</strong><span>Please add a focus field so visitors can see the technologies this developer works with.</span><small>{feedbackReady?'The requested field is present in app.js.':'Add focus: "React and Node.js" inside the profile object.'}</small></div>}
     </div>
     <div className="git-lab-terminal">
      <div className="git-lab-terminal-title"><span><Terminal size={15}/> Git command line</span><small>SIMULATED · {branch}</small></div>
      <form onSubmit={e=>{e.preventDefault();run();}} className="git-lab-command-form"><span>$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder="Enter a Git command..." aria-label="Git command"/><button type="submit" disabled={!command.trim()}>Run <ArrowRight size={14}/></button></form>
-     <pre className="git-lab-output" aria-live="polite">{output}</pre>{history.length>0&&<div className="git-lab-history">{history.map((item,i)=><span key={i}>{item}</span>)}</div>}
+     <pre className="git-lab-output" aria-live="polite">{output}</pre>
     </div>
    </div>
    <aside className="git-clean-checklist" style={{border:"1px solid #2b3b4d",borderRadius:12,padding:16,background:"#111b29",alignSelf:"start"}}>
