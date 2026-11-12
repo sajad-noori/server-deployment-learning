@@ -223,9 +223,8 @@ export function GitInteractiveLab({lessonId}){
     </div>
    </div>
    <aside className="git-clean-checklist" style={{border:"1px solid #2b3b4d",borderRadius:12,padding:16,background:"#111b29",alignSelf:"start"}}>
-    <h3>YOUR MISSION CHECKLIST</h3><p>{mission.filter(item=>item[1]).length} of {mission.length} tasks completed</p>
+    <h3>YOUR MISSION CHECKLIST</h3>
     <div className="git-clean-task-list">{mission.map((item,i)=><div className={"git-clean-task "+(item[1]?"done":"")} key={item[0]}><span>{item[1]?"✓":""}</span><span>{item[0]}{!item[1]&&i>0&&!mission[i-1][1]?<small>Complete the previous task first</small>:null}</span></div>)}</div>
-    <div className="git-clean-files"><strong>YOUR WORKSPACE</strong><div>📄 app.js</div><div>🌿 Current branch: {currentBranch}</div>{prOpen&&<div>↗ Pull request: {merged?"Merged":approved?"Approved":"Open"}</div>}</div>
    </aside>
   </div>
   {showAnswer&&<div className="git-lab-answer"><strong>{answer.title}</strong><p>{answer.explanation}</p>{answer.command&&<div><code>{answer.command}</code><button type="button" onClick={applyAnswer}>Use command</button></div>}{answer.code&&<><p>This is the complete final content for app.js. Apply it to the editor, then continue.</p><pre>{answer.code}</pre><button type="button" onClick={applyAnswer}>Apply solution to app.js</button></>}</div>}
