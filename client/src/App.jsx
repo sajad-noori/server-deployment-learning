@@ -9,10 +9,11 @@ import { linuxFileOperationsLesson } from "./data/linuxFileOperations.js";
 import { linuxFileManagementLesson } from "./data/linuxFileManagement.js";
 import { linuxPermissionsLesson } from "./data/linuxPermissions.js";
 import { linuxOwnershipLesson } from "./data/linuxOwnership.js";
+import { linuxProcessesLesson } from "./data/linuxProcesses.js";
 
 import { LessonPlayground } from "./components/LessonPlayground.jsx";
 
-const lessons = [...gitLessons, linuxPracticeLesson, linuxFilePracticeLesson, linuxFileOperationsLesson, linuxFileManagementLesson, linuxPermissionsLesson, linuxOwnershipLesson, ...existingLessons.filter((lesson) => lesson.group !== "git" && lesson.group !== "linux")];
+const lessons = [...gitLessons, linuxPracticeLesson, linuxFilePracticeLesson, linuxFileOperationsLesson, linuxFileManagementLesson, linuxPermissionsLesson, linuxOwnershipLesson, linuxProcessesLesson, ...existingLessons.filter((lesson) => lesson.group !== "git" && lesson.group !== "linux")];
 const total = lessons.reduce((count, lesson) => count + lesson.steps.length, 0);
 
 
