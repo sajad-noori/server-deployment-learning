@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Activity, CheckCircle2, ChevronRight, Cpu, Lightbulb, RotateCcw, Terminal, User } from "lucide-react";
+import { Activity, CheckCircle2, ChevronRight, Lightbulb, RotateCcw, Terminal, User } from "lucide-react";
 import {
   executeProcessCommand,
   getNextProcessCommand,
@@ -156,7 +156,7 @@ export function LinuxProcessLab({ onComplete }) {
           </div>
           <div className="linux-folder-preview">
             <strong>APPLICATION PROCESS · server.js</strong>
-            <div className="linux-process-state ${process.state === "stopped" ? "stopped" : ""}">
+            <div className={`linux-process-state ${process.state === "stopped" ? "stopped" : ""}`}>
               <i/><Activity size={14}/><span>{process.state === "running" ? "Application process running" : "Application process stopped"}</span>
             </div>
             <div className="linux-process-meta">
