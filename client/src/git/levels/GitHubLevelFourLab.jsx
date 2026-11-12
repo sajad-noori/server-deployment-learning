@@ -95,7 +95,9 @@ export function GitHubLevelFourLab({onComplete}){
  function run(raw=command){
   const cmd=raw.trim(),c=cmd.toLowerCase();if(!c)return;
   let msg="Command not recognized. Use the command toolbox or Show answer for a hint.";
-  if(c==="git status"){
+  if(c==="git switch -c feature/profile-card"&&!statusChecked){
+   msg="Complete the previous task first: run git status and confirm the clean starting point before creating your feature branch.";
+  }else if(c==="git status"){
    setStatusChecked(true);
    msg="On branch "+branch+"\n"+(deleted?"nothing to commit, working tree clean":fileStaged||fileStagedTwo?"Changes to be committed:\n  modified: app.js":codeTouched?"Changes not staged for commit:\n  modified: app.js":"nothing to commit, working tree clean");
   }else if(c==="git switch -c feature/profile-card"){
@@ -158,7 +160,7 @@ export function GitHubLevelFourLab({onComplete}){
    <div style={{display:"grid",gap:14,minWidth:0}}>
     <div className="git-lab-editor">
      <div className="git-lab-editor-head"><span><Code2 size={15}/> app.js</span><small>{feedbackReady?"Review feedback added":profileReady?"Title updated":"Starter file"}</small></div>
-     <textarea aria-label="Edit app.js" spellCheck="false" value={code} onChange={e=>{const nextCode=e.target.value;setCode(nextCode);setCodeTouched(true);setReviewReady(prOpen&&nextCode.includes('focus: "React and Node.js"'));setFileStaged(false);setFileStagedTwo(false);setOutput("File changed. Stage it with git add app.js when ready.");}}/>
+     <textarea aria-label="Edit app.js" spellCheck="false" value={code} disabled={!branchCreated||(commitOne&&!prOpen)} onChange={e=>{const nextCode=e.target.value;setCode(nextCode);setCodeTouched(true);setReviewReady(prOpen&&nextCode.includes('focus: "React and Node.js"'));setFileStaged(false);setFileStagedTwo(false);setOutput("File changed. Stage it with git add app.js when ready.");}}/>
      <div className="git-lab-editor-foot"><span>{prOpen?'Reviewer request: add focus: "React and Node.js".':'Change title to Frontend Developer.'}</span><button type="button" onClick={()=>{setCode(starter);setCodeTouched(false);setReviewReady(false);setFileStaged(false);setFileStagedTwo(false);}}>Restore starter</button></div>
      {prOpen&&<div className="git-conflict-help"><strong>Review feedback</strong><span>Please add a focus field so visitors can see the technologies this developer works with.</span><small>{feedbackReady?'The requested field is present in app.js.':'Add focus: "React and Node.js" inside the profile object.'}</small></div>}
     </div>
