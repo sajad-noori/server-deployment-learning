@@ -13,19 +13,35 @@ client/src/
   styles.css
   data/
     lessons.js
+  git/
+    lessons.js
+    levels/
+      index.js
+      level1Foundations.js
+      level2Collaboration.js
+      level3Conflicts.js
+      level4TeamChallenge.js
+      GitHubLevelFourLab.jsx
+    components/
+      GitInteractiveLab.jsx
+    shared/
+      GitHubExperience.jsx
   components/
-    GitInteractiveLab.jsx
     LessonPlayground.jsx
 ```
 
-- `data/lessons.js` owns curriculum definitions: course groups, lesson metadata and steps, quiz content, terminal command fixtures, and playground configuration.
-- `components/GitInteractiveLab.jsx` owns the interactive Git/GitHub practice simulation, including its local lab state.
-- `components/LessonPlayground.jsx` owns the reusable concept-playground experience and delegates Git-specific practice to GitInteractiveLab.
+- `data/lessons.js` owns the shared course catalogue, non-Git lesson content, and shared playground configuration.
+- `git/levels/` owns the ordered Git & GitHub level registry and per-level metadata.
+- `git/components/GitInteractiveLab.jsx` owns the shared interactive simulator for Git levels 1–3.
+- `git/levels/GitHubLevelFourLab.jsx` owns the independent Level 4 practice challenge.
+- `git/shared/GitHubExperience.jsx` owns the reusable GitHub team/repository visualization.
+- `components/LessonPlayground.jsx` is the cross-course composition layer and delegates each topic to its feature module.
 - `App.jsx` remains the application composition layer for now: routing/view state, progress persistence, dashboard, lesson page, practice terminal, and global layout.
 
 ## Rules for future changes
 
-1. Add or edit lesson copy, steps, quiz questions, command examples, or playground stages in `data/lessons.js`; do not add curriculum arrays to `App.jsx`.
+1. Add or edit shared lesson copy, steps, quiz questions, command examples, or playground stages in `data/lessons.js`; do not add curriculum arrays to `App.jsx`.
+1. Register Git & GitHub levels in `git/levels/index.js`; keep each level's stable lesson IDs in its own level module.
 2. Keep topic-specific interactive simulations in their own components. Do not add Git-specific state or conditionals to the dashboard.
 3. Keep shared visual primitives reusable and topic-neutral. A topic module may compose shared primitives but should not own global navigation.
 4. Keep progress keys stable (`lesson-id:step-index`) unless a deliberate migration is included; existing learner progress must not be lost.
