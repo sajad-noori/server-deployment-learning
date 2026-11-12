@@ -55,7 +55,6 @@ export function LinuxFileOperationsLab({ onComplete }) {
   const [completed, setCompleted] = useState(false);
   const completedRef = useRef(false);
 
-  const allTasksComplete = TASKS.every(([, key]) => checks[key]);
   const nextAnswer = getNextAnswer(checks);
 
   function handleCommandSubmit(event) {
@@ -226,10 +225,10 @@ export function LinuxFileOperationsLab({ onComplete }) {
           </div>
 
           <div className="linux-folder-preview">
-            <strong>PROJECT FILES</strong>
+            <strong>TARGET STRUCTURE</strong>
             <div className="linux-folder"><Folder size={15}/> my-app/</div>
-            <div className="linux-folder"><Folder size={15}/> logs/ <span>(you will create this)</span></div>
-            <div className="linux-folder"><FileText size={15}/> deploy.log <span>(inside logs/)</span></div>
+            <div className="linux-folder"><Folder size={15}/> logs/ <span>(create this)</span></div>
+            <div className="linux-folder"><FileText size={15}/> deploy.log <span>(create inside logs/)</span></div>
           </div>
         </aside>
       </div>
