@@ -5,6 +5,7 @@ import { LinuxPracticeLab } from "./LinuxPracticeLab.jsx";
 import { LinuxFileInspectionLab } from "./LinuxFileInspectionLab.jsx";
 import { LinuxFileOperationsLab } from "./LinuxFileOperationsLab.jsx";
 import { LinuxFileManagementLab } from "./LinuxFileManagementLab.jsx";
+import { LinuxPermissionsLab } from "./LinuxPermissionsLab.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
 
@@ -16,6 +17,7 @@ export function LessonPlayground({lessonId,onComplete}){
  if(lessonId==="linux-file-inspection")return <LinuxFileInspectionLab onComplete={onComplete}/>;
  if(lessonId==="linux-file-operations")return <LinuxFileOperationsLab onComplete={onComplete}/>;
  if(lessonId==="linux-file-management")return <LinuxFileManagementLab onComplete={onComplete}/>;
+ if(lessonId==="linux-permissions")return <LinuxPermissionsLab onComplete={onComplete}/>;
  if(lessonId==="github-level-four")return <GitHubLevelFourLab onComplete={onComplete}/>; if(config.kind==="git")return <GitInteractiveLab lessonId={lessonId}/>; const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
  const advance=()=>setStage(v=>Math.min(v+1,config.stages.length-1));
  const renderControls=()=>{
