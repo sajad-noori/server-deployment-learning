@@ -249,7 +249,7 @@ export function GitInteractiveLab({lessonId}){
    </div>
    <aside className="git-clean-checklist" style={{border:"1px solid #2b3b4d",borderRadius:12,padding:16,background:"#111b29",alignSelf:"start"}}>
     <h3>YOUR MISSION CHECKLIST</h3><p>{mission.filter(item=>item[1]).length} of {mission.length} tasks completed</p>
-    <div className="git-clean-task-list">{mission.map((item,i)=><div className={"git-clean-task "+(item[1]?"done":"")} key={item[0]}><span>{item[1]?"✓":""}</span><span>{item[0]}{!item[1]&&i>0&&!mission[i-1][1]?<small>Complete the previous task first</small>:null}</span></div>)}</div>
+    <div className="git-clean-task-list">{mission.map((item,i)=>{const unlocked=i===0||mission.slice(0,i).every(previous=>previous[1]);return <div className={"git-clean-task "+(item[1]?"done ":"")+(unlocked?"":"locked")} key={item[0]}><span>{item[1]?"✓":""}</span><span>{item[0]}{!unlocked&&!item[1]?<small className="git-clean-task-lock">Complete the previous task first</small>:null}</span></div>;})}</div>
     <div className="git-clean-files"><strong>YOUR WORKSPACE</strong><div>📄 app.js</div><div>🌿 Current branch: {currentBranch}</div>{prOpen&&<div>↗ Pull request: {merged?"Merged":approved?"Approved":"Open"}</div>}</div>
    </aside>
   </div>
