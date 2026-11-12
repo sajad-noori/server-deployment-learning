@@ -4,11 +4,12 @@ import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, Chevron
 import { groups, lessons as existingLessons, commands } from "./data/lessons.js";
 import { linuxPracticeLesson } from "./data/linuxPractice.js";
 
+import { GitInteractiveLab } from "./components/GitInteractiveLab.jsx";
+import { LessonPlayground } from "./components/LessonPlayground.jsx";
+
 const lessons = [...existingLessons.filter((lesson) => lesson.group === "git"), linuxPracticeLesson, ...existingLessons.filter((lesson) => lesson.group !== "git" && lesson.group !== "linux")];
 const total = lessons.reduce((count, lesson) => count + lesson.steps.length, 0);
 
-import { GitInteractiveLab } from "./components/GitInteractiveLab.jsx";
-import { LessonPlayground } from "./components/LessonPlayground.jsx";
 
 export default function App(){
  const [active,setActive]=useState("git-basics"),[stepIndex,setStepIndex]=useState(0),[completed,setCompleted]=useState(()=>JSON.parse(localStorage.getItem("deploylab-progress")||"[]").filter(key=>lessons.some(lesson=>key.startsWith(lesson.id+":")))),[search,setSearch]=useState(""),[filter,setFilter]=useState("All"),[view,setView]=useState("dashboard"),[choice,setChoice]=useState(null),[submitted,setSubmitted]=useState(false),[terminal,setTerminal]=useState([{type:"system",text:"DeployLab practice shell · simulated environment"},{type:"system",text:"Type help to see supported commands. This is not a real server."}]),[input,setInput]=useState(""),[api,setApi]=useState("checking"),[menu,setMenu]=useState(false);
