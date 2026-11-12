@@ -13,7 +13,7 @@ export const initialFileOperationChecks = {
 };
 
 function normalizeCommand(command) {
-  return command.trim().replace(/\\s+/g, " ");
+  return command.trim().replace(/\s+/g, " ");
 }
 
 function listDirectory(path, fileSystem) {
