@@ -2,6 +2,7 @@ import { playgrounds } from "../data/lessons.js";
 import { GitInteractiveLab } from "./GitInteractiveLab.jsx";
 import { GitHubLevelFourLab } from "./GitHubLevelFourLab.jsx";
 import { LinuxPracticeLab } from "./LinuxPracticeLab.jsx";
+import { LinuxFileInspectionLab } from "./LinuxFileInspectionLab.jsx";
 import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
 
@@ -10,6 +11,7 @@ export function LessonPlayground({lessonId,onComplete}){
  const [stage,setStage]=useState(0),[privateSafe,setPrivateSafe]=useState(true),[firewall,setFirewall]=useState(false),[ports,setPorts]=useState(["22"]),[crashed,setCrashed]=useState(false),[upstream,setUpstream]=useState(true),[certificate,setCertificate]=useState(true),[testsPass,setTestsPass]=useState(true),[secrets,setSecrets]=useState(true),[fault,setFault]=useState("none");
  const current=config.stages[stage];
  if(lessonId==="linux-basics")return <LinuxPracticeLab onComplete={onComplete}/>;
+ if(lessonId==="linux-file-inspection")return <LinuxFileInspectionLab onComplete={onComplete}/>;
  if(lessonId==="github-level-four")return <GitHubLevelFourLab onComplete={onComplete}/>; if(config.kind==="git")return <GitInteractiveLab lessonId={lessonId}/>; const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
  const advance=()=>setStage(v=>Math.min(v+1,config.stages.length-1));
  const renderControls=()=>{
