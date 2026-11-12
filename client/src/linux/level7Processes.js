@@ -35,7 +35,7 @@ export function getNextProcessCommand(checks) {
 }
 
 function normalize(command) {
-  return command.trim().replace(/\\s+/g, " ");
+  return command.trim().replace(/\s+/g, " ");
 }
 
 /**
