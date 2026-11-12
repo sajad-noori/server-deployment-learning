@@ -10,7 +10,7 @@ import {
 
 const START_HISTORY = [
   { type: "system", text: "DeployLab Linux shell · simulated Ubuntu environment" },
-  { type: "system", text: "Mission: prepare a new Ubuntu server for deployment. Start from your computer, connect over SSH, then complete each task in order. This is a safe simulation." }
+  { type: "system", text: "Mission: prepare a new Ubuntu server for deployment. Create an SSH key pair on your computer, copy only the public key, connect over SSH, then complete each task in order. This is a safe simulation." }
 ];
 
 export function LinuxServerPreparationLab({ onComplete }) {
@@ -120,7 +120,7 @@ export function LinuxServerPreparationLab({ onComplete }) {
         <div>
           <span className="linux-practice-kicker">HANDS-ON LINUX WORKSHOP · LEVEL 8</span>
           <h2>Prepare a server for deployment</h2>
-          <p>Start on your own computer, connect to a remote Ubuntu server, prepare the web server and firewall, inspect services, and check system resources. Every command runs in this safe simulation only.</p>
+          <p>Start on your own computer: create an SSH key pair, install only its public key on the remote Ubuntu server, connect securely, prepare the web server and firewall, inspect services, and check system resources. Every command runs in this safe simulation only.</p>
         </div>
         <span className="linux-practice-tag">FINAL LINUX MISSION</span>
       </div>
@@ -158,7 +158,7 @@ export function LinuxServerPreparationLab({ onComplete }) {
             <strong>REMOTE UBUNTU SERVER</strong>
             <div className="linux-server-state"><i/><Server size={14}/><span>{connected ? "SSH session connected" : "Waiting for SSH connection"}</span></div>
             <div className="linux-server-meta">
-              <div>ACCOUNT<strong>{server.user}</strong></div>
+              <div>SSH KEY<strong>{server.sshKeyCreated ? "Created locally" : "Not created"}</strong></div>
               <div>NGINX<strong>{server.nginxInstalled ? "Installed" : "Not installed"}</strong></div>
               <div>FIREWALL<strong>{server.firewallEnabled ? "Active" : "Not enabled"}</strong></div>
               <div>SSH SERVICE<strong>{server.sshServiceActive ? "Running" : "Unknown"}</strong></div>
@@ -177,7 +177,7 @@ export function LinuxServerPreparationLab({ onComplete }) {
       </div>}
 
       <div className="linux-practice-footer">
-        <span>{completed ? "✓ Linux foundation complete · You are ready for the Node.js deployment module." : "Safety tip: always allow SSH before enabling a firewall. Never copy your private SSH key to the server. This lab does not execute real commands."}</span>
+        <span>{completed ? "✓ Linux foundation complete · You are ready for the Node.js deployment module." : "Safety tip: keep your private SSH key on your computer and install only the public key on the server. Always allow SSH before enabling a firewall. This lab does not execute real commands."}</span>
         <div className="linux-footer-actions">
           <button className="linux-answer-btn" type="button" onClick={() => setShowAnswer((visible) => !visible)}><Lightbulb size={14}/> {showAnswer ? "Hide answer" : "Show answer"}</button>
           {showAnswer && nextCommand && <button className="linux-answer-btn" type="button" onClick={() => setCommand(nextCommand)}>Use command</button>}
