@@ -21,7 +21,7 @@ function cloneFileSystem(fileSystem) {
 }
 
 function normalize(command) {
-  return command.trim().replace(/\\s+/g, " ");
+  return command.trim().replace(/\s+/g, " ");
 }
 
 /**
