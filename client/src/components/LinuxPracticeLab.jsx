@@ -1,8 +1,6 @@
 import { useRef, useState } from "react";
 import { CheckCircle2, ChevronRight, Folder, Terminal, Lightbulb, RotateCcw } from "lucide-react";
 
-const answerSteps = ["pwd", "ls", "cd my-app", "ls"];
-
 export function LinuxPracticeLab({ onComplete }) {
   const [cwd, setCwd] = useState("/home/deploy");
   const [command, setCommand] = useState("");
@@ -57,7 +55,7 @@ export function LinuxPracticeLab({ onComplete }) {
       output = "bash: " + raw + ": command not found. Try pwd, ls, or cd my-app.";
     }
     setChecks(next);
-    add([{ type: "command", text: raw }, { type: "output", text: output }]);
+    add([{ type: "command", text: raw, prompt: cwd === "/home/deploy" ? "~" : "~/my-app" }, { type: "output", text: output }]);
     if (next.pwd && next.rootLs && next.entered && next.projectLs && !completedRef.current) {
       completedRef.current = true;
       setCompleted(true);
@@ -67,10 +65,7 @@ export function LinuxPracticeLab({ onComplete }) {
     setCommand("");
   };
 
-  const answerIndex = !checks.pwd ? 0 : !checks.rootLs ? 1 : !checks.entered ? 2 : !checks.projectLs ? 3 : -1;
-  const useAnswer = () => {
-    if (answerIndex >= 0) setCommand(answerSteps[answerIndex]);
-  };
+  const answerCommand = !checks.pwd ? "pwd" : !checks.rootLs ? (cwd === "/home/deploy" ? "ls" : "cd ..") : !checks.entered ? (cwd === "/home/deploy/my-app" ? "cd .." : "cd my-app") : !checks.projectLs ? (cwd === "/home/deploy/my-app" ? "ls" : "cd my-app") : null;
   const reset = () => {
     setCwd("/home/deploy");
     setCommand("");
@@ -114,13 +109,13 @@ export function LinuxPracticeLab({ onComplete }) {
     <div className="linux-practice-head"><div><span className="linux-practice-kicker">HANDS-ON LINUX WORKSHOP · LEVEL 1</span><h2>Find your application folder</h2><p>You have logged in as <strong>deploy</strong>. Your job is to locate the <code>my-app</code> project folder and inspect the files inside it. Use the terminal; the checklist updates as you work.</p></div><span className="linux-practice-tag">BEGINNER MISSION</span></div>
     <div className="linux-practice-grid">
       <div className="linux-terminal"><div className="linux-terminal-bar"><span className="linux-dots"><i/><i/><i/></span><Terminal size={14}/> deploy@server: {cwd.replace("/home/deploy","~")}</div>
-        <div className="linux-terminal-screen" aria-live="polite">{history.map((item,i)=><div className={"linux-line "+item.type} key={i}>{item.type==="command"?<><span className="linux-prompt">deploy@server:{cwd.replace("/home/deploy","~")}$ </span>{item.text}</>:item.text}</div>)}
+        <div className="linux-terminal-screen" aria-live="polite">{history.map((item,i)=><div className={"linux-line "+item.type} key={i}>{item.type==="command"?<><span className="linux-prompt">deploy@server:{item.prompt || "~"}$ </span>{item.text}</>:item.text}</div>)}
           <form className="linux-form" onSubmit={run}><span className="linux-prompt">$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder="Enter a Linux command..." aria-label="Linux command" autoComplete="off"/><button type="submit">Run <ChevronRight size={14}/></button></form>
         </div>
       </div>
       <aside className="linux-task-panel"><h3>YOUR MISSION CHECKLIST</h3><div className="linux-task-list">{tasks.map(([label,done])=><div className={"linux-task "+(done?"done":"")} key={label}><span className="linux-task-icon">{done?<CheckCircle2 size={13}/>:null}</span><span>{label}</span></div>)}</div><div className="linux-folder-preview"><strong>SERVER FILE SYSTEM</strong><div className="linux-folder"><Folder size={15}/> my-app/</div><div className="linux-folder"><Folder size={15}/> backups/</div><div className="linux-folder"><Folder size={15}/> src/ <span style={{color:"#8295a9"}}>inside my-app</span></div></div></aside>
     </div>
-    {showAnswer&&<div className="linux-answer"><strong>Show Answer · next command</strong><p>{answerIndex<0?"You have completed every command in this mission.":`Run this command next, then return here for the following one.`}</p><code>{answerIndex<0?"Mission complete":answerSteps[answerIndex]}</code></div>}
-    <div className="linux-practice-footer"><span>{completed?"✓ Mission completed · You can reset and practice again.":"Practice tip: commands are case-sensitive on a real Linux system."}</span><div className="linux-footer-actions"><button className="linux-answer-btn" type="button" onClick={()=>setShowAnswer(v=>!v)}><Lightbulb size={14}/> {showAnswer?"Hide answer":"Show answer"}</button><button className="linux-reset" type="button" onClick={reset}><RotateCcw size={13}/> Reset</button></div></div>
+    {showAnswer&&<div className="linux-answer"><strong>Show Answer · next command</strong><p>{answerCommand===null?"You have completed every command in this mission.":`Run this command next, then return here for the following one.`}</p><code>{answerCommand===null?"Mission complete":answerCommand}</code></div>}
+    <div className="linux-practice-footer"><span>{completed?"✓ Mission completed · You can reset and practice again.":"Practice tip: commands are case-sensitive on a real Linux system."}</span><div className="linux-footer-actions"><button className="linux-answer-btn" type="button" onClick={()=>setShowAnswer(v=>!v)}><Lightbulb size={14}/> {showAnswer?"Hide answer":"Show answer"}</button>{showAnswer&&answerCommand!==null&&<button className="linux-answer-btn" type="button" onClick={()=>setCommand(answerCommand)}>Use command</button>}<button className="linux-reset" type="button" onClick={reset}><RotateCcw size={13}/> Reset</button></div></div>
   </section>;
 }
