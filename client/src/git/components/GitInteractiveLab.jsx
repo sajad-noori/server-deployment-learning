@@ -55,9 +55,34 @@ export function GitInteractiveLab({lessonId}){
  const resolvedCode=(line)=>scenario.starter.replace(scenario.mine,line);
  const runCommand=(raw)=>{
   const cmd=raw.trim(),lower=cmd.toLowerCase();if(!cmd)return;
+  const stopOutOfOrder=(instruction)=>{
+   setHistory(items=>[...items.slice(-7),"$ "+cmd]);
+   setOutput("Complete the previous task first. "+instruction);
+   setCommand("");
+  };
+  if(isWorkflow&&lower==="git switch -c feature/login"&&!statusChecked){
+   stopOutOfOrder("Run git status and confirm your starting point before creating the feature branch.");return;
+  }
+  if(isConflict&&!abortPracticeActive){
+   if((lower==="git log --oneline"||lower==="git log --oneline --graph --all")&&!statusChecked){
+    stopOutOfOrder("Run git status first, then inspect the commit graph.");return;
+   }
+   if(lower==="open pr"&&(!statusChecked||!logChecked)){
+    stopOutOfOrder("Check git status and inspect the commit graph before opening the pull request.");return;
+   }
+   if((lower==="git pull origin main"||lower==="git merge origin/main")&&!merged&&!prOpen){
+    stopOutOfOrder("Open the pull request and identify the conflict before pulling main into your feature branch.");return;
+   }
+   if(lower==="git status --short"&&!conflictActive){
+    stopOutOfOrder("Start the merge by pulling main into your feature branch before inspecting unmerged files.");return;
+   }
+   if((lower==="git add app.js"||lower==="git add .")&&conflictActive&&!unmergedStatusChecked){
+    stopOutOfOrder("Run git status --short and inspect the UU app.js status before staging the resolution.");return;
+   }
+  }
   let message="";
   if(lower==="git status"||lower==="git status -sb"){
-   if(isConflict){setStatusChecked(true);if(conflictActive)setUnmergedStatusChecked(true);message=abortPracticeActive?"On branch feature/summary\nYou are in the middle of a merge.\nUnmerged paths:\n  both modified: app.js":conflictActive?(conflictResolved?"On branch feature/summary\nAll conflicts fixed but you are still merging.\nChanges to be committed: app.js":"On branch feature/summary\nYou have unmerged paths.\n  both modified: app.js\nfix conflicts and run git add app.js"):merged&&currentBranch==="main"&&localMainBehind?"On branch main\nYour branch is behind 'origin/main' by 1 commit.\n(use git pull origin main to update your local branch)": "On branch "+currentBranch+"\nYour branch and 'origin/main' have diverged.\nnothing to commit, working tree clean";}
+   if(isConflict){setStatusChecked(true);message=abortPracticeActive?"On branch feature/summary\nYou are in the middle of a merge.\nUnmerged paths:\n  both modified: app.js":conflictActive?(conflictResolved?"On branch feature/summary\nAll conflicts fixed but you are still merging.\nChanges to be committed: app.js":"On branch feature/summary\nYou have unmerged paths.\n  both modified: app.js\nfix conflicts and run git add app.js"):merged&&currentBranch==="main"&&localMainBehind?"On branch main\nYour branch is behind 'origin/main' by 1 commit.\n(use git pull origin main to update your local branch)": "On branch "+currentBranch+"\nYour branch and 'origin/main' have diverged.\nnothing to commit, working tree clean";}
    else{if(isWorkflow)setStatusChecked(true);message="On branch "+currentBranch+"\n"+(fileState==="clean"?"nothing to commit, working tree clean":fileState==="modified"?"Changes not staged for commit:\n  modified: app.js":fileState==="staged"?"Changes to be committed:\n  modified: app.js":"Your branch has local changes.");}
   }else if(lower==="git log --oneline"||lower==="git log --oneline --graph --all"){
    if(isConflict){setLogChecked(true);message="* 7fa31c2 (HEAD -> feature/summary) Add feature summary\n| * 91b8e20 (origin/main, main) Sara updates welcome message\n|/\n* 4d2c9a1 Base application";}
@@ -212,7 +237,7 @@ export function GitInteractiveLab({lessonId}){
     <div className="git-lab-editor">
      <div className="git-lab-editor-head"><span><Code2 size={15}/> app.js</span><small>{isConflict?(conflictActive?(conflictResolved?"Resolved":"Conflict · edit the file"):"Starter file"):fileState==="clean"?"Starter file":fileState==="modified"?"Modified":fileState==="staged"?"Staged":fileState==="committed"?"Committed":"Pushed"}</small></div>
      {isConflict&&conflictActive&&<div className="git-conflict-legend"><span>Your version: HEAD</span><span>======= separates the changes</span><span>Sara's version: origin/main</span></div>}
-     <div className={isConflict&&conflictActive?"git-conflict-editor-wrap":"git-code-editor-wrap"}>{isConflict&&conflictActive&&<pre className="git-conflict-highlight" aria-hidden="true">{code.split("\n").map((line,i)=><span key={i} className={line.startsWith("<<<<<<<")?"marker-mine":line==="======="?"marker-divider":line.startsWith(">>>>>>>")?"marker-theirs":line===scenario.mine?"marker-mine":line===scenario.theirs?"marker-theirs":""}>{line||" "}</span>)}</pre>}<textarea aria-label="Edit app.js code" spellCheck="false" value={code} onChange={e=>{setCode(e.target.value);if(isConflict){setConflictResolved(false);setFileState("modified");setOutput("File edited. Remove every conflict marker and keep the correct final code.");}else{setFileState("modified");setPrOpen(false);setApproved(false);setMerged(false);setOutput("File changed. Try git status or git diff.");}}}/></div>
+     <div className={isConflict&&conflictActive?"git-conflict-editor-wrap":"git-code-editor-wrap"}>{isConflict&&conflictActive&&<pre className="git-conflict-highlight" aria-hidden="true">{code.split("\n").map((line,i)=><span key={i} className={line.startsWith("<<<<<<<")?"marker-mine":line==="======="?"marker-divider":line.startsWith(">>>>>>>")?"marker-theirs":line===scenario.mine?"marker-mine":line===scenario.theirs?"marker-theirs":""}>{line||" "}</span>)}</pre>}<textarea aria-label="Edit app.js code" spellCheck="false" value={code} disabled={isWorkflow&&!branchCreated||isConflict&&(!conflictActive||!unmergedStatusChecked)} onChange={e=>{setCode(e.target.value);if(isConflict){setConflictResolved(false);setFileState("modified");setOutput("File edited. Remove every conflict marker and keep the correct final code.");}else{setFileState("modified");setPrOpen(false);setApproved(false);setMerged(false);setOutput("File changed. Try git status or git diff.");}}}/></div>
      <div className="git-lab-editor-foot"><span>{isConflict?"Remove every conflict marker and keep the final code.":"Edit the sample code to create a change."}</span><button type="button" onClick={()=>{setCode(isConflict?scenario.starter:baseCode);setFileState("clean");setConflictResolved(false);setOutput("Starter code restored.");}}>Restore starter</button></div>
      {isConflict&&conflictActive&&<div className="git-conflict-help"><strong>Choose the final code</strong><span>These options remove the conflict markers for you.</span><div><button type="button" onClick={()=>{setCode(resolvedCode(scenario.mine));setConflictResolved(false);setFileState("modified");setOutput("Your version selected. Next run git add app.js.");}}>Keep my version</button><button type="button" onClick={()=>{setCode(resolvedCode(scenario.theirs));setConflictResolved(false);setFileState("modified");setOutput("Sara's version selected. Next run git add app.js.");}}>Keep Sara's version</button><button type="button" onClick={()=>{setCode(round===0?resolvedCode(scenario.mine):resolvedCode('  return "Welcome, " + user.name + " — welcome back!";'));setConflictResolved(false);setFileState("modified");setOutput("Combined version selected. Next run git add app.js.");}}>Use combined version</button></div><small>{round===0?"Either version is accepted in this round.":"Keep the user's name and add Sara's returning-member idea."}</small></div>}
     </div>
