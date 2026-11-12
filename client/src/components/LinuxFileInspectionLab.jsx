@@ -15,7 +15,7 @@ export function LinuxFileInspectionLab({ onComplete }) {
   const run = (event) => {
     event.preventDefault();
     const raw = command.trim();
-    const cmd = raw.replace(/\\s+/g, " ");
+    const cmd = raw.replace(/\s+/g, " ");
     if (!cmd) return;
     const next = { ...checks };
     let output = "";
@@ -30,10 +30,10 @@ export function LinuxFileInspectionLab({ onComplete }) {
     } else if (cmd.toLowerCase() === "ls") {
       output = "README.md   package.json   server.js   src/";
     } else if (cmd.toLowerCase() === "cat readme.md") {
-      output = "# My App\\n\\nA simple Node.js application.\\n\\n## Getting started\\nInstall dependencies with npm install, then start the app with npm start.";
+      output = "# My App\n\nA simple Node.js application.\n\n## Getting started\nInstall dependencies with npm install, then start the app with npm start.";
       next.readme = true;
     } else if (cmd.toLowerCase() === "cat package.json") {
-      output = '{\\n  "name": "my-app",\\n  "version": "1.0.0",\\n  "scripts": {\\n    "start": "node server.js"\\n  },\\n  "dependencies": {}\\n}';
+      output = '{\n  "name": "my-app",\n  "version": "1.0.0",\n  "scripts": {\n    "start": "node server.js"\n  },\n  "dependencies": {}\n}';
       next.package = true;
     } else {
       output = "bash: " + raw + ": command not found. Try cat README.md or cat package.json.";
