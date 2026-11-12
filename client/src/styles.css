@@ -334,3 +334,9 @@
 .git-lab-clean .git-conflict-help small{display:block;margin-top:8px;color:#91a4b8}
 .git-lab-clean .git-conflict-round-next{margin:0 20px 14px;padding:11px 14px;border:1px solid #2b3b4d;border-radius:9px;background:#111b29;color:#c3cfdd;font-size:12px}
 @media(max-width:700px){.git-lab-clean .git-clean-grid{grid-template-columns:1fr!important;padding:14px!important}.git-lab-clean .git-lab-heading{display:block!important;padding:18px!important}.git-lab-clean .git-lab-heading h2{font-size:19px}.git-lab-clean .git-lab-tag{display:inline-block;margin-top:12px}.git-lab-clean .git-lab-footer{align-items:flex-start;flex-direction:column}}
+
+
+.git-lab-clean .git-abort-practice summary{cursor:pointer;color:#c3cfdd;font-weight:700;list-style:none}
+.git-lab-clean .git-abort-practice summary::-webkit-details-marker{display:none}
+.git-lab-clean .git-abort-practice summary:before{content:"＋";display:inline-block;margin-right:8px;color:#7ce0ad}
+.git-lab-clean .git-abort-practice[open] summary:before{content:"−"}
