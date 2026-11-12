@@ -29,19 +29,31 @@ export function LinuxPracticeLab({ onComplete }) {
       return;
     } else if (cmd === "pwd") {
       output = cwd;
-      next.pwd = true;
+      if (!next.pwd) {
+        next.pwd = true;
+      }
     } else if (cmd === "ls" || cmd === "ls -la") {
-      if (cwd === "/home/deploy") {
+      if (!next.pwd) {
+        output = "Complete the previous task first: check your current location with pwd.";
+      } else if (cwd === "/home/deploy" && !next.rootLs) {
         output = "my-app/   backups/";
         next.rootLs = true;
-      } else if (cwd === "/home/deploy/my-app") {
+      } else if (cwd === "/home/deploy" && next.rootLs) {
+        output = "my-app/   backups/";
+      } else if (cwd === "/home/deploy/my-app" && next.entered) {
         output = "README.md   package.json   server.js   src/";
         next.projectLs = true;
+      } else if (cwd === "/home/deploy/my-app") {
+        output = "Complete the previous task first: enter the my-app folder.";
       } else {
         output = "No files to display.";
       }
     } else if (cmd === "cd my-app") {
-      if (cwd === "/home/deploy") {
+      if (!next.pwd || !next.rootLs) {
+        output = !next.pwd
+          ? "Complete the previous task first: check your current location with pwd."
+          : "Complete the previous task first: list the available folders with ls.";
+      } else if (cwd === "/home/deploy") {
         setCwd("/home/deploy/my-app");
         output = "You are now inside /home/deploy/my-app";
         next.entered = true;
@@ -79,10 +91,10 @@ export function LinuxPracticeLab({ onComplete }) {
   };
 
   const tasks = [
-    ["Check where you are", checks.pwd],
-    ["List the available folders", checks.rootLs],
-    ["Enter the my-app folder", checks.entered],
-    ["List the application files", checks.projectLs]
+    ["Check where you are", checks.pwd, true],
+    ["List the available folders", checks.rootLs, checks.pwd],
+    ["Enter the my-app folder", checks.entered, checks.pwd && checks.rootLs],
+    ["List the application files", checks.projectLs, checks.pwd && checks.rootLs && checks.entered]
   ];
 
   return <section className="linux-practice">
@@ -99,7 +111,7 @@ export function LinuxPracticeLab({ onComplete }) {
       .linux-line{white-space:pre-wrap;overflow-wrap:anywhere;margin:2px 0}.linux-line.system{color:#8da3b9}.linux-line.command{color:#f1f5f9}.linux-line.output{color:#b6d7c4}.linux-line.success{color:#7ce0ad;font-weight:700}
       .linux-prompt{color:#7ce0ad}.linux-form{display:flex;gap:9px;align-items:center;margin-top:12px}.linux-form input{flex:1;min-width:0;background:#111d2a;border:1px solid #34465a;border-radius:7px;padding:11px;color:#fff;font:inherit;outline:none}.linux-form input:focus{border-color:#72d7a2}
       .linux-form button,.linux-answer-btn,.linux-reset{border:0;border-radius:7px;padding:10px 13px;font-weight:700;cursor:pointer}.linux-form button{background:#72d7a2;color:#092016}
-      .linux-task-panel{border:1px solid #2b3b4d;border-radius:12px;padding:16px;background:#111b29}.linux-task-panel h3{font-size:14px;margin:0 0 14px}.linux-task-list{display:grid;gap:12px}.linux-task{display:flex;gap:9px;align-items:flex-start;color:#c3cfdd;font-size:12px;line-height:1.45}.linux-task-icon{width:19px;height:19px;flex:none;border:1px solid #536579;border-radius:50%;display:grid;place-items:center;color:#7ce0ad}.linux-task.done .linux-task-icon{background:#214b39;border-color:#4c9c73}
+      .linux-task-panel{border:1px solid #2b3b4d;border-radius:12px;padding:16px;background:#111b29}.linux-task-panel h3{font-size:14px;margin:0 0 14px}.linux-task-list{display:grid;gap:12px}.linux-task{display:flex;gap:9px;align-items:flex-start;color:#c3cfdd;font-size:12px;line-height:1.45}.linux-task-icon{width:19px;height:19px;flex:none;border:1px solid #536579;border-radius:50%;display:grid;place-items:center;color:#7ce0ad}.linux-task.done .linux-task-icon{background:#214b39;border-color:#4c9c73}.linux-task.locked{opacity:.48}.linux-task-lock{display:block;color:#8496aa;font-size:10px;margin-top:3px}
       .linux-folder-preview{margin-top:18px;border-top:1px solid #2b3b4d;padding-top:14px}.linux-folder-preview strong{display:block;font-size:11px;color:#93a8bd;margin-bottom:9px}.linux-folder{display:flex;align-items:center;gap:8px;font-size:12px;color:#c8d6e4;padding:6px 0}.linux-folder svg{color:#7ed9a8}.linux-folder.nested{margin-left:22px;color:#aabbd0}
       .linux-answer{margin:0 20px 18px;border:1px solid #435b4d;background:#12241e;border-radius:10px;padding:14px;color:#c9e4d4}.linux-answer strong{font-size:13px}.linux-answer p{font-size:12px;line-height:1.55;margin:7px 0 12px}.linux-answer code{display:block;background:#09140f;padding:10px;border-radius:7px;color:#a7efc5;font-size:12px;white-space:pre-wrap}
       .linux-practice-footer{padding:14px 20px;border-top:1px solid #253448;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:#93a8bd;font-size:11px}
@@ -113,7 +125,7 @@ export function LinuxPracticeLab({ onComplete }) {
           <form className="linux-form" onSubmit={run}><span className="linux-prompt">$</span><input value={command} onChange={e=>setCommand(e.target.value)} placeholder="Enter a Linux command..." aria-label="Linux command" autoComplete="off"/><button type="submit">Run <ChevronRight size={14}/></button></form>
         </div>
       </div>
-      <aside className="linux-task-panel"><h3>YOUR MISSION CHECKLIST</h3><div className="linux-task-list">{tasks.map(([label,done])=><div className={"linux-task "+(done?"done":"")} key={label}><span className="linux-task-icon">{done?<CheckCircle2 size={13}/>:null}</span><span>{label}</span></div>)}</div><div className="linux-folder-preview"><strong>SERVER FILE SYSTEM</strong><div className="linux-folder"><Folder size={15}/> my-app/</div><div className="linux-folder"><Folder size={15}/> backups/</div><div className="linux-folder nested"><Folder size={15}/> src/ <span style={{color:"#8295a9"}}>inside my-app</span></div></div></aside>
+      <aside className="linux-task-panel"><h3>YOUR MISSION CHECKLIST</h3><div className="linux-task-list">{tasks.map(([label,done,unlocked])=><div className={"linux-task "+(done?"done":"")+(unlocked?"":" locked")} key={label}><span className="linux-task-icon">{done?<CheckCircle2 size={13}/>:null}</span><span>{label}{!unlocked&&!done?<small className="linux-task-lock"> · Complete the previous task first</small>:null}</span></div>)}</div><div className="linux-folder-preview"><strong>SERVER FILE SYSTEM</strong><div className="linux-folder"><Folder size={15}/> my-app/</div><div className="linux-folder"><Folder size={15}/> backups/</div><div className="linux-folder nested"><Folder size={15}/> src/ <span style={{color:"#8295a9"}}>inside my-app</span></div></div></aside>
     </div>
     {showAnswer&&<div className="linux-answer"><strong>Show Answer · next command</strong><p>{answerCommand===null?"You have completed every command in this mission.":`Run this command next, then return here for the following one.`}</p><code>{answerCommand===null?"Mission complete":answerCommand}</code></div>}
     <div className="linux-practice-footer"><span>{completed?"✓ Mission completed · You can reset and practice again.":"Practice tip: commands are case-sensitive on a real Linux system."}</span><div className="linux-footer-actions"><button className="linux-answer-btn" type="button" onClick={()=>setShowAnswer(v=>!v)}><Lightbulb size={14}/> {showAnswer?"Hide answer":"Show answer"}</button>{showAnswer&&answerCommand!==null&&<button className="linux-answer-btn" type="button" onClick={()=>setCommand(answerCommand)}>Use command</button>}<button className="linux-reset" type="button" onClick={reset}><RotateCcw size={13}/> Reset</button></div></div>
