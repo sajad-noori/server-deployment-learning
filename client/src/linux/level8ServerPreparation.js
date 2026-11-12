@@ -59,7 +59,7 @@ export function getNextServerCommand(checks) {
 }
 
 function normalize(command) {
-  return command.trim().replace(/\\s+/g, " ").replace(/\\s*&&\\s*/g, " && ");
+  return command.trim().replace(/\s+/g, " ").replace(/\s*&&\s*/g, " && ");
 }
 
 /**
