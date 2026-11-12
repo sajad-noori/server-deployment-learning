@@ -172,7 +172,7 @@ export function GitHubLevelFourLab({onComplete}){
    </div>
    <aside className="git-clean-checklist" style={{border:"1px solid #2b3b4d",borderRadius:12,padding:16,background:"#111b29",alignSelf:"start"}}>
     <h3>YOUR MISSION CHECKLIST</h3><p>{progress} of {steps.length} tasks completed</p>
-    <div className="git-clean-task-list">{steps.map((item,i)=><div className={"git-clean-task "+(done[i]?"done":"")} key={item[0]}><span>{done[i]?"✓":""}</span><span>{item[0]}{!done[i]&&i>0&&!done[i-1]?<small>Complete the previous task first</small>:null}</span></div>)}</div>
+    <div className="git-clean-task-list">{steps.map((item,i)=>{const unlocked=i===0||done.slice(0,i).every(Boolean);return <div className={"git-clean-task "+(done[i]?"done ":"")+(unlocked?"":"locked")} key={item[0]}><span>{done[i]?"✓":""}</span><span>{item[0]}{!unlocked&&!done[i]?<small className="git-clean-task-lock">Complete the previous task first</small>:null}</span></div>;})}</div>
     <div className="git-clean-files"><strong>YOUR WORKSPACE</strong><div>📄 app.js</div><div>🌿 Current branch: {branch}</div>{prOpen&&<div>↗ Pull request: {merged?"Merged":approved?"Approved":"Open"}</div>}</div>
     {allDone&&<button type="button" className="complete-btn marked" onClick={onComplete}><CheckCircle2 size={16}/> Mark level complete</button>}
    </aside>
