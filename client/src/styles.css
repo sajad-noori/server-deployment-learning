@@ -340,3 +340,7 @@
 .git-lab-clean .git-abort-practice summary::-webkit-details-marker{display:none}
 .git-lab-clean .git-abort-practice summary:before{content:"＋";display:inline-block;margin-right:8px;color:#7ce0ad}
 .git-lab-clean .git-abort-practice[open] summary:before{content:"−"}
+
+/* Keep Git & GitHub tasks visually locked until every earlier task is complete, matching Linux & SSH. */
+.git-lab-clean .git-clean-task.locked{opacity:.48}
+.git-lab-clean .git-clean-task-lock{display:block;color:#8496aa;font-size:10px;margin-top:3px}
