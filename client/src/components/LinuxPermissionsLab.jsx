@@ -4,7 +4,6 @@ import {
   executePermissionsCommand,
   initialPermissionsChecks,
   initialPermissionsFile,
-  permissionsDirectory,
   getNextPermissionsCommand
 } from "../linux/level5Permissions.js";
 
