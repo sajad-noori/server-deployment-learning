@@ -1,6 +1,6 @@
 import { playgrounds } from "../data/lessons.js";
-import { GitInteractiveLab } from "./GitInteractiveLab.jsx";
-import { GitHubLevelFourLab } from "./GitHubLevelFourLab.jsx";
+import { GitInteractiveLab } from "../git/components/GitInteractiveLab.jsx";
+import { GitHubLevelFourLab } from "../git/levels/GitHubLevelFourLab.jsx";
 import { LinuxPracticeLab } from "./LinuxPracticeLab.jsx";
 import { LinuxFileInspectionLab } from "./LinuxFileInspectionLab.jsx";
 import { LinuxFileOperationsLab } from "./LinuxFileOperationsLab.jsx";
