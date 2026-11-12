@@ -56,3 +56,27 @@ npm run dev
 ```
 
 Manually verify dashboard navigation, direct lesson URLs, browser back/forward, progress persistence after refresh, completed-step persistence, and the Git/GitHub lab workflows. A refactor is not complete merely because files were moved: behavior must remain unchanged.
+
+
+## Git & GitHub feature structure
+
+Git & GitHub now has its own feature boundary under `client/src/git/`.
+
+- `levels/level1Foundations.js` through `level4TeamChallenge.js` declare each level's stable lesson IDs and practice mode.
+- `levels/index.js` is the single ordered registry for the Git curriculum.
+- `git/lessons.js` resolves registered IDs against the shared curriculum and fails fast if a registered lesson is missing.
+- `components/GitInteractiveLab.jsx` contains the shared interactive simulator used by Git foundations, GitHub collaboration, and conflict-resolution lessons.
+- `levels/GitHubLevelFourLab.jsx` contains the independent practice-only Level 4 experience.
+- `shared/GitHubExperience.jsx` contains the reusable repository/team visual shared by the interactive Git simulator.
+
+The app shell consumes `gitLessons` from the feature boundary. `LessonPlayground.jsx` is only the composition/router layer and imports Git practice from `git/`, rather than owning Git implementation files.
+
+### Adding a Git/GitHub level
+
+1. Add a level descriptor in `git/levels/` with a stable `lessonIds` array and its practice mode.
+2. Register it in `git/levels/index.js` in the intended curriculum order.
+3. Add its lesson content to the curriculum catalogue using the existing lesson schema.
+4. If the level needs a distinct simulator, put it in its own level module; keep shared UI in `git/shared/`.
+5. Keep lesson IDs, progress keys, and localStorage keys stable so existing learner progress is preserved.
+
+This is a structural refactor: lesson content, command behavior, completion rules, progress keys, and existing simulator state keys are intentionally unchanged.
