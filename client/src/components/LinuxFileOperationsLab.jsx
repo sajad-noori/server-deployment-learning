@@ -27,10 +27,10 @@ const INITIAL_HISTORY = [
 ];
 
 const TASKS = [
-  ["Create a logs directory with mkdir logs", "directoryCreated"],
-  ["Move into logs with cd logs", "directoryEntered"],
-  ["Create deploy.log with touch deploy.log", "fileCreated"],
-  ["Verify the file with ls", "fileVerified"]
+  ["Create a logs directory", "directoryCreated"],
+  ["Move into the logs directory", "directoryEntered"],
+  ["Create a deploy.log file", "fileCreated"],
+  ["Verify that deploy.log exists", "fileVerified"]
 ];
 
 function getNextAnswer(checks) {
