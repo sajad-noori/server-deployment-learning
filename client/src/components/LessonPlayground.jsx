@@ -1,32 +1,32 @@
 import { playgrounds } from "../data/lessons.js";
-import { GitInteractiveLab } from "../git/components/GitInteractiveLab.jsx";
-import { GitHubLevelFourLab } from "../git/levels/GitHubLevelFourLab.jsx";
-import { LinuxPracticeLab } from "./LinuxPracticeLab.jsx";
-import { LinuxFileInspectionLab } from "./LinuxFileInspectionLab.jsx";
-import { LinuxFileOperationsLab } from "./LinuxFileOperationsLab.jsx";
-import { LinuxFileManagementLab } from "./LinuxFileManagementLab.jsx";
-import { LinuxPermissionsLab } from "./LinuxPermissionsLab.jsx";
-import { LinuxOwnershipLab } from "./LinuxOwnershipLab.jsx";
-import { LinuxProcessLab } from "./LinuxProcessLab.jsx";
-import { LinuxServerPreparationLab } from "./LinuxServerPreparationLab.jsx";
-import { NodeDeploymentLab } from "./NodeDeploymentLab.jsx";
-import { useEffect, useMemo, useState } from "react";
-import { Activity, ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Code2, Copy, ExternalLink, GitBranch, GraduationCap, LayoutDashboard, LockKeyhole, Menu, Search, Server, ShieldCheck, Terminal, TrendingUp, X, Zap } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
+const GitInteractiveLab = lazy(() => import("../git/components/GitInteractiveLab.jsx").then((module) => ({ default: module.GitInteractiveLab })));
+const GitHubLevelFourLab = lazy(() => import("../git/levels/GitHubLevelFourLab.jsx").then((module) => ({ default: module.GitHubLevelFourLab })));
+const LinuxPracticeLab = lazy(() => import("./LinuxPracticeLab.jsx").then((module) => ({ default: module.LinuxPracticeLab })));
+const LinuxFileInspectionLab = lazy(() => import("./LinuxFileInspectionLab.jsx").then((module) => ({ default: module.LinuxFileInspectionLab })));
+const LinuxFileOperationsLab = lazy(() => import("./LinuxFileOperationsLab.jsx").then((module) => ({ default: module.LinuxFileOperationsLab })));
+const LinuxFileManagementLab = lazy(() => import("./LinuxFileManagementLab.jsx").then((module) => ({ default: module.LinuxFileManagementLab })));
+const LinuxPermissionsLab = lazy(() => import("./LinuxPermissionsLab.jsx").then((module) => ({ default: module.LinuxPermissionsLab })));
+const LinuxOwnershipLab = lazy(() => import("./LinuxOwnershipLab.jsx").then((module) => ({ default: module.LinuxOwnershipLab })));
+const LinuxProcessLab = lazy(() => import("./LinuxProcessLab.jsx").then((module) => ({ default: module.LinuxProcessLab })));
+const LinuxServerPreparationLab = lazy(() => import("./LinuxServerPreparationLab.jsx").then((module) => ({ default: module.LinuxServerPreparationLab })));
+const NodeDeploymentLab = lazy(() => import("./NodeDeploymentLab.jsx").then((module) => ({ default: module.NodeDeploymentLab })));
+
 
 export function LessonPlayground({lessonId,onComplete}){
  const config=playgrounds[lessonId]||playgrounds["git-basics"];
  const [stage,setStage]=useState(0),[privateSafe,setPrivateSafe]=useState(true),[firewall,setFirewall]=useState(false),[ports,setPorts]=useState(["22"]),[crashed,setCrashed]=useState(false),[upstream,setUpstream]=useState(true),[certificate,setCertificate]=useState(true),[testsPass,setTestsPass]=useState(true),[secrets,setSecrets]=useState(true),[fault,setFault]=useState("none");
  const current=config.stages[stage];
- if(lessonId==="linux-basics")return <LinuxPracticeLab onComplete={onComplete}/>;
- if(lessonId==="linux-file-inspection")return <LinuxFileInspectionLab onComplete={onComplete}/>;
- if(lessonId==="linux-file-operations")return <LinuxFileOperationsLab onComplete={onComplete}/>;
- if(lessonId==="linux-file-management")return <LinuxFileManagementLab onComplete={onComplete}/>;
- if(lessonId==="linux-permissions")return <LinuxPermissionsLab onComplete={onComplete}/>;
- if(lessonId==="linux-ownership")return <LinuxOwnershipLab onComplete={onComplete}/>;
- if(lessonId==="linux-processes")return <LinuxProcessLab onComplete={onComplete}/>;
- if(lessonId==="linux-server-preparation")return <LinuxServerPreparationLab onComplete={onComplete}/>;
- if(lessonId==="node-deploy")return <NodeDeploymentLab onComplete={onComplete}/>;
- if(lessonId==="github-level-four")return <GitHubLevelFourLab onComplete={onComplete}/>; if(config.kind==="git")return <GitInteractiveLab lessonId={lessonId}/>; const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
+ if(lessonId==="linux-basics")return <Suspense fallback={<div className="lesson-loading" role="status">Loading Linux lab…</div>}><LinuxPracticeLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="linux-file-inspection")return <Suspense fallback={<div className="lesson-loading" role="status">Loading file inspection lab…</div>}><LinuxFileInspectionLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="linux-file-operations")return <Suspense fallback={<div className="lesson-loading" role="status">Loading file operations lab…</div>}><LinuxFileOperationsLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="linux-file-management")return <Suspense fallback={<div className="lesson-loading" role="status">Loading file management lab…</div>}><LinuxFileManagementLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="linux-permissions")return <Suspense fallback={<div className="lesson-loading" role="status">Loading permissions lab…</div>}><LinuxPermissionsLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="linux-ownership")return <Suspense fallback={<div className="lesson-loading" role="status">Loading ownership lab…</div>}><LinuxOwnershipLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="linux-processes")return <Suspense fallback={<div className="lesson-loading" role="status">Loading process lab…</div>}><LinuxProcessLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="linux-server-preparation")return <Suspense fallback={<div className="lesson-loading" role="status">Loading server preparation lab…</div>}><LinuxServerPreparationLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="node-deploy")return <Suspense fallback={<div className="lesson-loading" role="status">Loading Node.js lab…</div>}><NodeDeploymentLab onComplete={onComplete}/></Suspense>;
+ if(lessonId==="github-level-four")return <Suspense fallback={<div className="lesson-loading" role="status">Loading GitHub lab…</div>}><GitHubLevelFourLab onComplete={onComplete}/></Suspense>; if(config.kind==="git")return <Suspense fallback={<div className="lesson-loading" role="status">Loading Git practice…</div>}><GitInteractiveLab lessonId={lessonId}/></Suspense>; const reset=()=>{setStage(0);setPrivateSafe(true);setFirewall(false);setPorts(["22"]);setCrashed(false);setUpstream(true);setCertificate(true);setTestsPass(true);setSecrets(true);setFault("none")};
  const advance=()=>setStage(v=>Math.min(v+1,config.stages.length-1));
  const renderControls=()=>{
   if(config.kind==="ssh")return <div className="playground-controls"><label className="playground-toggle"><input type="checkbox" checked={privateSafe} onChange={e=>setPrivateSafe(e.target.checked)}/><span>🔐 Keep private key on my computer</span></label><p className={privateSafe?"playground-good":"playground-warning"}>{privateSafe?"Safe: only the public key is installed on the server.":"Unsafe: a private key should never be copied to the server."}</p></div>;
