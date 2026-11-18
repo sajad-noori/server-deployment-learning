@@ -169,7 +169,7 @@ function executeSingleNodeCommand({ command, state, checks }) {
  * A chain stops at the first failed command, just as bash does.
  */
 export function executeNodeCommand({ command, state, checks }) {
-  const commands = command.split(/\\s*&&\\s*/).map((part) => part.trim()).filter(Boolean);
+  const commands = command.split(/\s*&&\s*/).map((part) => part.trim()).filter(Boolean);
   if (commands.length <= 1) {
     return executeSingleNodeCommand({ command, state, checks });
   }
@@ -197,7 +197,7 @@ export function executeNodeCommand({ command, state, checks }) {
         state: currentState,
         checks: currentChecks,
         error: true,
-        output: output.join("\\n")
+        output: output.join("\n")
       };
     }
 
