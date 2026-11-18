@@ -1,12 +1,12 @@
 export const nodeTasks = [
-  { key: "runtime", label: "Check Node.js and npm", hint: "node --version && npm --version", description: "Verify the runtime and package manager." },
-  { key: "project", label: "Create the project folder", hint: "mkdir node-app && cd node-app", description: "Create and enter the application directory." },
-  { key: "package", label: "Initialize package.json", hint: "npm init -y", description: "Create the Node.js project manifest." },
-  { key: "dependencies", label: "Install dependencies", hint: "npm install express dotenv", description: "Install Express and dotenv." },
-  { key: "source", label: "Create the server file", hint: "mkdir src && nano src/server.js", description: "Write the Express server and health endpoint." },
-  { key: "startScript", label: "Configure the start script", hint: 'npm pkg set scripts.start="node src/server.js"', description: "Add a repeatable npm start command." },
-  { key: "environment", label: "Configure production environment", hint: "create .env", description: "Set NODE_ENV and PORT outside source code." },
-  { key: "health", label: "Start and verify the app", hint: "npm start, then curl -i http://127.0.0.1:3000/health", description: "Start the server and verify its health response." }
+  { key: "runtime", label: "Check Node.js and npm", hint: "node --version && npm --version", description: "Check that both Node.js and npm are installed. Run each version check and confirm that both print a version number." },
+  { key: "project", label: "Create the project folder", hint: "mkdir node-app && cd node-app", description: "Create a folder with the exact name `node-app` inside your home directory. Then move into that folder; the remaining setup tasks must be done there." },
+  { key: "package", label: "Initialize package.json", hint: "npm init -y", description: "Inside `node-app`, create the `package.json` file using the default project settings. This file records your project details and scripts." },
+  { key: "dependencies", label: "Install dependencies", hint: "npm install express dotenv", description: "Install the Express web framework and dotenv environment-variable loader into this project. npm should also create or update the dependency lockfile." },
+  { key: "source", label: "Create the server file", hint: "mkdir src && nano src/server.js", description: "Inside `node-app`, create a folder named `src`. Open a file named `server.js` inside it, add the provided Express server code including the `/health` endpoint, and save the file." },
+  { key: "startScript", label: "Configure the start script", hint: 'npm pkg set scripts.start="node src/server.js"', description: "Update the `scripts` section in the project's `package.json` so its `start` entry launches `src/server.js`. This lets you start the app using its npm start script." },
+  { key: "environment", label: "Configure production environment", hint: "create .env", description: "Create a `.env` file in the root of `node-app` (beside `package.json`). Add `NODE_ENV=production` and `PORT=3000`; keep this configuration out of your JavaScript source file." },
+  { key: "health", label: "Start and verify the app", hint: "npm start, then curl -i http://127.0.0.1:3000/health", description: "Start the application from inside `node-app`. Then request its `/health` address and confirm that the server responds with HTTP 200 and a JSON status of `ok`." }
 ];
 
 export const initialNodeState = {
