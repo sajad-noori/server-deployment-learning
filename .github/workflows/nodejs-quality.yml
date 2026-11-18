@@ -1,0 +1,36 @@
+name: Node.js learning lab checks
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/nodejs-quality-improvements"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  nodejs-lab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client dependencies
+        run: npm ci
+        working-directory: client
+
+      - name: Run Node.js simulator tests
+        run: npm test
+        working-directory: client
+
+      - name: Build the learning platform
+        run: npm run build
+        working-directory: client

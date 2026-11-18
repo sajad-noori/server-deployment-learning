@@ -64,7 +64,7 @@ export function getNextNodeCommand(checks, state) {
   if (!checks.source) {
     if (!state.sourceDirectoryCreated) return "mkdir src";
     if (!state.sourceEditorOpened) return "nano src/server.js";
-    return "Save src/server.js in the editor";
+    return null;
   }
   if (!checks.startScript) return 'npm pkg set scripts.start="node src/server.js"';
   if (!checks.environment) return "create .env";
@@ -88,7 +88,7 @@ export function saveNodeServerCode({ code, state, checks }) {
   };
 }
 
-export function executeNodeCommand({ command, state, checks }) {
+function executeSingleNodeCommand({ command, state, checks }) {
   const fail = (output) => ({ state, checks, error: true, output });
   const pass = (output, nextState = state, nextChecks = checks) => ({ state: nextState, checks: nextChecks, error: false, output });
   const inProject = state.cwd.endsWith("/node-app");
@@ -160,4 +160,55 @@ export function executeNodeCommand({ command, state, checks }) {
   }
   if (command === "clear") return { state, checks, error: false, output: "", clearHistory: true };
   return fail(`bash: ${command}: command not found. Type help for supported commands.`);
+}
+
+
+/**
+ * Execute a terminal line. The simulator supports simple `&&` chains
+ * so the commands shown in lesson instructions behave like a real shell.
+ * A chain stops at the first failed command, just as bash does.
+ */
+export function executeNodeCommand({ command, state, checks }) {
+  const commands = command.split(/\s*&&\s*/).map((part) => part.trim()).filter(Boolean);
+  if (commands.length <= 1) {
+    return executeSingleNodeCommand({ command, state, checks });
+  }
+
+  let currentState = state;
+  let currentChecks = checks;
+  const output = [];
+
+  for (const part of commands) {
+    const result = executeSingleNodeCommand({
+      command: part,
+      state: currentState,
+      checks: currentChecks
+    });
+
+    if (result.clearHistory) {
+      return commands.length === 1
+        ? result
+        : { state: currentState, checks: currentChecks, error: true, output: "clear cannot be combined with other commands." };
+    }
+
+    if (result.output) output.push(result.output);
+    if (result.error) {
+      return {
+        state: currentState,
+        checks: currentChecks,
+        error: true,
+        output: output.join("\n")
+      };
+    }
+
+    currentState = result.state;
+    currentChecks = result.checks;
+  }
+
+  return {
+    state: currentState,
+    checks: currentChecks,
+    error: false,
+    output: output.join("\n")
+  };
 }

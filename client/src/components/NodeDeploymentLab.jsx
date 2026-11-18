@@ -23,7 +23,6 @@ export function NodeDeploymentLab({ onComplete }) {
   const completedRef = useRef(false);
   const nextCommand = getNextNodeCommand(checks, server);
   const taskDone = nodeTasks.filter(({ key }) => checks[key]).length;
-  const currentTask = nodeTasks.findIndex(({ key }) => !checks[key]);
   const appReady = server.serverRunning;
 
   function handleSubmit(event) {
@@ -167,8 +166,8 @@ export function NodeDeploymentLab({ onComplete }) {
       {showAnswer && (
         <div className="node-answer">
           <strong>Show Answer · next command</strong>
-          <p>{nextCommand ? "Run this command next. Complete each task in order; later tasks unlock after the previous task succeeds." : "You have completed every task in this mission."}</p>
-          <code>{nextCommand || "Mission complete"}</code>
+          <p>{nextCommand ? "Run this command next. Complete each task in order; later tasks unlock after the previous task succeeds." : server.sourceEditorOpened ? "Finish editing src/server.js, then use the Save server file button." : "You have completed every task in this mission."}</p>
+          <code>{nextCommand || (server.sourceEditorOpened ? "Save src/server.js using the editor button above" : "Mission complete")}</code>
         </div>
       )}
 
