@@ -56,7 +56,7 @@ app.listen(port, "0.0.0.0", () => {
 `;
 
 export function getNextNodeCommand(checks, state) {
-  if (!checks.runtime) return "node --version && npm --version";
+  if (!checks.runtime) return "node --version";
   if (!state.projectCreated) return "mkdir node-app";
   if (!checks.project) return "cd node-app";
   if (!checks.package) return "npm init -y";
