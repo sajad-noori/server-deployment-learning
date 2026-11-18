@@ -209,6 +209,6 @@ export function executeNodeCommand({ command, state, checks }) {
     state: currentState,
     checks: currentChecks,
     error: false,
-    output: output.join("\\n")
+    output: output.join("\n")
   };
 }
