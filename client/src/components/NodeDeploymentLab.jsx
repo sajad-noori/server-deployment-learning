@@ -20,7 +20,7 @@ export function NodeDeploymentLab({ onComplete }) {
   const [editorCode, setEditorCode] = useState(nodeServerTemplate);
   const [completed, setCompleted] = useState(false);
   const completedRef = useRef(false);
-  const nextCommand = getNextNodeCommand(checks);
+  const nextCommand = getNextNodeCommand(checks, server);
   const taskDone = nodeTasks.filter(({ key }) => checks[key]).length;
   const currentTask = nodeTasks.findIndex(({ key }) => !checks[key]);
   const appReady = server.serverRunning;
