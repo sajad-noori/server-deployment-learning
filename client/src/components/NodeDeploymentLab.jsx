@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import "../styles/linux-practice.css";
 import { CheckCircle2, ChevronRight, Lightbulb, RotateCcw, Server, Terminal } from "lucide-react";
 import {
   executeNodeCommand,
