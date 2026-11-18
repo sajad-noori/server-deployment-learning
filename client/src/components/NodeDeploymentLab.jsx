@@ -21,11 +21,8 @@ export function NodeDeploymentLab({ onComplete }) {
   const [editorCode, setEditorCode] = useState(nodeServerTemplate);
   const [completed, setCompleted] = useState(false);
   const completedRef = useRef(false);
-  const terminalInputRef = useRef(null);
   const nextCommand = getNextNodeCommand(checks, server);
   const taskDone = nodeTasks.filter(({ key }) => checks[key]).length;
-  const currentTaskIndex = nodeTasks.findIndex(({ key }) => !checks[key]);
-  const currentTask = currentTaskIndex >= 0 ? nodeTasks[currentTaskIndex] : null;
   const appReady = server.serverRunning;
 
   function handleSubmit(event) {
@@ -110,7 +107,7 @@ export function NodeDeploymentLab({ onComplete }) {
         <span className="linux-practice-tag">NODE.JS FOUNDATION</span>
       </div>
 
-      <div className="node-next-step" aria-live="polite">\n        <div className="node-next-step-copy">\n          <span className="node-next-step-kicker">{currentTask ? `YOUR NEXT STEP · ${currentTaskIndex + 1} OF ${nodeTasks.length}` : "ALL STEPS COMPLETE"}</span>\n          <h3>{currentTask ? currentTask.label : "Node.js setup complete"}</h3>\n          <p>{currentTask ? currentTask.description : "Your Express application is running and its health endpoint has been verified."}</p>\n        </div>\n        {currentTask && <button type="button" disabled={!nextCommand} onClick={() => { setCommand(nextCommand); terminalInputRef.current?.focus(); }}>{nextCommand ? "Load next command →" : "Edit and save the server file below"}</button>}\n      </div>\n\n      <div className="linux-practice-grid">
+      <div className="linux-practice-grid">
         <div className="linux-terminal">
           <div className="linux-terminal-bar">
             <span className="linux-dots"><i/><i/><i/></span>
@@ -124,7 +121,7 @@ export function NodeDeploymentLab({ onComplete }) {
             ))}
             <form className="linux-form" onSubmit={handleSubmit}>
               <span className="linux-prompt">$</span>
-              <input ref={terminalInputRef} value={command} onChange={(event) => setCommand(event.target.value)} placeholder="Enter a Node.js / shell command..." aria-label="Node.js command" autoComplete="off"/>
+              <input value={command} onChange={(event) => setCommand(event.target.value)} placeholder="Enter a Node.js / shell command..." aria-label="Node.js command" autoComplete="off"/>
               <button type="submit">Run <ChevronRight size={14}/></button>
             </form>
           </div>
