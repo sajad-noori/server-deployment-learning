@@ -51,7 +51,7 @@ app.get("/", (_req, res) => res.send("Node.js app is running"));
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
 app.listen(port, "0.0.0.0", () => {
-  console.log(`Server listening on port ${port}`);
+  console.log("Server listening on port " + port);
 });
 `;
 
