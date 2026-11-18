@@ -55,9 +55,22 @@ app.listen(port, "0.0.0.0", () => {
 });
 `;
 
-export function getNextNodeCommand(checks) {
-  const next = nodeTasks.find((task) => !checks[task.key]);
-  return next?.hint || null;
+export function getNextNodeCommand(checks, state) {
+  if (!checks.runtime) return "node --version";
+  if (!state.projectCreated) return "mkdir node-app";
+  if (!checks.project) return "cd node-app";
+  if (!checks.package) return "npm init -y";
+  if (!checks.dependencies) return "npm install express dotenv";
+  if (!checks.source) {
+    if (!state.sourceDirectoryCreated) return "mkdir src";
+    if (!state.sourceEditorOpened) return "nano src/server.js";
+    return "Save src/server.js in the editor";
+  }
+  if (!checks.startScript) return 'npm pkg set scripts.start="node src/server.js"';
+  if (!checks.environment) return "create .env";
+  if (!state.serverRunning) return "npm start";
+  if (!checks.health) return "curl -i http://127.0.0.1:3000/health";
+  return null;
 }
 
 export function saveNodeServerCode({ code, state, checks }) {
@@ -128,11 +141,11 @@ export function executeNodeCommand({ command, state, checks }) {
     return pass("Editor opened: src/server.js", { ...state, sourceEditorOpened: true });
   }
   if (command === 'npm pkg set scripts.start="node src/server.js"') {
-    if (!inProject || !state.packageInitialized) return fail("Initialize package.json inside node-app first.");
+    if (!inProject || !state.packageInitialized || !state.sourceSaved) return fail("Complete the server file first. Save src/server.js before configuring the start script.");
     return pass("Updated package.json: scripts.start = node src/server.js", { ...state, startScriptConfigured: true }, { ...checks, startScript: true });
   }
   if (command === "create .env") {
-    if (!inProject || !state.dependenciesInstalled) return fail("Install dotenv inside node-app first.");
+    if (!inProject || !state.dependenciesInstalled || !state.startScriptConfigured) return fail("Configure the npm start script after saving the server file, then create .env.");
     return pass("Created .env with NODE_ENV=production and PORT=3000", { ...state, environmentCreated: true }, { ...checks, environment: true });
   }
   if (command === "npm start") {
