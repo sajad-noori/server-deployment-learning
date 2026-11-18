@@ -345,3 +345,63 @@
 .git-lab-clean .git-clean-task-lock{display:block;color:#8496aa;font-size:10px;margin-top:3px}
 
 .lesson-loading{min-height:180px;display:grid;place-items:center;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:14px;background:#111720;margin:22px 0}
+
+
+/* Dashboard visual refresh: clearer hierarchy, quieter surfaces, and more breathing room. */
+.dashboard-page{max-width:1240px;padding-top:30px;padding-bottom:42px}
+.dashboard-hero{min-height:250px;display:flex;align-items:center;justify-content:space-between;gap:28px;position:relative;overflow:hidden;padding:34px 40px;border:1px solid #292943;border-radius:18px;background:radial-gradient(ellipse at 82% 48%,#55418b2b,transparent 39%),linear-gradient(115deg,#191d2c 0%,#141a27 58%,#17182a 100%)}
+.dashboard-hero-copy{position:relative;z-index:2;max-width:570px}
+.dashboard-hero h1{font:800 clamp(30px,3vw,39px)/1.13 Manrope,sans-serif;letter-spacing:-1.5px;color:#f4f5fb;margin:13px 0 10px}
+.dashboard-hero h1 span{color:#ae98fa}
+.dashboard-hero p{max-width:490px;color:#a0aabe;font-size:12px;line-height:1.75;margin:0 0 18px}
+.dashboard-hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dashboard-secondary-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid #343b50;border-radius:8px;background:#1b2230;color:#c3cada;font-size:11px;font-weight:650;transition:.2s}
+.dashboard-secondary-btn:hover{background:#252c3d;border-color:#4b5570;color:#fff}
+.dashboard-hero-art{width:300px;height:205px;flex:0 0 300px;position:relative}
+.dashboard-hero-art .hero-visual{width:300px;height:205px;transform:scale(.88);transform-origin:center}
+.dashboard-overview{display:grid;grid-template-columns:minmax(220px,1.45fr) repeat(3,minmax(130px,1fr));gap:12px;margin:16px 0 42px}
+.overview-progress,.overview-stat{min-height:100px;border:1px solid #252e3c;border-radius:12px;background:#111720}
+.overview-progress{padding:14px 17px}
+.overview-progress-top{display:flex;justify-content:space-between;align-items:center}
+.overview-progress-top>div{display:flex;align-items:baseline;gap:12px}
+.overview-label{font:500 9px var(--mono);letter-spacing:1px;color:#8995a9}
+.overview-progress-top strong{font:750 23px Manrope;color:#f1edff}
+.overview-progress-icon{width:31px;height:31px;display:grid;place-items:center;border-radius:9px;background:#a78bfa18;color:#b39cff}
+.overview-progress .progress-track{height:5px;margin-top:9px}
+.overview-progress p{margin:8px 0 0;color:#7f8ba0;font-size:10px}
+.overview-stat{display:flex;align-items:center;gap:11px;padding:14px}
+.overview-stat-icon{width:34px;height:34px;flex:0 0 34px;border-radius:10px;display:grid;place-items:center}
+.overview-stat-icon.purple{color:#b39cff;background:#9a7bff1b}
+.overview-stat-icon.blue{color:#77b8ff;background:#65aaff18}
+.overview-stat-icon.green{color:#6ce0ac;background:#5ad6a01a}
+.overview-stat strong{display:block;color:#f0f2f8;font:700 18px Manrope;white-space:nowrap}
+.overview-stat strong em{font:500 10px 'DM Sans';font-style:normal;color:#8793a7}
+.overview-stat small{display:block;margin-top:3px;color:#8995a8;font-size:9px;white-space:nowrap}
+.curriculum-section{margin-top:0}
+.dashboard-section-heading{align-items:center;margin-bottom:18px}
+.dashboard-section-heading h2{font-size:22px;margin:6px 0 5px}
+.dashboard-section-heading p{font-size:11px}
+.curriculum-count{padding:6px 10px;border:1px solid #2a3443;border-radius:20px;color:#8996aa;font:10px var(--mono);white-space:nowrap}
+.dashboard-filter-row{margin-bottom:16px;align-items:center}
+.dashboard-filter-row .search-box{height:39px;width:min(300px,100%);border-radius:9px}
+.dashboard-filter-row .filter-pills{flex-wrap:wrap;justify-content:flex-end}
+.dashboard-filter-row .filter-pills button{padding:8px 11px}
+.dashboard-lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dashboard-lesson-card{padding:18px 19px;border-radius:12px;background:#111720;transition:transform .2s,border-color .2s,background .2s}
+.dashboard-lesson-card:hover{transform:translateY(-2px);background:#151b27;border-color:#51466f}
+.dashboard-lesson-card .lesson-card-top{margin-bottom:11px}
+.dashboard-lesson-card .lesson-card-bottom{font-size:10px}
+.dashboard-lesson-card .lesson-card-bottom span{gap:6px}
+.dashboard-lesson-card .lesson-card-bottom span:last-child{color:#a0abc0}
+.dashboard-lesson-card .mini-progress{margin-top:12px;height:3px}
+.dashboard-lesson-card .lesson-card p{font-size:11px;min-height:36px;line-height:1.65;margin-bottom:16px}
+.dashboard-practice-strip{display:flex;align-items:center;gap:13px;margin-top:25px;padding:14px 17px;border:1px solid #2c3044;border-radius:12px;background:linear-gradient(100deg,#191a2b,#141a26)}
+.dashboard-practice-icon{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:10px;background:#a48af21b;color:#b9a5ff}
+.dashboard-practice-strip strong{display:block;color:#e5e7f0;font-size:11px}
+.dashboard-practice-strip span{display:block;margin-top:4px;color:#8e9bad;font-size:10px}
+.dashboard-practice-strip button{margin-left:auto;display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid #3a3c55;border-radius:8px;background:#222238;color:#cbbdff;font-size:10px;font-weight:700;white-space:nowrap}
+.dashboard-practice-strip button:hover{background:#302b4a}
+@media(max-width:1050px){.dashboard-overview{grid-template-columns:repeat(3,minmax(0,1fr))}.overview-progress{grid-column:1/-1;min-height:90px}.dashboard-hero{padding:30px}.dashboard-hero-art{width:250px;flex-basis:250px}.dashboard-hero-art .hero-visual{transform:scale(.76)}}
+@media(max-width:850px){.dashboard-page{padding-top:23px}.dashboard-hero{min-height:220px;padding:26px 25px}.dashboard-hero-art{width:190px;flex-basis:190px;opacity:.8}.dashboard-hero-art .hero-visual{transform:scale(.62)}.dashboard-filter-row{align-items:stretch;flex-direction:column}.dashboard-filter-row .search-box{width:100%}.dashboard-filter-row .filter-pills{justify-content:flex-start}.dashboard-lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.dashboard-hero{padding:25px 21px}.dashboard-hero-art{display:none}.dashboard-hero h1{font-size:32px}.dashboard-overview{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:32px}.overview-progress{grid-column:1/-1}.overview-stat{min-height:82px;padding:11px}.overview-stat strong{font-size:16px}.dashboard-lesson-grid{grid-template-columns:1fr}.dashboard-section-heading{align-items:flex-start}.curriculum-count{margin-top:4px}.dashboard-practice-strip{align-items:flex-start;flex-wrap:wrap}.dashboard-practice-strip>div:nth-child(2){flex:1;min-width:180px}.dashboard-practice-strip button{margin-left:49px}}
+@media(prefers-reduced-motion:reduce){.dashboard-hero *,.dashboard-page *{transition:none!important}}
