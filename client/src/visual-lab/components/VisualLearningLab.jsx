@@ -20,14 +20,10 @@ export function VisualLearningLab() {
   useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); }, [completed]);
   useEffect(() => {
     if (!isPlaying) return undefined;
-    const timer = window.setInterval(() => {
-      setStageIndex((current) => {
-        if (current >= scenario.stages.length - 1) { setIsPlaying(false); return current; }
-        return current + 1;
-      });
-    }, 5000);
-    return () => window.clearInterval(timer);
-  }, [isPlaying, scenario.id, scenario.stages.length]);
+    if (stageIndex >= scenario.stages.length - 1) { setIsPlaying(false); return undefined; }
+    const timer = window.setTimeout(() => setStageIndex((current) => current + 1), 5000);
+    return () => window.clearTimeout(timer);
+  }, [isPlaying, scenario.id, scenario.stages.length, stageIndex]);
 
   function chooseScenario(id) { setScenarioId(id); setStageIndex(0); setIsPlaying(true); }
   function moveTo(index) { setStageIndex(Math.max(0, Math.min(index, scenario.stages.length - 1))); setIsPlaying(false); }
