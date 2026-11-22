@@ -10,7 +10,7 @@ export function readAppRoute(location = window.location) {
     return lessonId ? { view: "lesson", lessonId } : DEFAULT_ROUTE;
   }
 
-  if (hash === "practice" || hash === "guide" || hash === "dashboard") {
+  if (hash === "practice" || hash === "guide" || hash === "dashboard" || hash === "visual-lab") {
     return { view: hash, lessonId: null };
   }
 
@@ -22,7 +22,7 @@ function routeToHash(route) {
     return `#lesson/${encodeURIComponent(route.lessonId)}`;
   }
 
-  if (route.view === "practice" || route.view === "guide") {
+  if (route.view === "practice" || route.view === "guide" || route.view === "visual-lab") {
     return `#${route.view}`;
   }
 
