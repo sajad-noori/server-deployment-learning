@@ -132,3 +132,7 @@
 @media(max-width:760px){.visual-live-scene{padding:15px 13px 12px}.scene-route{grid-template-columns:minmax(75px,1fr) minmax(30px,.35fr) minmax(115px,1.2fr) minmax(30px,.35fr) minmax(75px,1fr);gap:5px}.scene-endpoint{padding:9px 7px}.scene-endpoint strong{font-size:9px}.scene-endpoint small{font-size:7px}.scene-current{padding:10px 6px}.scene-current strong{font-size:10px}.scene-current small{font-size:7px}.scene-transfer-label{font-size:5px}}
 @media(max-width:520px){.scene-route{grid-template-columns:minmax(70px,1fr) 25px minmax(105px,1.2fr) 25px minmax(70px,1fr);gap:4px}.scene-endpoint{padding:8px 6px}.scene-endpoint-label,.scene-current-label{font-size:6px;letter-spacing:.5px}.scene-endpoint strong{font-size:8px}.scene-endpoint small{min-height:30px;font-size:6px}.scene-current-icon{width:36px;height:36px}.scene-current-icon svg{width:20px}.scene-current strong{font-size:9px}.scene-current small{font-size:6px}.scene-transfer{height:30px}.scene-transfer-label{display:none}.scene-footer>span{max-width:80%;font-size:7px}}
 @media(prefers-reduced-motion:reduce){.visual-live-scene,.visual-live-scene *{animation:none!important;transition:none!important}}
+
+/* The stage explanation is a single full-width learning panel. */
+.visual-stage-detail{grid-template-columns:minmax(0,1fr)}
+.visual-stage-copy{min-width:0}
